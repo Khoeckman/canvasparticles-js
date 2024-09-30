@@ -137,11 +137,27 @@ https://github.com/Khoeckman/canvasParticles/blob/main/LICENSE
                 target="_blank">canvasparticles-js</a>.
             </p>
 
+            <h4>Global import</h4>
+
             <div class="codeblock">
               <span class="head">HTML</span>
-              <pre><code class="language-html">&#x3C;script src=&#x22;https://cdn.jsdelivr.net/npm/canvasparticles-js@3/canvasParticles.min.js&#x22; defer&#x3E;&#x3C;/script&#x3E;</code></pre>
+              <pre><code class="language-html">&#x3C;script src=&#x22;https://cdn.jsdelivr.net/npm/canvasparticles-js@3.2/canvasParticles.min.js&#x22; defer&#x3E;&#x3C;/script&#x3E;</code></pre>
             </div>
-            <p>No JavaScript import required!</p>
+            <p>No JavaScript import required in each file!</p>
+
+            <h4>Module import</h4>
+
+            <p>Be aware that using ES modules is only possible when running the application
+              on a (local) server.
+              <a href="https://developer.mozilla.org/en-US/docs/Web/Security/Same-origin_policy" class="fancy"
+                rel="nofollow">Same
+                Origin Policy</a>
+            </p>
+
+            <div class="codeblock">
+              <span class="head">JavaScript</span>
+              <pre><code class="language-js">import CanvasParticles from 'https://cdn.jsdelivr.net/npm/canvasparticles-js@3.2/canvasParticles.mjs'</code></pre>
+            </div>
           </li>
           <li hidden>
             <h3>Module</h3>

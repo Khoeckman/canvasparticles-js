@@ -13,8 +13,10 @@
   height: 1.5rem;
 }
 
-#installation .content h3 {
-  font-size: 1.5rem;
+#installation .content h4 {
+  font-size: 1.25rem;
+  margin-top: 3rem;
+  margin-bottom: 0;
 }
 
 #installation .content {

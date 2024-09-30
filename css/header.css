@@ -39,18 +39,18 @@ header nav li:first-child:is(:hover, :focus-within) img {
   }
 }
 
-header nav li.version {
+header nav li.title {
   color: var(--contrast-d);
   margin-right: auto;
 }
 
-header nav li.version h1 {
+header nav li.title h1 {
   margin: 0;
   opacity: 0;
   transition: opacity 300ms;
 }
 
-header nav li.version p {
+header nav li.title p {
   display: block;
   line-height: 1.5;
   color: var(--contrast);
@@ -110,11 +110,11 @@ header.small nav {
   margin: 0 1rem;
 }
 
-header.small nav li.version h1 {
+header.small nav li.title h1 {
   opacity: 1;
 }
 
-header.small nav li.version p {
+header.small nav li.title p {
   transform: none;
 }
 
@@ -125,11 +125,11 @@ header.small nav li.version p {
     margin-left: 0;
   }
 
-  header nav li.version h1 {
+  header nav li.title h1 {
     display: none;
   }
 
-  header nav li.version p {
+  header nav li.title p {
     transition: none;
     transform: none;
   }
@@ -140,7 +140,7 @@ header.small nav li.version p {
     margin-right: auto;
   }
 
-  header nav li.version {
+  header nav li.title {
     display: none;
   }
 }

@@ -1,5 +1,3 @@
-// import CanvasParticles from './canvasParticles.js'
-
 new CanvasParticles('#cp-title', {
   background: 'var(--bg)',
   resetOnResize: false,

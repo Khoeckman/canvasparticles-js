@@ -11,6 +11,13 @@ for (let section of sections) {
   const name = section.id.replace(/[_-]+/g, ' ')
   sidenavList.innerHTML += `<li><a href="#${section.id}">${name}</a></li>`
 }
+sidenavList.innerHTML += `<li id="scroll-to-top" hidden><a href="#${sections[0].id}" aria-label="Top"><svg xmlns="http://www.w3.org/2000/svg"
+  fill="var(--fg)" viewBox="0 0 407.437 407.437">
+  <g xmlns="http://www.w3.org/2000/svg" transform="matrix(-1 0 0 -1 407.437 407.437)">
+    <polygon
+      points="386.258,91.567 203.718,273.512 21.179,91.567 0,112.815 203.718,315.87 407.437,112.815 " />
+  </g>
+</svg></a></li>`
 
 // Sidenav location
 const computeSectionOffsets = sections => {
@@ -28,13 +35,15 @@ const computeSectionOffsets = sections => {
 }
 
 const header = document.querySelector('header')
+const scrollToTop = document.getElementById('scroll-to-top')
 const title = document.querySelector('#title h1')
+const subtitle = document.querySelector('#title h2')
 let sectionOffsets = computeSectionOffsets(sections)
 let debounceUpdateHash
 
 const scrollEventHandler = container => {
   // Small nav
-  const scrolledPastTitle = container.scrollTop > window.innerHeight
+  const scrolledPastTitle = container.scrollTop >= window.innerHeight
   const op = scrolledPastTitle ? 'add' : 'remove'
   header.classList[op]('small')
 
@@ -50,9 +59,15 @@ const scrollEventHandler = container => {
     }
   }
 
+  // Scroll to top link
+  scrollToTop.hidden = !scrolledPastTitle
+
   // Title effect
   title.style.opacity = 1 - (2 * container.scrollTop) / window.innerHeight
   title.style.transform = 'translateX(' + (-100 * container.scrollTop) / window.innerHeight + 'px)'
+
+  subtitle.style.opacity = 1 - (2 * (container.scrollTop - 187)) / window.innerHeight
+  subtitle.style.transform = 'translateX(' + (100 * container.scrollTop) / window.innerHeight + 'px)'
 }
 document.addEventListener('scroll', () => scrollEventHandler(document.documentElement))
 scrollEventHandler(document.documentElement)

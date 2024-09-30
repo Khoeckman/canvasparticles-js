@@ -4,7 +4,7 @@
   top: 0;
   right: 0;
   height: 100%;
-  z-index: 9;
+  z-index: 10;
 }
 
 #sidenav ul {
@@ -20,7 +20,7 @@
   height: 100%;
 }
 
-#sidenav li a {
+#sidenav li:not(#scroll-to-top) a {
   pointer-events: all;
   display: flex;
   justify-content: flex-end;
@@ -31,12 +31,12 @@
   transition: color 300ms;
 }
 
-#sidenav li.active a {
+#sidenav li:not(#scroll-to-top).active a {
   color: var(--pri);
   margin-right: 0.5rem;
 }
 
-#sidenav li a::after {
+#sidenav li:not(#scroll-to-top) a::after {
   content: '';
   display: block;
   background-color: var(--pri);
@@ -47,8 +47,32 @@
   transition: width 300ms;
 }
 
-#sidenav li.active a::after {
+#sidenav li:not(#scroll-to-top).active a::after {
   width: 1rem;
+}
+
+#sidenav #scroll-to-top a {
+  pointer-events: all;
+  background-color: var(--contrast-l);
+  border: 0;
+  border-radius: 50%;
+  position: absolute;
+  right: 3rem;
+  bottom: 3rem;
+  padding: 1rem;
+  width: 3rem;
+  height: 3rem;
+  transition: opacity 300ms, transform 300ms;
+}
+
+#sidenav #scroll-to-top[hidden] {
+  pointer-events: none;
+  display: unset;
+}
+
+#sidenav #scroll-to-top[hidden] a {
+  opacity: 0;
+  transform: scale(0);
 }
 
 @media only screen and (width < 45em) {

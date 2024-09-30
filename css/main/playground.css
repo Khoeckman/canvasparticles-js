@@ -1,0 +1,17 @@
+#playground canvas {
+  background-color: var(--bg);
+  width: 100%;
+  height: 70vh;
+  max-height: 50rem;
+}
+
+#playground .codeblock {
+  width: 100%;
+}
+
+#playground-error {
+  background-color: var(--red);
+  border-radius: var(--radius-s);
+  font-weight: 500;
+  padding: 1rem 1.5rem;
+}

@@ -1,0 +1,25 @@
+#installation .choice {
+  width: fit-content;
+}
+
+#installation .choice button {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+}
+
+#installation .choice button img {
+  border-radius: var(--radius-xs);
+  height: 1.5rem;
+}
+
+#installation .content h3 {
+  font-size: 1.5rem;
+}
+
+#installation .content {
+  background-color: var(--contrast-l);
+  border-radius: var(--radius-s);
+  margin-bottom: 3rem;
+  padding: 3rem clamp(1rem, 6.667vw, 6rem);
+}

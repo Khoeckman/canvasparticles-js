@@ -1,0 +1,169 @@
+@import 'header.css';
+
+@import 'main/main.css';
+@import 'main/sidenav.css';
+@import 'main/title.css';
+@import 'main/installation.css';
+@import 'main/showcase.css';
+@import 'main/playground.css';
+
+@import 'footer.css';
+
+@import 'helper/checkbox.css';
+@import 'helper/fancyAnchor.css';
+
+:root {
+  --white: #fff;
+  --black: #111;
+  --fg: var(--black);
+  --bg: var(--white);
+  --pri: #c0242b;
+
+  --contrast-xxd: #0f0f0f;
+  --contrast-xd: #1f1f1f;
+  --contrast-d: #2f2f2f;
+  --contrast: #7f7f7f;
+  --contrast-l: #cfcfcf;
+  --contrast-xl: #f7f7f7;
+  --contrast-xxl: #f7f7f7;
+  --contrast-a: #fff8;
+
+  --red-d: hsl(8, 100%, 40%);
+  --red: hsl(8, 100%, 50%);
+  --red-l: hsl(8, 100%, 60%);
+  --green-d: hsl(128, 100%, 40%);
+  --green: hsl(128, 100%, 50%);
+  --green-l: hsl(128, 100%, 70%);
+
+  --radius-xs: 0.15rem;
+  --radius-s: 0.3rem;
+  --radius-m: 0.5rem;
+}
+
+@media (prefers-color-scheme: dark) {
+  :root {
+    --fg: var(--white);
+    --bg: var(--black);
+    --contrast-xxd: #efefef;
+    --contrast-xd: #dfdfdf;
+    --contrast-d: #cfcfcf;
+    --contrast-l: #2f2f2f;
+    --contrast-xl: #1f1f1f;
+    --contrast-xxl: #0f0f0f;
+    --contrast-a: #0008;
+  }
+}
+
+html {
+  scroll-behavior: smooth;
+  background: var(--bg);
+  font-family: 'Segoe UI', monospace;
+  font-size: 16px;
+  color: var(--fg);
+}
+
+body {
+  background-color: var(--contrast-xl);
+  margin: 0;
+}
+
+::-webkit-scrollbar {
+  width: 13px;
+  height: 13px;
+}
+
+::-webkit-scrollbar-thumb {
+  background: var(--contrast);
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: var(--contrast-d);
+}
+
+::-webkit-scrollbar-corner {
+  background-color: transparent;
+}
+
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+p,
+span {
+  max-width: 40em;
+}
+
+a {
+  color: var(--contrast-d);
+}
+
+a:is(:hover, :focus-visible) {
+  color: var(--fg);
+}
+
+button {
+  cursor: pointer;
+  font-family: inherit;
+}
+
+img {
+  display: inherit;
+}
+
+input[type='color'] {
+  cursor: pointer;
+  display: block;
+  border: 0;
+  border-radius: var(--radius-s);
+  margin-top: 0.5rem;
+  padding: 0;
+  /* padding: 0 1.5rem; */
+  width: 8rem;
+  height: 3rem;
+}
+
+::-moz-color-swatch {
+  border: 0;
+}
+
+::-webkit-color-swatch {
+  border: 0;
+}
+
+/* HELPER CLASSES */
+
+.sr-only {
+  border: 0;
+  clip: rect(1px, 1px, 1px, 1px);
+  -webkit-clip-path: inset(50%);
+  clip-path: inset(50%);
+  height: 1px;
+  margin: -1px;
+  overflow: hidden;
+  padding: 0;
+  position: absolute;
+  width: 1px;
+  white-space: nowrap;
+}
+
+.has-overlay {
+  position: relative;
+}
+
+.overlay {
+  display: block;
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  top: 0;
+  left: 0;
+  z-index: 1;
+}
+
+.list {
+  list-style-type: none;
+  margin: 0;
+  padding: 0;
+}

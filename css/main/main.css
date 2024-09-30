@@ -1,0 +1,173 @@
+main section {
+  margin: 0 auto;
+  padding: 3rem clamp(1rem, 6.667vw, 3rem);
+  max-width: 90rem;
+}
+
+main h2 {
+  font-size: clamp(2.5rem, 6vw, 4.5rem);
+}
+
+main section > h2:not(:first-child) {
+  margin-top: 12rem;
+}
+
+main h3 {
+  font-size: clamp(1.75rem, 4vw, 2rem);
+}
+
+main p {
+  line-height: 1.25;
+}
+
+main :not(#title) canvas {
+  display: block;
+  background-color: var(--white);
+  border-radius: var(--radius-s);
+  box-shadow: 0.5rem 0.5rem 0.5rem var(--contrast-xxl);
+}
+
+main p.br {
+  margin-bottom: 3rem;
+}
+
+main p span.highlight {
+  background-color: var(--contrast-d);
+  border-radius: var(--radius-s);
+  font-weight: 500;
+  color: var(--bg);
+  padding: 0.1rem 0.25rem;
+}
+
+main p span.highlight.orange {
+  background-color: #fa0;
+  color: var(--black);
+}
+
+main p span.highlight.red {
+  background-color: var(--red);
+  color: var(--white);
+}
+
+main .togglable {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 1rem;
+}
+
+main .choice {
+  display: flex;
+  flex-flow: row wrap;
+  background-color: var(--bg);
+  border-radius: var(--radius-s);
+  margin: 1.5rem 0;
+}
+
+main .choice li {
+  flex: 1;
+}
+
+main .choice li button {
+  background-color: transparent;
+  border: 0;
+  border-radius: var(--radius-s);
+  font-weight: 500;
+  white-space: nowrap;
+  color: var(--fg);
+  padding: 1rem 1.5rem;
+  width: 100%;
+  height: 100%;
+  transition: background 150ms, color 150ms;
+}
+
+main .choice li button:is(:hover, :focus-visible) {
+  background-color: var(--contrast-l);
+}
+
+main .choice li button.active {
+  background-color: var(--fg);
+  color: var(--bg);
+}
+
+main .codeblock {
+  display: block;
+  background-color: #1a1b25;
+  border: 1px solid var(--contrast-xd);
+  border-radius: var(--radius-s);
+  color: var(--white);
+  position: relative;
+  min-width: min(100%, 40rem);
+  width: fit-content;
+  max-width: 100%;
+  margin: 1.5rem 0;
+}
+
+main .codeblock pre {
+  display: block;
+  background-color: transparent;
+  margin: 0;
+  padding: 0.5rem 1rem;
+}
+
+main .codeblock pre:focus-visible {
+  outline-color: var(--red);
+}
+
+main .codeblock .head {
+  display: block;
+  background-color: var(--white);
+  border-radius: var(--radius-xs) var(--radius-xs) 0 0;
+  font-weight: 500;
+  line-height: 1.5;
+  color: var(--black);
+  padding: 0 0.5rem;
+  min-width: 100%;
+  height: 1.5rem;
+}
+
+main .codeblock .run {
+  user-select: none;
+  background-color: var(--green);
+  border: 0;
+  border-radius: var(--radius-s);
+  color: var(--black);
+  position: absolute;
+  top: -1px;
+  left: -2rem;
+  width: 1.5625rem;
+  height: 1.5625rem;
+  transition: background 150ms;
+}
+
+main .codeblock .run:is(:hover, :focus-visible) {
+  background-color: var(--green-l);
+}
+
+main .codeblock .run:active {
+  background-color: var(--green-d);
+  transition: none;
+}
+
+main .codeblock .run.stop {
+  background-color: var(--red);
+  top: 2rem;
+}
+
+main .codeblock .run.stop:is(:hover, :focus-visible) {
+  background-color: var(--red-l);
+}
+
+main .codeblock .run.stop:active {
+  background-color: var(--red-d);
+}
+
+@media only screen and (width < 30em) {
+  main .codeblock .run {
+    left: -1rem;
+  }
+
+  main .codeblock .run + .head {
+    padding-left: 1rem;
+  }
+}

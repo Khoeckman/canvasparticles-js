@@ -1,0 +1,59 @@
+#sidenav {
+  pointer-events: none;
+  position: fixed;
+  top: 0;
+  right: 0;
+  height: 100%;
+  z-index: 9;
+}
+
+#sidenav ul {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  gap: 1rem;
+  font-size: 0.8rem;
+  font-weight: 500;
+  text-align: right;
+  text-transform: capitalize;
+  margin-right: 0.5rem;
+  height: 100%;
+}
+
+#sidenav li a {
+  pointer-events: all;
+  display: flex;
+  justify-content: flex-end;
+  align-items: center;
+  gap: 0.5rem;
+  text-shadow: 1px 1px 0.1rem var(--bg);
+  text-decoration: none;
+  position: relative;
+  transition: color 300ms;
+}
+
+#sidenav li.active a {
+  color: var(--pri);
+  margin-right: 0.5rem;
+}
+
+#sidenav li a::after {
+  content: '';
+  display: block;
+  background-color: var(--pri);
+  margin-right: -1rem;
+  margin: auto 0;
+  width: 0;
+  height: 1px;
+  transition: width 300ms;
+}
+
+#sidenav li.active a::after {
+  width: 1rem;
+}
+
+@media only screen and (width < 45em) {
+  #sidenav {
+    display: none;
+  }
+}

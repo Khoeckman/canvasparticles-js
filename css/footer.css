@@ -1,0 +1,22 @@
+footer {
+  background-color: var(--contrast-xl);
+  border-top: 1px solid var(--contrast-l);
+  margin-top: 6rem;
+}
+
+footer > div {
+  margin: 0 auto;
+  max-width: 90rem;
+  padding: 3rem clamp(1rem, 6.667vw, 3rem);
+}
+
+footer p {
+  margin: 0;
+  line-height: 1.5;
+  color: var(--contrast);
+}
+
+footer p:first-child {
+  font-weight: 500;
+  color: var(--contrast-d);
+}

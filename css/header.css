@@ -1,0 +1,146 @@
+header {
+  /* -webkit-backdrop-filter: blur(0.5rem);
+  backdrop-filter: blur(0.5rem); */
+  position: fixed;
+  width: 100%;
+  z-index: 10;
+  transition: background 300ms;
+}
+
+header nav {
+  margin: 1rem;
+  padding: 1rem 6%;
+  transition: margin 300ms;
+}
+
+header nav ul {
+  display: flex;
+  align-items: center;
+  gap: 1.5rem;
+}
+
+header nav li:first-child {
+  border-radius: var(--radius-s);
+}
+
+header nav li:first-child img {
+  border-radius: var(--radius-s);
+  width: 4rem;
+  height: 4rem;
+}
+
+header nav li:first-child:is(:hover, :focus-within) img {
+  animation: invert 0.48s linear infinite alternate;
+}
+
+@keyframes invert {
+  to {
+    filter: invert(1);
+  }
+}
+
+header nav li.version {
+  color: var(--contrast-d);
+  margin-right: auto;
+}
+
+header nav li.version h1 {
+  margin: 0;
+  opacity: 0;
+  transition: opacity 300ms;
+}
+
+header nav li.version p {
+  display: block;
+  line-height: 1.5;
+  color: var(--contrast);
+  margin: 0;
+  transition: transform 300ms;
+  transform: translateY(-1.1rem);
+}
+
+header nav li .button {
+  display: block;
+  background-color: var(--fg);
+  border: 0;
+  border-radius: var(--radius-s);
+  font-weight: 500;
+  text-align: center;
+  text-decoration: none;
+  color: var(--bg);
+  --padding-vert: 0.8rem;
+  padding: var(--padding-vert) 1rem;
+  --height: 2.5rem;
+  width: max-content;
+  height: var(--height);
+  transition: box-shadow 300ms;
+}
+
+header nav li .button:is(:hover, :focus-visible) {
+  box-shadow: 0 0 0 0.1rem var(--white), 0 0 0.5rem 0.2rem var(--black);
+}
+
+@media (prefers-color-scheme: dark) {
+  header nav li .button:is(:hover, :focus-visible) {
+    box-shadow: 0 0 0 0.1rem var(--black), 0 0 0.2rem 0.2rem var(--white);
+  }
+}
+
+header nav li .button.npm {
+  --padding-vert: 0.875rem;
+  background-color: var(--pri);
+}
+
+header nav li .button :is(svg, img) {
+  width: 100%;
+  height: calc(var(--height) - 2 * var(--padding-vert));
+}
+
+header nav li .button.github:is(:hover, :focus-visible) {
+  color: var(--bg);
+}
+
+header.small {
+  background-color: var(--contrast-a);
+  -webkit-backdrop-filter: blur(1rem);
+  backdrop-filter: blur(1rem);
+}
+
+header.small nav {
+  margin: 0 1rem;
+}
+
+header.small nav li.version h1 {
+  opacity: 1;
+}
+
+header.small nav li.version p {
+  transform: none;
+}
+
+@media only screen and (width < 45em) {
+  header nav,
+  header.small nav {
+    margin-right: 0;
+    margin-left: 0;
+  }
+
+  header nav li.version h1 {
+    display: none;
+  }
+
+  header nav li.version p {
+    transition: none;
+    transform: none;
+  }
+}
+
+@media only screen and (width < 30em) {
+  header nav li:first-child {
+    margin-right: auto;
+  }
+
+  header nav li.version {
+    display: none;
+  }
+}

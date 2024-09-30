@@ -1,0 +1,88 @@
+#showcase > h2:first-child {
+  text-align: right;
+}
+
+#showcase article {
+  display: flex;
+  justify-content: flex-start;
+  align-items: flex-start;
+  gap: 3rem 6rem;
+}
+
+#showcase article h3 {
+  margin: 0;
+}
+
+#showcase article canvas {
+  flex: 1 0 auto;
+  margin: auto 0;
+  width: 25%;
+  height: 25rem;
+}
+
+#showcase article:not(:last-child) {
+  margin-bottom: 12rem;
+}
+
+#showcase article:nth-of-type(odd) {
+  justify-content: flex-end;
+}
+
+#showcase article:nth-of-type(even) canvas {
+  order: -1;
+}
+
+#showcase article .content > :last-child {
+  margin-bottom: 0;
+}
+
+#showcase-coloring-form {
+  display: flex;
+  gap: 1.5rem;
+}
+
+#showcase-coloring-form label {
+  color: var(--contrast-d);
+}
+
+#showcase-coloring-form label:first-of-type input {
+  background-color: #151019;
+}
+
+#showcase-coloring-form label:last-of-type input {
+  background-color: #8accff;
+}
+
+@media only screen and (width < 80em) {
+  #showcase {
+    max-width: 46rem;
+  }
+
+  #showcase > h2:first-child {
+    text-align: center;
+  }
+
+  #showcase article {
+    flex-direction: column;
+  }
+
+  #showcase article canvas {
+    width: 100%;
+  }
+
+  #showcase article:not(:last-child) {
+    margin-bottom: 6rem;
+  }
+
+  #showcase article:nth-of-type(odd) {
+    justify-content: center;
+  }
+
+  #showcase article:nth-of-type(even) canvas {
+    order: unset;
+  }
+
+  #showcase article .content {
+    width: 100%;
+  }
+}

@@ -1,5 +1,5 @@
-// import CanvasParticles from './canvasParticles.js'
 import { showcase } from './initParticles.js'
+import { loadPreset } from './presets.js'
 
 // Update github image based on prefers-color-scheme
 
@@ -16,9 +16,11 @@ darkModePreference.addEventListener('change', updateColorScheme)
 // Playground
 
 const playgroundError = document.getElementById('playground-error')
-const playgroundCode = document.getElementById('playground-options')
+const playgroundOptions = document.getElementById('playground-options')
 
-playgroundCode.addEventListener('blur', function () {
+window.addEventListener('load', () => loadPreset('all'))
+
+playgroundOptions.addEventListener('blur', function () {
   Prism.highlightElement(this)
 })
 
@@ -69,7 +71,7 @@ runButtons.forEach(button => {
       playgroundError.hidden = true
       let options
       try {
-        eval(htmlEntities(playgroundCode.innerText))
+        eval(htmlEntities(playgroundOptions.innerText))
         if (options === undefined) throw new SyntaxError('Cannot assign options. Use syntax: options = <Object>')
       } catch (err) {
         playgroundError.innerText = err
@@ -112,6 +114,11 @@ choiceLists.forEach(list => {
       const numberTokens = document.querySelectorAll('#showcase article:has(#showcase-interact) code .token.number')
       numberTokens[0].innerText = '' + interactionType
       numberTokens[2].innerText = '' + distRatio
+    }
+
+    if (list.id === 'playground-preset-choice') {
+      loadPreset(button.getAttribute('data-preset'))
+      Prism.highlightElement(playgroundOptions)
     }
   })
 })

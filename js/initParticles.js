@@ -81,6 +81,7 @@ showcase.movement = new CanvasParticles('#showcase-movement', {
     color: '#ffa',
     max: 60,
     relSpeed: 3,
+    relSize: 2,
     rotationSpeed: 40,
   },
 })

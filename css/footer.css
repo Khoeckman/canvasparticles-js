@@ -5,6 +5,10 @@ footer {
 }
 
 footer > div {
+  display: flex;
+  flex-flow: row wrap;
+  justify-content: space-between;
+  gap: 3rem;
   margin: 0 auto;
   max-width: 90rem;
   padding: 3rem clamp(1rem, 6.667vw, 3rem);

@@ -30,6 +30,13 @@
   z-index: 2;
 }
 
+#title .invert {
+  background: var(--contrast-d);
+  border-radius: 0.3em;
+  color: var(--bg);
+  padding: 0 0.2em;
+}
+
 #title .shadow {
   background: linear-gradient(180deg, #0000 75%, var(--bg) 95%);
 }

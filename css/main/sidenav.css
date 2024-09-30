@@ -24,9 +24,8 @@
   pointer-events: all;
   display: flex;
   justify-content: flex-end;
-  align-items: center;
   gap: 0.5rem;
-  text-shadow: 1px 1px 0.1rem var(--bg);
+  text-shadow: 1px 1px 0.1rem var(--contrast-xl);
   text-decoration: none;
   position: relative;
   transition: color 300ms;

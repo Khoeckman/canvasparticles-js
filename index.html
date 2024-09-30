@@ -71,7 +71,7 @@ https://github.com/Khoeckman/canvasParticles/blob/main/LICENSE
     </aside>
     <section id="title">
       <div class="content">
-        <h1>Canvas Particles JS</h1>
+        <h1>Canvas Particles <span class="invert">JS</span></h1>
         <h2>
           In an HTML canvas, a bunch of floating particles connected with lines when<br>they approach eachother.
           Creating a fun and interactive background.
@@ -116,6 +116,11 @@ https://github.com/Khoeckman/canvasParticles/blob/main/LICENSE
               <a href="https://www.npmjs.com/package/canvasparticles-js?activeTab=code" class="fancy"
                 target="_blank">canvasparticles-js</a>.
             </p>
+            <span>
+              <a href="https://npmjs.org/package/canvasparticles-js" class="badge" title="View this project on NPM">
+                <img src="https://img.shields.io/npm/dm/canvasparticles-js.svg" alt="NPM downloads" />
+              </a>
+            </span>
 
             <div class="codeblock">
               <span class="head">Console</span>
@@ -136,6 +141,13 @@ https://github.com/Khoeckman/canvasParticles/blob/main/LICENSE
               <a href="https://www.jsdelivr.com/package/npm/canvasparticles-js" class="fancy"
                 target="_blank">canvasparticles-js</a>.
             </p>
+            <span>
+              <a href="https://www.jsdelivr.com/package/npm/canvasparticles-js" class="badge"
+                title="View this project on jsDelivr">
+                <img src="https://data.jsdelivr.com/v1/package/npm/canvasparticles-js/badge?style=rounded"
+                  alt="jsDelivr hits" />
+              </a>
+            </span>
 
             <h4>Global import</h4>
 
@@ -254,12 +266,12 @@ new CanvasParticles(selector, options).start()</code></pre>
           <div class="codeblock">
             <span class="head">JavaScript</span>
             <pre><code class="language-js">new CanvasParticles('#showcase-coloring', {
-    // Any CSS Supported value for the 'background' property
-    background: 'rgb(21, 16, 25)',
-    particles: {
-        // Any CSS Supported color
-        color: 'hsl(206, 100%, 77%)',
-    },
+  // Any CSS Supported value for the 'background' property
+  background: 'rgb(21, 16, 25)',
+  particles: {
+    // Any CSS Supported color
+    color: 'hsl(206, 100%, 77%)',
+  },
 }).start()</code></pre>
           </div>
 
@@ -300,11 +312,11 @@ new CanvasParticles(selector, options).start()</code></pre>
           <div class="codeblock">
             <span class="head">JavaScript</span>
             <pre><code class="language-js">new CanvasParticles('#showcase-interact', {
-    mouse: {
-        interactionType: 2,
-        connectDistMult: 0.8,
-        distRatio: 0.7,
-    },
+  mouse: {
+    interactionType: 2,
+    connectDistMult: 0.8,
+    distRatio: 0.7,
+  },
 }).start()</code></pre>
           </div>
         </div>
@@ -320,13 +332,13 @@ new CanvasParticles(selector, options).start()</code></pre>
           <div class="codeblock">
             <span class="head">JavaScript</span>
             <pre><code class="language-js">new CanvasParticles('#showcase-quantity', {
-    mouse: {
-        connectDistMult: 1,
-    },
-    particles: {
-        ppm: 200,
-        max: 300,
-    },
+  mouse: {
+    connectDistMult: 1,
+  },
+  particles: {
+    ppm: 200,
+    max: 300,
+  },
 }).start()</code></pre>
           </div>
         </div>
@@ -341,15 +353,15 @@ new CanvasParticles(selector, options).start()</code></pre>
           <div class="codeblock">
             <span class="head">JavaScript</span>
             <pre><code class="language-js">new CanvasParticles('#showcase-quantity', {
-    background: 'linear-gradient(100deg, #f80, #0f8 150%)',
-    mouse: {
-        interactionType: 2,
-        connectDistMult: 0.3,
-        distRatio: 1,
-    },
-    particles: {
-        connectDistance: 400,
-    },
+  background: 'linear-gradient(100deg, #f80, #0f8 150%)',
+  mouse: {
+    interactionType: 2,
+    connectDistMult: 0.3,
+    distRatio: 1,
+  },
+  particles: {
+    connectDistance: 400,
+  },
 }).start()</code></pre>
           </div>
         </div>
@@ -364,10 +376,11 @@ new CanvasParticles(selector, options).start()</code></pre>
           <div class="codeblock">
             <span class="head">JavaScript</span>
             <pre><code class="language-js">new CanvasParticles('#showcase-quantity', {
-    particles: {
-        relSpeed: 3,
-        rotationSpeed: 40,
-    },
+  particles: {
+    relSpeed: 3,
+    relSize: 2,
+    rotationSpeed: 40,
+  },
 }).start()</code></pre>
           </div>
         </div>
@@ -392,13 +405,13 @@ new CanvasParticles(selector, options).start()</code></pre>
           <div class="codeblock">
             <span class="head">JavaScript</span>
             <pre><code class="language-js">new CanvasParticles('#showcase-pushing-gravity', {
-    particles: {
-        connectDistance: 175,
-    },
-    gravity: {
-        repulsive: 3,
-        fricion: 0.995,
-    },
+  particles: {
+    connectDistance: 175,
+  },
+  gravity: {
+    repulsive: 3,
+    fricion: 0.995,
+  },
 }).start()</code></pre>
           </div>
         </div>
@@ -424,23 +437,23 @@ new CanvasParticles(selector, options).start()</code></pre>
             <span class="head">JavaScript</span>
             <pre><code class="language-js">const showcasePullingGravity =
 new CanvasParticles('#showcase-pulling-gravity', {
-    mouse: {
-        interactionType: 2,
-        distRatio: 1,
-    },
-    particles: {
-        maxWork: Infinity
-    },
-    gravity: {
-        repulsive: 5,
-        pulling: 3,
-    },
+  mouse: {
+    interactionType: 2,
+    distRatio: 1,
+  },
+  particles: {
+    maxWork: Infinity
+  },
+  gravity: {
+    repulsive: 5,
+    pulling: 3,
+  },
 })</code></pre>
           </div>
 
           <div class="codeblock">
             <button id="run-pushing-gravity-new" class="run">▶</button>
-            <span class="head">New</span>
+            <span class="head">Reset</span>
             <pre><code class="language-js">showcasePullingGravity.newParticles()</code></pre>
           </div>
 
@@ -458,34 +471,18 @@ new CanvasParticles('#showcase-pulling-gravity', {
     <section id="playground">
       <h2>Playground</h2>
       <form action="javascript:" novalidate>
+        <ul id="playground-preset-choice" class="list choice">
+          <li><button class="active" data-preset="all">All options</button></li>
+          <li><button data-preset="gravity">Violent Gravity</button></li>
+          <li><button data-preset="shapes">Shapes</button></li>
+          <li><button data-preset="empty">Your turn</button></li>
+        </ul>
+
         <div id="playground-error" hidden tabindex="-1"></div>
 
         <div class="codeblock">
           <span class="head">JavaScript</span>
-          <pre id="playground-options" contenteditable="true"><code class="language-js">options = {
-    background: '#151019',
-    framesPerUpdate: 1,
-    resetOnResize: false,
-    mouse: {
-        interactionType: 2,
-        connectDistMult: 0.7,
-        distRatio: 0.6,
-    },
-    particles: {
-        color: '#8cf',
-        ppm: 120,
-        max: 250,
-        maxWork: 30,
-        connectDistance: 125,
-        relSpeed: 1,
-        rotationSpeed: 2,
-    },
-    gravity: {
-        repulsive: 0.55,
-        pulling: 0,
-        friction: 0.99,
-    }
-}</code></pre>
+          <pre id="playground-options" contenteditable="true"><code class="language-js">options = {}</code></pre>
         </div>
 
         <div class="codeblock">
@@ -500,12 +497,33 @@ new CanvasParticles('#showcase-pulling-gravity', {
   </main>
   <footer>
     <div>
-      <p>
-        Copyright © <a href="http://kylehoeckman.great-site.net/cv/" class="fancy" target="_blank">Kyle Hoeckman</a>
-        2022–2024, Licensed under the <a href="https://github.com/Khoeckman/canvasParticles?tab=MIT-1-ov-file#readme"
-          class="fancy" target="_blank">MIT License</a>.
-      </p>
-      <p>Canvas Particles JS has no dependencies.</p>
+      <div>
+        <p>
+          Copyright © <a href="http://kylehoeckman.great-site.net/cv/" class="fancy" target="_blank">Kyle Hoeckman</a>
+          2022–2024, Licensed under the <a href="https://github.com/Khoeckman/canvasParticles?tab=MIT-1-ov-file#readme"
+            class="fancy" target="_blank">MIT License</a>.
+        </p>
+        <p>Canvas Particles JS has no dependencies.</p>
+      </div>
+      <div>
+        <span>
+          <a href="https://npmjs.org/package/canvasparticles-js" class="badge" title="View this project on NPM">
+            <img src="https://img.shields.io/npm/v/canvasparticles-js.svg" alt="NPM version" />
+          </a>
+        </span>
+        <span>
+          <a href="https://npmjs.org/package/canvasparticles-js" class="badge" title="View this project on NPM">
+            <img src="https://img.shields.io/npm/dm/canvasparticles-js.svg" alt="NPM downloads" />
+          </a>
+        </span>
+        <span>
+          <a href="https://www.jsdelivr.com/package/npm/canvasparticles-js" class="badge"
+            title="View this project on jsDelivr">
+            <img src="https://data.jsdelivr.com/v1/package/npm/canvasparticles-js/badge?style=rounded"
+              alt="jsDelivr hits" />
+          </a>
+        </span>
+      </div>
     </div>
   </footer>
 </body>

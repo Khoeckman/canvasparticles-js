@@ -27,10 +27,9 @@ https://github.com/Khoeckman/canvasParticles/blob/main/LICENSE
   <link rel="stylesheet" href="./css/prism.min.css" />
 
   <!-- JS -->
-  <script src="https://cdn.jsdelivr.net/npm/canvasparticles-js@3.2/canvasParticles.min.js" defer></script>
+  <script src="https://cdn.jsdelivr.net/npm/canvasparticles-js@3.2.12/canvasParticles.min.js" defer></script>
   <script src="./js/main.js" type="module"></script>
   <script src="./js/nav.js" type="module"></script>
-  <script src="./js/initParticles.js" type="module"></script>
   <script src="./js/prism.min.js" type="module"></script>
 </head>
 
@@ -409,7 +408,7 @@ new CanvasParticles(selector, options).start()</code></pre>
 
           <div class="codeblock">
             <span class="head">JavaScript</span>
-            <pre><code class="language-js">new CanvasParticles('#showcase-quantity', {
+            <pre><code class="language-js">new CanvasParticles('#showcase-connect-distance', {
   background: 'linear-gradient(100deg, #f80, #0f8 150%)',
   mouse: {
     interactionType: 2,
@@ -432,7 +431,7 @@ new CanvasParticles(selector, options).start()</code></pre>
 
           <div class="codeblock">
             <span class="head">JavaScript</span>
-            <pre><code class="language-js">new CanvasParticles('#showcase-quantity', {
+            <pre><code class="language-js">new CanvasParticles('#showcase-movement', {
   particles: {
     relSpeed: 3,
     relSize: 2,
@@ -525,6 +524,36 @@ new CanvasParticles('#showcase-pulling-gravity', {
           </div>
         </div>
         <canvas id="showcase-pulling-gravity"></canvas>
+      </article>
+
+      <article>
+        <div class="content">
+          <h3>Hue Rotation Effect</h3>
+          <p>Use <span class="highlight">JavaScript</span> to edit options on the fly.</p>
+
+          <div class="codeblock">
+            <span class="head">JavaScript</span>
+            <pre><code class="language-js">const showcaseHueRotation =
+new CanvasParticles('#showcase-hue-rotation', {
+  background: 'var(--bg)',
+  particles: {
+    color: 'hsl(0, 100%, 50%)'
+  },
+})</code></pre>
+          </div>
+
+          <div class="codeblock">
+            <button id="run-hue-rotation" class="run">▶</button>
+            <button id="stop-hue-rotation" class="run stop">■</button>
+            <span class="head">Rotate hue</span>
+            <pre><code class="language-js">setInterval(() => {
+  const color = `hsl(${hue++}, 100%, 50%)`
+  hue %= 360
+  showcaseHueRotation.setParticleColor(color)
+})</code></pre>
+          </div>
+        </div>
+        <canvas id="showcase-hue-rotation"></canvas>
       </article>
     </section>
 

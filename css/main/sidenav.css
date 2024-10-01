@@ -51,6 +51,12 @@
   width: 1rem;
 }
 
+#sidenav #scroll-to-top {
+  position: absolute;
+  right: 3rem;
+  bottom: 3rem;
+}
+
 #sidenav #scroll-to-top[hidden] {
   pointer-events: none;
   display: unset;
@@ -62,14 +68,12 @@
 }
 
 #sidenav #scroll-to-top a {
+  display: block;
   pointer-events: all;
   background-color: var(--contrast-l);
   border: 0;
   border-radius: 50%;
   box-shadow: 0 0 0.5rem var(--bg);
-  position: absolute;
-  right: 3rem;
-  bottom: 3rem;
   padding: 1rem;
   width: 3rem;
   height: 3rem;
@@ -87,9 +91,6 @@
 
   #sidenav #scroll-to-top {
     display: block;
-  }
-
-  #sidenav #scroll-to-top a {
     right: 1rem;
     bottom: 1rem;
   }

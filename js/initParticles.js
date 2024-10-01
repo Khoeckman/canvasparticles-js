@@ -119,7 +119,18 @@ showcase['pulling-gravity'] = new CanvasParticles('#showcase-pulling-gravity', {
   },
 })
 
-// Start all showcases without gravity
-Object.values(showcase).forEach(showcase => {
-  if (showcase.options.gravity.repulsive === 0 && showcase.options.gravity.pulling === 0) showcase.start()
+showcase['hue-rotation'] = new CanvasParticles('#showcase-hue-rotation', {
+  background: 'var(--bg)',
+  mouse: {
+    interactionType: 2,
+  },
+  particles: {
+    color: 'hsl(0, 100%, 50%)',
+  },
+})
+
+const startIgnore = ['pushing-gravity', 'pulling-gravity']
+
+Object.entries(showcase).forEach(([name, showcase]) => {
+  if (!startIgnore.includes(name)) showcase.start()
 })

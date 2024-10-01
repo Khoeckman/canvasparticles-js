@@ -1,3 +1,7 @@
+#sandbox h3:first-of-type {
+  margin: 0;
+}
+
 #sandbox .codeblock {
   width: 100%;
 }

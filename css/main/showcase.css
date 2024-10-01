@@ -36,21 +36,34 @@
   margin-bottom: 0;
 }
 
-#showcase-coloring-form {
+#showcase article .togglable {
   display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 3rem;
+  margin-bottom: 1.5rem;
+}
+
+#showcase #showcase-coloring-form {
+  display: flex;
+  flex-wrap: wrap;
   gap: 1.5rem;
 }
 
-#showcase-coloring-form label {
+#showcase #showcase-coloring-form label {
   color: var(--contrast-d);
 }
 
-#showcase-coloring-form label:first-of-type input {
+#showcase #showcase-coloring-form label:first-of-type input {
   background-color: #151019;
 }
 
-#showcase-coloring-form label:last-of-type input {
+#showcase #showcase-coloring-form label:last-of-type input {
   background-color: #8accff;
+}
+
+#showcase #showcase-pulling-gravity {
+  height: 40rem;
 }
 
 @media only screen and (width < 80em) {
@@ -84,5 +97,12 @@
 
   #showcase article .content {
     width: 100%;
+  }
+}
+
+@media only screen and (width < 30em) {
+  #showcase article .togglable {
+    flex-flow: row wrap-reverse;
+    gap: 1rem;
   }
 }

@@ -8,7 +8,6 @@ label:has(> .checkbox) {
   border-radius: var(--rs);
   color: var(--white);
   line-height: 1;
-  margin-bottom: 0.5rem;
   padding: 0.5rem 1rem;
   width: fit-content;
   transition: border-color 150ms;
@@ -79,6 +78,7 @@ label:has(> .checkbox input:focus-visible) {
   left: 100%;
 }
 
+label:active > .checkbox > span::before,
 .checkbox > span:active::before {
   left: -8%;
 }
@@ -97,6 +97,7 @@ label:has(> .checkbox input:focus-visible) {
   left: 0;
 }
 
+label:active > .checkbox input:checked + span::after,
 .checkbox input:checked + span:active::after {
   left: 8%;
 }

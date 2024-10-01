@@ -32,13 +32,13 @@ togglables.forEach(checkbox => {
   checkbox.addEventListener('click', e => {
     const name = e.target.id.split(/-(.*)/s)[1]
     const op = e.target.checked ? 'start' : 'stop'
-    showcase[name][op]()
+    showcase[name]?.[op]()
 
     togglables.forEach(checkbox => {
       const currentName = checkbox.id.split(/-(.*)/s)[1]
       if (name === currentName) return
       checkbox.checked = false
-      showcase[currentName].stop()
+      showcase[currentName]?.stop()
     })
   })
 })
@@ -49,36 +49,50 @@ togglables.forEach(checkbox => {
 const htmlEntities = str => String(str).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;')
 
 const runButtons = [...document.querySelectorAll('main .run')]
+let hue = 0
+let hueRotateInterval
 let sandbox
 
 runButtons.forEach(button => {
   button.addEventListener('click', () => {
     if (button.id === 'run-default-stop') showcase.default.stop()
-    if (button.id === 'run-default-start') showcase.default.start()
-    if (button.id === 'run-pushing-gravity-new') showcase['pulling-gravity'].newParticles()
-
-    if (button.id === 'run-pushing-gravity-max-work' || button.id === 'stop-pushing-gravity-max-work') {
+    else if (button.id === 'run-default-start') showcase.default.start()
+    else if (button.id === 'run-pushing-gravity-new') showcase['pulling-gravity'].newParticles()
+    else if (button.id === 'run-pushing-gravity-max-work' || button.id === 'stop-pushing-gravity-max-work') {
       const maxWork = button.id === 'run-pushing-gravity-max-work' ? 12 : Infinity
       showcase['pulling-gravity'].options.particles.maxWork = maxWork
 
       const numberToken = document.querySelectorAll('#showcase article:has(#showcase-pulling-gravity) code .token.number')[2]
       numberToken.innerText = +maxWork
-    }
+    } else if (button.id === 'run-hue-rotation') {
+      clearInterval(hueRotateInterval)
+      console.log('here')
 
-    if (button.id === 'run-sandbox' || button.id === 'stop-sandbox') sandbox?.stop()
+      hueRotateInterval = setInterval(() => {
+        const color = `hsl(${hue++}, 100%, 50%)`
+        hue %= 360
+        showcase['hue-rotation'].setParticleColor(color)
 
-    if (button.id === 'run-sandbox') {
-      sandboxError.hidden = true
-      let options
-      try {
-        eval(htmlEntities(sandboxOptions.innerText))
-        if (options === undefined) throw new SyntaxError('Cannot assign options. Use syntax: options = <Object>')
-      } catch (err) {
-        sandboxError.innerText = err
-        sandboxError.hidden = false
+        const stringToken = document.querySelectorAll('#showcase article:has(#showcase-hue-rotation) code .token.string')[2]
+        stringToken.innerText = color
+      }, 20)
+    } else if (button.id === 'stop-hue-rotation') clearTimeout(hueRotateInterval)
+    else if (button.id === 'run-sandbox' || button.id === 'stop-sandbox') {
+      sandbox?.stop()
+
+      if (button.id === 'run-sandbox') {
+        sandboxError.hidden = true
+        let options
+        try {
+          eval(htmlEntities(sandboxOptions.innerText))
+          if (options === undefined) throw new SyntaxError('Cannot assign options. Use syntax: options = <Object>')
+        } catch (err) {
+          sandboxError.innerText = err
+          sandboxError.hidden = false
+        }
+        sandbox = new CanvasParticles('#cp-sandbox', options)
+        sandbox.start()
       }
-      sandbox = new CanvasParticles('#cp-sandbox', options)
-      sandbox.start()
     }
   })
 })

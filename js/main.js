@@ -20,13 +20,6 @@ const sandboxOptions = document.getElementById('sandbox-options')
 
 window.addEventListener('load', () => loadPreset('all'))
 
-sandboxOptions.addEventListener('keydown', e => {
-  if (e.key === 'Enter') {
-    // document.execCommand('insertHTML', false, '<br/>')
-    return false
-  }
-})
-
 sandboxOptions.addEventListener('blur', function () {
   Prism.highlightElement(this)
 })

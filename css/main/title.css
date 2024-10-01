@@ -10,18 +10,17 @@
 }
 
 #title h1 {
-  --title-fs: clamp(2.5rem, 8vw, 8.5rem);
-  font-size: var(--title-fs);
+  font-size: clamp(2.5rem, 8vw, 8.5rem);
   color: var(--contrast-d);
   margin-top: 0;
-  margin-bottom: 0.3em;
+  margin-bottom: 2.5rem;
 }
 
 #title h2 {
   font-size: clamp(1rem, 2vw, 2.25rem);
   color: var(--contrast);
   margin: 0;
-  max-width: calc(10 * var(--title-fs));
+  max-width: 40em;
 }
 
 #title h1,
@@ -70,7 +69,11 @@
   background: linear-gradient(180deg, #0000 75%, var(--bg) 95%);
 }
 
-@media only screen and (width < 30em) {
+@media only screen and (width < 45em) {
+  #title .content {
+    text-align: center;
+  }
+
   #title h1,
   #title h2 {
     transition: transform 150ms;

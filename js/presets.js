@@ -66,9 +66,9 @@ const presets = {
 }`,
 }
 
-const playgroundOptions = document.getElementById('playground-options')
+const sandboxOptions = document.getElementById('sandbox-options')
 
 export const loadPreset = presetName => {
-  playgroundOptions.textContent = presets[presetName]
-  Prism.highlightElement(playgroundOptions)
+  sandboxOptions.textContent = presets[presetName]
+  Prism.highlightElement(sandboxOptions)
 }

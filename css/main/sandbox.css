@@ -1,19 +1,19 @@
-#playground .codeblock {
+#sandbox .codeblock {
   width: 100%;
 }
 
-#playground #playground-preset-choice {
+#sandbox #sandbox-preset-choice {
   width: fit-content;
 }
 
-#playground #playground-error {
+#sandbox #sandbox-error {
   background-color: var(--red);
-  border-radius: var(--radius-s);
+  border-radius: var(--rs);
   font-weight: 500;
   padding: 1rem 1.5rem;
 }
 
-#playground #cp-playground {
+#sandbox #cp-sandbox {
   background-color: var(--bg);
   width: 100%;
   height: 70vh;

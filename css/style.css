@@ -5,7 +5,7 @@
 @import 'main/title.css';
 @import 'main/installation.css';
 @import 'main/showcase.css';
-@import 'main/playground.css';
+@import 'main/sandbox.css';
 
 @import 'footer.css';
 
@@ -19,13 +19,11 @@
   --bg: var(--white);
   --pri: #c0242b;
 
-  --contrast-xxd: #0f0f0f;
   --contrast-xd: #1f1f1f;
   --contrast-d: #2f2f2f;
   --contrast: #7f7f7f;
   --contrast-l: #cfcfcf;
   --contrast-xl: #f7f7f7;
-  --contrast-xxl: #f7f7f7;
   --contrast-a: #fff8;
 
   --red-d: hsl(8, 100%, 40%);
@@ -35,21 +33,21 @@
   --green: hsl(128, 100%, 50%);
   --green-l: hsl(128, 100%, 70%);
 
-  --radius-xs: 0.15rem;
-  --radius-s: 0.3rem;
-  --radius-m: 0.5rem;
+  --rxs: 0.15rem;
+  --rs: 0.3rem;
+  --rm: 0.5rem;
+
+  --padding-horz: 3rem;
 }
 
 @media (prefers-color-scheme: dark) {
   :root {
     --fg: var(--white);
     --bg: var(--black);
-    --contrast-xxd: #efefef;
     --contrast-xd: #dfdfdf;
     --contrast-d: #cfcfcf;
     --contrast-l: #2f2f2f;
     --contrast-xl: #1f1f1f;
-    --contrast-xxl: #0f0f0f;
     --contrast-a: #0008;
   }
 }
@@ -57,7 +55,7 @@
 html {
   scroll-behavior: smooth;
   background: var(--bg);
-  font-family: 'Segoe UI', monospace;
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Montserrat, system-ui, Roboto, 'Helvetica Neue', Arial, sans-serif;
   font-size: 16px;
   color: var(--fg);
 }
@@ -116,7 +114,7 @@ input[type='color'] {
   cursor: pointer;
   display: block;
   border: 0;
-  border-radius: var(--radius-s);
+  border-radius: var(--rs);
   margin-top: 0.5rem;
   padding: 0;
   /* padding: 0 1.5rem; */
@@ -170,4 +168,16 @@ input[type='color'] {
 
 a.badge {
   text-decoration: none;
+}
+
+@media only screen and (width < 45em) {
+  :root {
+    --padding-horz: 1rem;
+  }
+}
+
+@media only screen and (width < 30em) {
+  html {
+    font-size: 14px;
+  }
 }

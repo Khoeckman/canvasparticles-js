@@ -8,7 +8,7 @@ new CanvasParticles('#cp-title', {
   },
   particles: {
     color: '#888',
-    ppm: 30,
+    ppm: 35,
     max: 200,
     connectDistance: 200,
   },

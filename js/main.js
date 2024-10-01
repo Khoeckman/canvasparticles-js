@@ -13,14 +13,21 @@ const updateColorScheme = () => {
 updateColorScheme()
 darkModePreference.addEventListener('change', updateColorScheme)
 
-// Playground
+// Sandbox
 
-const playgroundError = document.getElementById('playground-error')
-const playgroundOptions = document.getElementById('playground-options')
+const sandboxError = document.getElementById('sandbox-error')
+const sandboxOptions = document.getElementById('sandbox-options')
 
 window.addEventListener('load', () => loadPreset('all'))
 
-playgroundOptions.addEventListener('blur', function () {
+sandboxOptions.addEventListener('keydown', e => {
+  if (e.key === 'Enter') {
+    // document.execCommand('insertHTML', false, '<br/>')
+    return false
+  }
+})
+
+sandboxOptions.addEventListener('blur', function () {
   Prism.highlightElement(this)
 })
 
@@ -49,7 +56,7 @@ togglables.forEach(checkbox => {
 const htmlEntities = str => String(str).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;')
 
 const runButtons = [...document.querySelectorAll('main .run')]
-let playground
+let sandbox
 
 runButtons.forEach(button => {
   button.addEventListener('click', () => {
@@ -65,20 +72,20 @@ runButtons.forEach(button => {
       numberToken.innerText = +maxWork
     }
 
-    if (button.id === 'run-playground' || button.id === 'stop-playground') playground?.stop()
+    if (button.id === 'run-sandbox' || button.id === 'stop-sandbox') sandbox?.stop()
 
-    if (button.id === 'run-playground') {
-      playgroundError.hidden = true
+    if (button.id === 'run-sandbox') {
+      sandboxError.hidden = true
       let options
       try {
-        eval(htmlEntities(playgroundOptions.innerText))
+        eval(htmlEntities(sandboxOptions.innerText))
         if (options === undefined) throw new SyntaxError('Cannot assign options. Use syntax: options = <Object>')
       } catch (err) {
-        playgroundError.innerText = err
-        playgroundError.hidden = false
+        sandboxError.innerText = err
+        sandboxError.hidden = false
       }
-      playground = new CanvasParticles('#cp-playground', options)
-      playground.start()
+      sandbox = new CanvasParticles('#cp-sandbox', options)
+      sandbox.start()
     }
   })
 })
@@ -116,9 +123,9 @@ choiceLists.forEach(list => {
       numberTokens[2].innerText = '' + distRatio
     }
 
-    if (list.id === 'playground-preset-choice') {
+    if (list.id === 'sandbox-preset-choice') {
       loadPreset(button.getAttribute('data-preset'))
-      Prism.highlightElement(playgroundOptions)
+      Prism.highlightElement(sandboxOptions)
     }
   })
 })

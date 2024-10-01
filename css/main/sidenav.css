@@ -51,20 +51,6 @@
   width: 1rem;
 }
 
-#sidenav #scroll-to-top a {
-  pointer-events: all;
-  background-color: var(--contrast-l);
-  border: 0;
-  border-radius: 50%;
-  position: absolute;
-  right: 3rem;
-  bottom: 3rem;
-  padding: 1rem;
-  width: 3rem;
-  height: 3rem;
-  transition: opacity 300ms, transform 300ms;
-}
-
 #sidenav #scroll-to-top[hidden] {
   pointer-events: none;
   display: unset;
@@ -75,8 +61,36 @@
   transform: scale(0);
 }
 
+#sidenav #scroll-to-top a {
+  pointer-events: all;
+  background-color: var(--contrast-l);
+  border: 0;
+  border-radius: 50%;
+  box-shadow: 0 0 0.5rem var(--bg);
+  position: absolute;
+  right: 3rem;
+  bottom: 3rem;
+  padding: 1rem;
+  width: 3rem;
+  height: 3rem;
+  transition: background 150ms, opacity 300ms, transform 300ms;
+}
+
+#sidenav #scroll-to-top a:is(:hover, :focus-visible) {
+  background-color: var(--pri);
+}
+
 @media only screen and (width < 45em) {
-  #sidenav {
+  #sidenav li {
     display: none;
+  }
+
+  #sidenav #scroll-to-top {
+    display: block;
+  }
+
+  #sidenav #scroll-to-top a {
+    right: 1rem;
+    bottom: 1rem;
   }
 }

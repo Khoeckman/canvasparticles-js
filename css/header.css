@@ -20,11 +20,11 @@ header nav ul {
 }
 
 header nav li:first-child {
-  border-radius: var(--radius-s);
+  border-radius: var(--rs);
 }
 
 header nav li:first-child img {
-  border-radius: var(--radius-s);
+  border-radius: var(--rs);
   width: 4rem;
   height: 4rem;
 }
@@ -63,7 +63,7 @@ header nav li .button {
   display: block;
   background-color: var(--fg);
   border: 0;
-  border-radius: var(--radius-s);
+  border-radius: var(--rs);
   font-weight: 500;
   text-align: center;
   text-decoration: none;

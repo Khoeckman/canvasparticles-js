@@ -9,7 +9,7 @@
 }
 
 #installation .choice button img {
-  border-radius: var(--radius-xs);
+  border-radius: var(--rxs);
   height: 1.5rem;
 }
 
@@ -21,7 +21,7 @@
 
 #installation .content {
   background-color: var(--contrast-l);
-  border-radius: var(--radius-s);
+  border-radius: var(--rs);
   margin-bottom: 3rem;
   padding: 3rem clamp(1rem, 6.667vw, 6rem);
 }

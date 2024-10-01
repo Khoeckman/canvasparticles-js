@@ -5,7 +5,7 @@ label:has(> .checkbox) {
   gap: 1rem;
   background-color: var(--black);
   border: 1px solid var(--contrast);
-  border-radius: var(--radius-s);
+  border-radius: var(--rs);
   color: var(--white);
   line-height: 1;
   margin-bottom: 0.5rem;
@@ -23,7 +23,7 @@ label:has(> .checkbox input:focus-visible) {
 
 .checkbox {
   overflow: hidden;
-  border-radius: var(--radius-xs);
+  border-radius: var(--rxs);
 }
 
 .checkbox input {

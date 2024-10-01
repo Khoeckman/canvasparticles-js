@@ -10,35 +10,23 @@
 }
 
 #title h1 {
-  font-size: clamp(2.5rem, 8vw, 9rem);
+  --title-fs: clamp(2.5rem, 8vw, 8.5rem);
+  font-size: var(--title-fs);
   color: var(--contrast-d);
   margin-top: 0;
-  margin-bottom: 0.5em;
+  margin-bottom: 0.3em;
 }
 
 #title h2 {
   font-size: clamp(1rem, 2vw, 2.25rem);
   color: var(--contrast);
   margin: 0;
-  max-width: 40em;
+  max-width: calc(10 * var(--title-fs));
 }
 
-#title .content {
-  margin: 0 auto;
-  padding: 3rem clamp(1rem, 6.667vw, 3rem);
-  max-width: 90rem;
-  z-index: 2;
-}
-
-#title .invert {
-  background: var(--contrast-d);
-  border-radius: 0.3em;
-  color: var(--bg);
-  padding: 0 0.2em;
-}
-
-#title .shadow {
-  background: linear-gradient(180deg, #0000 75%, var(--bg) 95%);
+#title h1,
+#title h2 {
+  transition: transform 50ms;
 }
 
 #title a {
@@ -58,4 +46,26 @@
 
 #title a:is(:hover, :focus-visible) {
   background-color: var(--contrast-xl);
+}
+
+#title .content {
+  margin: 0 auto;
+  padding: 3rem var(--padding-horz);
+  max-width: 90rem;
+  z-index: 2;
+}
+
+#title .invert {
+  display: inline-block;
+  background: var(--contrast-d);
+  border-radius: 0.3em;
+  text-align: center;
+  line-height: 1.5;
+  color: var(--bg);
+  width: 1.5em;
+  height: 1.5em;
+}
+
+#title .shadow {
+  background: linear-gradient(180deg, #0000 75%, var(--bg) 95%);
 }

@@ -11,7 +11,7 @@ footer > div {
   gap: 3rem;
   margin: 0 auto;
   max-width: 90rem;
-  padding: 3rem clamp(1rem, 6.667vw, 3rem);
+  padding: 3rem var(--padding-horz);
 }
 
 footer p {

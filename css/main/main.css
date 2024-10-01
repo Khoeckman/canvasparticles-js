@@ -1,6 +1,6 @@
 main section {
   margin: 0 auto;
-  padding: 3rem clamp(1rem, 6.667vw, 3rem);
+  padding: 3rem var(--padding-horz);
   max-width: 90rem;
 }
 
@@ -23,8 +23,8 @@ main p {
 main :not(#title) canvas {
   display: block;
   background-color: var(--white);
-  border-radius: var(--radius-s);
-  box-shadow: 0.5rem 0.5rem 0.5rem var(--contrast-xxl);
+  border-radius: var(--rs);
+  box-shadow: 0.5rem 0.5rem 1rem #0006;
 }
 
 main p.br {
@@ -33,7 +33,7 @@ main p.br {
 
 main p span.highlight {
   background-color: var(--contrast-d);
-  border-radius: var(--radius-s);
+  border-radius: var(--rs);
   font-weight: 500;
   color: var(--bg);
   padding: 0.1rem 0.25rem;
@@ -60,7 +60,7 @@ main .choice {
   display: flex;
   flex-flow: row wrap;
   background-color: var(--bg);
-  border-radius: var(--radius-s);
+  border-radius: var(--rs);
   margin: 1.5rem 0;
 }
 
@@ -71,7 +71,7 @@ main .choice li {
 main .choice li button {
   background-color: transparent;
   border: 0;
-  border-radius: var(--radius-s);
+  border-radius: var(--rs);
   font-weight: 500;
   white-space: nowrap;
   color: var(--fg);
@@ -94,7 +94,7 @@ main .codeblock {
   display: block;
   background-color: #1a1b25;
   border: 1px solid var(--contrast-xd);
-  border-radius: var(--radius-s);
+  border-radius: var(--rs);
   color: var(--white);
   position: relative;
   min-width: min(100%, 40rem);
@@ -104,10 +104,13 @@ main .codeblock {
 }
 
 main .codeblock pre {
-  display: block;
+  display: inline-block;
   background-color: transparent;
+  font-size: 14px;
+  vertical-align: top;
   margin: 0;
   padding: 0.5rem 1rem;
+  width: 100%;
 }
 
 main .codeblock pre:focus-visible {
@@ -117,7 +120,7 @@ main .codeblock pre:focus-visible {
 main .codeblock .head {
   display: block;
   background-color: var(--white);
-  border-radius: var(--radius-xs) var(--radius-xs) 0 0;
+  border-radius: var(--rxs) var(--rxs) 0 0;
   font-weight: 500;
   line-height: 1.5;
   color: var(--black);
@@ -130,7 +133,7 @@ main .codeblock .run {
   user-select: none;
   background-color: var(--green);
   border: 0;
-  border-radius: var(--radius-s);
+  border-radius: var(--rs);
   color: var(--black);
   position: absolute;
   top: -1px;
@@ -162,12 +165,18 @@ main .codeblock .run.stop:active {
   background-color: var(--red-d);
 }
 
-@media only screen and (width < 30em) {
+@media only screen and (width < 45em) {
   main .codeblock .run {
     left: -1rem;
   }
 
   main .codeblock .run + .head {
     padding-left: 1rem;
+  }
+}
+
+@media only screen and (width < 30em) {
+  main .codeblock pre {
+    font-size: 12px;
   }
 }

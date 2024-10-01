@@ -69,3 +69,10 @@
 #title .shadow {
   background: linear-gradient(180deg, #0000 75%, var(--bg) 95%);
 }
+
+@media only screen and (width < 30em) {
+  #title h1,
+  #title h2 {
+    transition: transform 150ms;
+  }
+}

@@ -19,8 +19,10 @@ sidenavList.innerHTML += `<li id="scroll-to-top" hidden><a href="#${sections[0].
   </g>
 </svg></a></li>`
 
-// Sidenav location
-const computeSectionOffsets = sections => {
+// Section offsets
+let sectionOffsets
+
+const computeSectionOffsets = () => {
   let titles = []
   let i = 0
 
@@ -31,14 +33,18 @@ const computeSectionOffsets = sections => {
     })
     i++
   }
-  return titles
+  sectionOffsets = titles
 }
+
+window.addEventListener('resize', computeSectionOffsets)
+computeSectionOffsets()
+
+// Sidenav on scroll
 
 const header = document.querySelector('header')
 const scrollToTop = document.getElementById('scroll-to-top')
 const title = document.querySelector('#title h1')
 const subtitle = document.querySelector('#title h2')
-let sectionOffsets = computeSectionOffsets(sections)
 let debounceUpdateHash
 
 const scrollEventHandler = container => {

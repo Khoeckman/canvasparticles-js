@@ -99,7 +99,7 @@ main .codeblock {
 main .codeblock pre {
   display: inline-block;
   background-color: transparent;
-  font-size: 14px;
+  font-size: 0.875rem;
   vertical-align: top;
   margin: 0;
   padding: 0.5rem 1rem;

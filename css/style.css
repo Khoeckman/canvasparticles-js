@@ -55,8 +55,7 @@
 html {
   scroll-behavior: smooth;
   background: var(--bg);
-  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Montserrat, system-ui, Roboto, 'Helvetica Neue', Arial, sans-serif;
-  font-size: 16px;
+  font-family: 'Segoe UI', system-ui, -apple-system, BlinkMacSystemFont, Montserrat, Roboto, 'Helvetica Neue', Arial, sans-serif;
   color: var(--fg);
 }
 
@@ -107,7 +106,7 @@ button {
 }
 
 img {
-  display: inherit;
+  vertical-align: top;
 }
 
 input[type='color'] {
@@ -167,6 +166,7 @@ input[type='color'] {
 }
 
 a.badge {
+  display: inline-block;
   text-decoration: none;
 }
 
@@ -178,6 +178,6 @@ a.badge {
 
 @media only screen and (width < 30em) {
   html {
-    font-size: 14px;
+    font-size: 0.875rem;
   }
 }

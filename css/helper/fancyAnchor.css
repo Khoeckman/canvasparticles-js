@@ -1,6 +1,8 @@
 a.fancy {
+  display: inline-block;
   text-decoration: none;
   line-height: 1.15;
+  white-space: nowrap;
   position: relative;
   margin: 0 -0.1em;
   padding: 0 0.1em;

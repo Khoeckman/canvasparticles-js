@@ -11,7 +11,7 @@ const updateColorScheme = () => {
   githubImg.src = `img/github-${colorScheme}.webp`
 }
 updateColorScheme()
-darkModePreference.addEventListener('change', updateColorScheme)
+darkModePreference.onchange = updateColorScheme
 
 // Sandbox
 

@@ -27,7 +27,7 @@ https://github.com/Khoeckman/canvasParticles/blob/main/LICENSE
   <link rel="stylesheet" href="./css/prism.min.css" />
 
   <!-- JS -->
-  <script src="https://cdn.jsdelivr.net/npm/canvasparticles-js@3.2.13/canvasParticles.min.js" defer></script>
+  <script src="https://cdn.jsdelivr.net/npm/canvasparticles-js@3.2/canvasParticles.min.js" defer></script>
   <script src="./js/main.js" type="module"></script>
   <script src="./js/nav.js" type="module"></script>
   <script src="./js/prism.min.js" type="module"></script>
@@ -142,7 +142,7 @@ https://github.com/Khoeckman/canvasParticles/blob/main/LICENSE
 
             <div class="codeblock">
               <span class="head">Console</span>
-              <pre><code class="language-bat">npm i canvasparticles-js'</code></pre>
+              <pre><code class="language-bat">npm install canvasparticles-js</code></pre>
             </div>
 
             <p>
@@ -178,7 +178,7 @@ https://github.com/Khoeckman/canvasParticles/blob/main/LICENSE
               <span class="head">HTML</span>
               <pre><code class="language-html">&#x3C;script src=&#x22;https://cdn.jsdelivr.net/npm/canvasparticles-js@3.2/canvasParticles.min.js&#x22; defer&#x3E;&#x3C;/script&#x3E;</code></pre>
             </div>
-            <p>No JavaScript import required in each file!</p>
+            <p>No import required in each JavaScript file!</p>
 
             <h4>Module import</h4>
 
@@ -348,6 +348,11 @@ new CanvasParticles(selector, options).start()</code></pre>
             <span class="highlight">mouse.distRatio</span>
             to &#x3C;1 allows particles to stick.
           </p>
+          <p>
+            <span class="highlight red">Important</span>
+            Set <span class="highlight">particles.maxWork</span> to &#x3C;40 when using <span
+              class="highlight">Stick</span>.
+          </p>
 
           <form action="javascript:" novalidate>
             <ul id="showcase-interact-choice" class="list choice">
@@ -365,6 +370,9 @@ new CanvasParticles(selector, options).start()</code></pre>
     interactionType: 2,
     connectDistMult: 0.8,
     distRatio: 0.7,
+  },
+  particles: {
+      maxWork: 20,
   },
 }).start()</code></pre>
           </div>
@@ -392,7 +400,7 @@ new CanvasParticles(selector, options).start()</code></pre>
     connectDistMult: 1,
   },
   particles: {
-    ppm: 200,
+    ppm: 250,
     max: 300,
   },
 }).start()</code></pre>

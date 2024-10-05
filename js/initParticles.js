@@ -39,6 +39,7 @@ showcase.interact = new CanvasParticles('#showcase-interact', {
     color: '#f42',
     ppm: 150,
     max: 90,
+    maxWork: 40,
     relSpeed: 2,
   },
 })
@@ -51,8 +52,9 @@ showcase.quantity = new CanvasParticles('#showcase-quantity', {
   particles: {
     color: 'rgb(150, 255, 105)',
     // Particles per million pixels the canvas covers
-    ppm: 200,
+    ppm: 250,
     max: 300,
+    connectDistance: 125,
   },
 })
 
@@ -64,8 +66,8 @@ showcase['connect-distance'] = new CanvasParticles('#showcase-connect-distance',
     distRatio: 1,
   },
   particles: {
-    color: '#000',
-    max: 60,
+    color: '#0006',
+    ppm: 60,
     connectDistance: 400,
     relSpeed: 2,
   },
@@ -80,6 +82,7 @@ showcase.movement = new CanvasParticles('#showcase-movement', {
   particles: {
     color: '#ffa',
     max: 60,
+    maxWork: 10,
     relSpeed: 3,
     relSize: 2,
     rotationSpeed: 40,
@@ -110,7 +113,6 @@ showcase['pulling-gravity'] = new CanvasParticles('#showcase-pulling-gravity', {
     color: '#f45c',
     ppm: 150,
     max: 80,
-    maxWork: 40,
     rotationSpeed: 5,
   },
   gravity: {
@@ -121,9 +123,6 @@ showcase['pulling-gravity'] = new CanvasParticles('#showcase-pulling-gravity', {
 
 showcase['hue-rotation'] = new CanvasParticles('#showcase-hue-rotation', {
   background: 'var(--bg)',
-  mouse: {
-    interactionType: 2,
-  },
   particles: {
     color: 'hsl(0, 100%, 50%)',
   },

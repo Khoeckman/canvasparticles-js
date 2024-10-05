@@ -122,12 +122,15 @@ choiceLists.forEach(list => {
       const type = button.getAttribute('data-type')
       const interactionType = Math.min(type, 2)
       const distRatio = type == 3 ? 0.7 : 1
+      const maxWork = type == 3 ? 20 : Infinity
       showcase.interact.options.mouse.interactionType = interactionType
       showcase.interact.options.mouse.distRatio = distRatio
+      showcase.interact.options.particles.maxWork = maxWork
 
       const numberTokens = document.querySelectorAll('#showcase article:has(#showcase-interact) code .token.number')
       numberTokens[0].innerText = '' + interactionType
       numberTokens[2].innerText = '' + distRatio
+      numberTokens[3].innerText = '' + maxWork
     }
 
     if (list.id === 'sandbox-preset-choice') {

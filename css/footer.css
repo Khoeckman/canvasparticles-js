@@ -4,6 +4,17 @@ footer {
   margin-top: 6rem;
 }
 
+footer p {
+  margin: 0;
+  line-height: 1.5;
+  color: var(--contrast);
+}
+
+footer p:first-child {
+  font-weight: 500;
+  color: var(--contrast-d);
+}
+
 footer > div {
   display: flex;
   flex-flow: row wrap;
@@ -14,13 +25,8 @@ footer > div {
   padding: 3rem var(--padding-horz);
 }
 
-footer p {
-  margin: 0;
-  line-height: 1.5;
-  color: var(--contrast);
-}
-
-footer p:first-child {
-  font-weight: 500;
-  color: var(--contrast-d);
+footer > div div:last-child {
+  display: flex;
+  flex-flow: row wrap;
+  gap: 0.5rem;
 }

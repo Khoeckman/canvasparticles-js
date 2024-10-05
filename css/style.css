@@ -24,7 +24,7 @@
   --contrast: #7f7f7f;
   --contrast-l: #cfcfcf;
   --contrast-xl: #f7f7f7;
-  --contrast-a: #fff8;
+  --contrast-a: #fff9;
 
   --red-d: hsl(8, 100%, 40%);
   --red: hsl(8, 100%, 50%);
@@ -48,7 +48,7 @@
     --contrast-d: #cfcfcf;
     --contrast-l: #2f2f2f;
     --contrast-xl: #1f1f1f;
-    --contrast-a: #0008;
+    --contrast-a: #0006;
   }
 }
 

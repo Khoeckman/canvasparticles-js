@@ -61,7 +61,7 @@ https://github.com/Khoeckman/canvasParticles/blob/main/LICENSE
         <li>
           <a href="https://github.com/Khoeckman/canvasParticles" class="button github" target="_blank"
             aria-label="GitHub">
-            <img src="img/github-dark.webp" alt="GitHub logo" />
+            <img src="img/github-dark.webp" alt="GitHub" />
           </a>
         </li>
       </ul>
@@ -337,14 +337,15 @@ new CanvasParticles(selector, options).start()</code></pre>
             <span class="highlight orange">Info</span>
             Setting
             <span class="highlight">mouse.distRatio</span>
-            to &#x3C;1 allows particles to stick.
+            below 1 many particles to stick.
           </p>
-          <p>
+          <p class="max-30">
             <span class="highlight red">Important</span>
-            Set
+            When using
+            <span class="highlight">Stick</span>,
+            set
             <span class="highlight">particles.maxWork</span>
-            to &#x3C;40 when using
-            <span class="highlight">Stick</span>.
+            below 30 to prevent performance drops when collecting all particles in one place.
           </p>
 
           <form action="javascript:" novalidate>
@@ -404,7 +405,7 @@ new CanvasParticles(selector, options).start()</code></pre>
       <article>
         <div class="content">
           <h3>Connect distance</h3>
-          <p>The maximum length of a connection.</p>
+          <p>Define the maximum length of a connection.</p>
 
           <div class="codeblock">
             <span class="head">JavaScript</span>

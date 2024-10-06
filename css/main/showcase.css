@@ -36,6 +36,11 @@
   margin-bottom: 0;
 }
 
+#showcase article .wrap-better {
+  min-width: 100%;
+  width: min-content;
+}
+
 #showcase article .togglable {
   display: flex;
   justify-content: space-between;

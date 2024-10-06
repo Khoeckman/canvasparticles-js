@@ -165,10 +165,6 @@ input[type='color'] {
   padding: 0;
 }
 
-.max-30 {
-  max-width: 30em;
-}
-
 a.badge {
   display: inline-block;
   text-decoration: none;

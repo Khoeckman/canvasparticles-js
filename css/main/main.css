@@ -35,6 +35,7 @@ main p span.highlight {
   background-color: var(--contrast-d);
   border-radius: var(--rs);
   font-weight: 500;
+  line-height: 1.5;
   color: var(--bg);
   padding: 0 0.25rem;
 }

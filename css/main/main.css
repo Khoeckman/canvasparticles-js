@@ -34,7 +34,7 @@ main p.br {
 main p span.highlight {
   background-color: var(--contrast-d);
   border-radius: var(--rs);
-  font-weight: 500;
+  font-weight: 600;
   line-height: 1.5;
   color: var(--bg);
   padding: 0 0.25rem;
@@ -66,7 +66,7 @@ main .choice li button {
   background-color: transparent;
   border: 0;
   border-radius: var(--rs);
-  font-weight: 500;
+  font-weight: 600;
   white-space: nowrap;
   color: var(--fg);
   padding: 1rem 1.5rem;
@@ -115,7 +115,7 @@ main .codeblock .head {
   display: block;
   background-color: var(--white);
   border-radius: var(--rxs) var(--rxs) 0 0;
-  font-weight: 500;
+  font-weight: 600;
   line-height: 1.5;
   color: var(--black);
   padding: 0 0.5rem;

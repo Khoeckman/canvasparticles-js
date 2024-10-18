@@ -11,13 +11,17 @@ for (let section of sections) {
   const name = section.id.replace(/[_-]+/g, ' ')
   sidenavList.innerHTML += `<li><a href="#${section.id}">${name}</a></li>`
 }
-sidenavList.innerHTML += `<li id="scroll-to-top" hidden><a href="#${sections[0].id}" aria-label="Top"><svg xmlns="http://www.w3.org/2000/svg"
-  fill="var(--fg)" viewBox="0 0 407.437 407.437">
-  <g xmlns="http://www.w3.org/2000/svg" transform="matrix(-1 0 0 -1 407.437 407.437)">
-    <polygon
-      points="386.258,91.567 203.718,273.512 21.179,91.567 0,112.815 203.718,315.87 407.437,112.815 " />
-  </g>
-</svg></a></li>`
+sidenavList.innerHTML += `
+<li id="scroll-to-top" hidden>
+  <a href="#${sections[0].id}" aria-label="Top">
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 407.437 407.437">
+      <g xmlns="http://www.w3.org/2000/svg" transform="matrix(-1 0 0 -1 407.437 407.437)">
+        <polygon
+          points="386.258,91.567 203.718,273.512 21.179,91.567 0,112.815 203.718,315.87 407.437,112.815 " />
+      </g>
+    </svg>
+  </a>
+</li>`
 
 // Section offsets
 let sectionOffsets

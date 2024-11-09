@@ -83,6 +83,7 @@ runButtons.forEach(button => {
       if (button.id === 'run-sandbox') {
         sandboxError.hidden = true
         let options
+
         try {
           eval(htmlEntities(sandboxOptions.innerText))
           if (options === undefined) throw new SyntaxError('Cannot assign options. Use syntax: options = <Object>')

@@ -128,6 +128,28 @@ showcase['hue-rotation'] = new CanvasParticles('#showcase-hue-rotation', {
   },
 })
 
+showcase['multiple-colors-1'] = new CanvasParticles('#showcase-multiple-colors-1', {
+  background: 'black',
+  mouse: {
+    interactionType: 2,
+  },
+  particles: {
+    color: 'yellow',
+    ppm: 69,
+  },
+})
+
+showcase['multiple-colors-2'] = new CanvasParticles('#showcase-multiple-colors-2', {
+  background: 'transparent',
+  mouse: {
+    interactionType: 2,
+  },
+  particles: {
+    color: 'aqua',
+    ppm: 69,
+  },
+})
+
 const startIgnore = ['pushing-gravity', 'pulling-gravity']
 
 Object.entries(showcase).forEach(([name, showcase]) => {

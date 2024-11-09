@@ -1,6 +1,4 @@
 header {
-  /* -webkit-backdrop-filter: blur(0.5rem);
-  backdrop-filter: blur(0.5rem); */
   position: fixed;
   width: 100%;
   z-index: 10;
@@ -46,17 +44,23 @@ header nav li.title {
 
 header nav li.title h1 {
   margin: 0;
-  opacity: 0;
-  transition: opacity 300ms;
 }
 
-header nav li.title p {
-  display: block;
-  line-height: 1.5;
+header nav li.title .version {
   color: var(--contrast);
   margin: 0;
-  transition: transform 300ms;
-  transform: translateY(-1.1rem);
+}
+
+header nav li.title .version::before {
+  background-color: var(--contrast);
+}
+
+header nav li.title .version:is(:hover, :focus-visible) {
+  color: var(--bg);
+}
+
+header nav li.title .version:is(:hover, :focus-visible)::before {
+  background-color: var(--fg);
 }
 
 header nav li .button {
@@ -110,14 +114,6 @@ header.small nav {
   margin: 0 1rem;
 }
 
-header.small nav li.title h1 {
-  opacity: 1;
-}
-
-header.small nav li.title p {
-  transform: none;
-}
-
 @media only screen and (width < 45em) {
   header nav,
   header.small nav {
@@ -127,11 +123,6 @@ header.small nav li.title p {
 
   header nav li.title h1 {
     display: none;
-  }
-
-  header nav li.title p {
-    transition: none;
-    transform: none;
   }
 }
 

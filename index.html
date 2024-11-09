@@ -27,7 +27,7 @@ https://github.com/Khoeckman/canvasParticles/blob/main/LICENSE
   <link rel="stylesheet" href="./css/prism.min.css" />
 
   <!-- JS -->
-  <script src="https://cdn.jsdelivr.net/npm/canvasparticles-js@3.2/canvasParticles.min.js" defer></script>
+  <script src="./js/canvasParticles.js" defer></script>
   <script src="./js/main.js" type="module"></script>
   <script src="./js/nav.js" type="module"></script>
   <script src="./js/prism.min.js" type="module"></script>
@@ -43,10 +43,11 @@ https://github.com/Khoeckman/canvasParticles/blob/main/LICENSE
         </li>
         <li class="title">
           <h1>Canvas Particles JS</h1>
-          <p>
+          <a href="https://www.npmjs.com/package/canvasparticles-js?activeTab=versions" class="version fancy"
+            title="View project versions on npm">
             Version
             <span id="version">3.2.x</span>
-          </p>
+          </a>
         </li>
         <li>
           <a href="https://www.npmjs.com/package/canvasparticles-js" class="button npm" target="_blank"
@@ -544,7 +545,7 @@ new CanvasParticles('#showcase-hue-rotation', {
   particles: {
     color: 'hsl(0, 100%, 50%)'
   },
-})</code></pre>
+}).start()</code></pre>
           </div>
 
           <div class="codeblock">
@@ -559,6 +560,37 @@ new CanvasParticles('#showcase-hue-rotation', {
           </div>
         </div>
         <canvas id="showcase-hue-rotation"></canvas>
+      </article>
+
+      <article>
+        <div class="content">
+          <h3>Multiple Colors</h3>
+          <p>
+            Overlap multiple <code class="language-html">&#x3C;canvas&#x3E;</code> elements using CSS and initialize
+            each one seperately.
+          </p>
+
+          <div class="codeblock">
+            <span class="head">JavaScript</span>
+            <pre><code class="language-js">new CanvasParticles('#showcase-multiple-colors-1', {
+  background: 'black',
+  particles: {
+    color: 'yellow',
+  },
+}).start()
+
+new CanvasParticles('#showcase-multiple-colors-2', {
+  background: 'transparent',
+  particles: {
+    color: 'aqua',
+  },
+}).start()</code></pre>
+          </div>
+        </div>
+        <div class="canvas-stack">
+          <canvas id="showcase-multiple-colors-1"></canvas>
+          <canvas id="showcase-multiple-colors-2" class="overlay"></canvas>
+        </div>
       </article>
     </section>
 

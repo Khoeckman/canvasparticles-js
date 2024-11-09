@@ -28,8 +28,16 @@
   justify-content: flex-end;
 }
 
-#showcase article:nth-of-type(even) canvas {
+#showcase article:nth-of-type(even) :is(canvas, .canvas-stack) {
   order: -1;
+}
+
+#showcase article .togglable {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 3rem;
+  margin-bottom: 1.5rem;
 }
 
 #showcase article .content > :last-child {
@@ -41,12 +49,13 @@
   width: min-content;
 }
 
-#showcase article .togglable {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  gap: 3rem;
-  margin-bottom: 1.5rem;
+#showcase article .canvas-stack {
+  position: relative;
+  width: 100%;
+}
+
+#showcase article .canvas-stack canvas {
+  width: 100%;
 }
 
 #showcase #showcase-coloring-form {
@@ -96,7 +105,7 @@
     justify-content: center;
   }
 
-  #showcase article:nth-of-type(even) canvas {
+  #showcase article:nth-of-type(even) :is(canvas, .canvas-stack) {
     order: unset;
   }
 

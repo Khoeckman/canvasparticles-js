@@ -51,6 +51,7 @@
 
 #showcase article .canvas-stack {
   position: relative;
+  margin: auto 0;
   width: 100%;
 }
 

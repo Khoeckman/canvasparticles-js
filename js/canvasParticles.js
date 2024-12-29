@@ -2,7 +2,7 @@
 // https://github.com/Khoeckman/canvasParticles/blob/main/LICENSE
 
 class CanvasParticles {
-  static version = '3.3.3'
+  static version = '3.3.4'
 
   animating = false
   particles = []

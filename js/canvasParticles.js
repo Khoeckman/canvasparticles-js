@@ -6,7 +6,6 @@ class CanvasParticles {
 
   animating = false
   particles = []
-  strokeStyleTable = {}
 
   /**
    * Creates a new CanvasParticles instance.
@@ -216,13 +215,11 @@ class CanvasParticles {
 
     for (let particle of this.particles) {
       // Moving the particle
-      particle.dir =
-        (particle.dir + Math.random() * this.options.particles.rotationSpeed * 2 - this.options.particles.rotationSpeed) % (2 * Math.PI)
+      particle.dir = (particle.dir + Math.random() * this.options.particles.rotationSpeed * 2 - this.options.particles.rotationSpeed) % (2 * Math.PI)
       particle.velX *= this.options.gravity.friction
       particle.velY *= this.options.gravity.friction
       particle.posX = (particle.posX + particle.velX + ((Math.sin(particle.dir) * particle.speed) % this.width) + this.width) % this.width
-      particle.posY =
-        (particle.posY + particle.velY + ((Math.cos(particle.dir) * particle.speed) % this.height) + this.height) % this.height
+      particle.posY = (particle.posY + particle.velY + ((Math.cos(particle.dir) * particle.speed) % this.height) + this.height) % this.height
 
       const distX = particle.posX + this.offX - this.mouseX
       const distY = particle.posY + this.offY - this.mouseY
@@ -257,7 +254,7 @@ class CanvasParticles {
 
   /**
    * Determines the location of the particle in a 3x3 grid on the canvas.
-   * The grid represents different regions of the canvas:
+   * The grid represents different regions of the canvas
    *
    * - { x: 0, y: 0 } = top-left
    * - { x: 1, y: 0 } = top
@@ -301,27 +298,30 @@ class CanvasParticles {
   }
 
   /**
-   * Generates and caches a stroke style string for a given color and alpha value.
+   * Precomputes and caches stroke style strings for a given base color and all possible alpha values (0–255).
+   * This is necessary because the rendering process involves up to [particles ** 2 / 2] lookups per frame.
    *
    * @param {string} color - The base color in the format `#rrggbb`.
-   * @param {number} alpha - The alpha transparency value as a float between 0 and 255.
-   * @returns {string} - The computed stroke style string in the format `#rrggbbaa`.
+   * @returns {Object} - A lookup table mapping each alpha value (0–255) to its corresponding stroke style string in the format `#rrggbbaa`.
    *
    * @example
-   * const strokeStyle = getStrokeStyle("#ff0000", 128); // "#ff000080"
+   * const strokeStyleTable = generateStrokeStyleTable("#ff0000");
+   * console.log(strokeStyleTable[128]); // "#ff000080"
    *
    * Notes:
-   * - If the alpha value is not already cached, it is converted to a two-character
-   *   hexadecimal string and appended to the color.
-   * - The function caches computed results to improve performance for repeated calls
-   *   with the same alpha values.
+   * - This function precomputes all possible stroke styles by appending a two-character
+   *   hexadecimal alpha value (0x00–0xFF) to the base color.
+   * - The table is stored in `this.strokeStyleTable` for quick lookups.
    */
-  getStrokeStyle = (color, alpha) => {
-    if (!this.strokeStyleTable[alpha]) {
-      const alphaHex = alpha.toString(16)
-      return (this.strokeStyleTable[alpha] = color + (alphaHex.length === 2 ? alphaHex : '0' + alphaHex))
+  generateStrokeStyleTable = color => {
+    const table = {}
+
+    // Precompute stroke styles for alpha values 0–255
+    for (let alpha = 0; alpha < 256; alpha++) {
+      // Convert to 2-character hex and combine base color with alpha
+      table[alpha] = color + alpha.toString(16).padStart(2, '0')
     }
-    return this.strokeStyleTable[alpha]
+    return table
   }
 
   /**
@@ -329,8 +329,8 @@ class CanvasParticles {
    * Connects particles with lines if they are within the connection distance.
    */
   render = () => {
-    this.canvas.width = this.canvas.width // Clear canvas
-    this.ctx.fillStyle = this.options.particles.color + this.options.particles.opacity.hex
+    this.canvas.width = this.canvas.width
+    this.ctx.fillStyle = this.options.particles.colorWithAlpha
     this.ctx.lineWidth = 1
 
     for (let particle of this.particles) {
@@ -370,22 +370,22 @@ class CanvasParticles {
           const distY = particleA.y - particleB.y
           const dist = Math.sqrt(distX * distX + distY * distY)
 
-          // Connect the 2 particles with a line if the distance is small enough
-          if (dist < this.options.particles.connectDist) {
-            // Calculate the transparency of the line and lookup the stroke style
-            if (dist >= this.options.particles.connectDist / 2) {
-              const alpha = ~~(Math.min(this.options.particles.connectDist / dist - 1, 1) * this.options.particles.opacity.value)
-              this.ctx.strokeStyle = this.getStrokeStyle(this.options.particles.color, alpha)
-            } else this.ctx.strokeStyle = this.options.particles.color + this.options.particles.opacity.hex
+          // Connect the 2 particles with a line only if the distance is small enough
+          if (dist > this.options.particles.connectDist) continue
 
-            // Draw the line
-            this.ctx.beginPath()
-            this.ctx.moveTo(particleA.x, particleA.y)
-            this.ctx.lineTo(particleB.x, particleB.y)
-            this.ctx.stroke()
+          // Calculate the transparency of the line and lookup the stroke style
+          if (dist > this.options.particles.connectDist / 2) {
+            const alpha = ~~(Math.min(this.options.particles.connectDist / dist - 1, 1) * this.options.particles.opacity)
+            this.ctx.strokeStyle = this.strokeStyleTable[alpha]
+          } else this.ctx.strokeStyle = this.options.particles.colorWithAlpha
 
-            if ((work += dist) >= maxWork || (particleWork += dist) >= maxWorkPerParticle) break
-          }
+          // Draw the line
+          this.ctx.beginPath()
+          this.ctx.moveTo(particleA.x, particleA.y)
+          this.ctx.lineTo(particleB.x, particleB.y)
+          this.ctx.stroke()
+
+          if ((work += dist) >= maxWork || (particleWork += dist) >= maxWorkPerParticle) break
         }
       }
       if (work >= maxWork) break
@@ -445,27 +445,24 @@ class CanvasParticles {
    * @param {string} color - The color of the particles and their connections. Can be any CSS supported color format.
    */
   setParticleColor = color => {
-    this.strokeStyleTable = {} // Clear the stroke style cache since the color has changed
-
     this.ctx.fillStyle = color
 
-    if (this.ctx.fillStyle[0] === '#') {
-      this.options.particles.opacity = { value: 255, hex: 'ff' }
-      this.options.particles.color = this.ctx.fillStyle
-      return
+    // Check if `ctx.fillStyle` is in hex format ("#RRGGBB" without alpha).
+    if (this.ctx.fillStyle[0] === '#') this.options.particles.opacity = 255
+    else {
+      // JavaScript's `ctx.fillStyle` ensures the color will otherwise be in rgba format (e.g., "rgba(136, 244, 255, 0.25)"):
+
+      // Extract the alpha value (0.25) from the rgba string, scale it to the range 0x00 to 0xff,
+      // and convert it to an integer. This value represents the opacity as a 2-character hex string.
+      this.options.particles.opacity = ~~(this.ctx.fillStyle.split(',').at(-1).slice(1, -1) * 255)
+
+      // Example: extract 136, 244 and 255 from rgba(136, 244, 255, 0.25) and convert to hexadecimal '#rrggbb' format
+      this.ctx.fillStyle = this.ctx.fillStyle.split(',').slice(0, -1).join(',') + ', 1)'
     }
-
-    // Example: extract 0.25 from rgba(136, 244, 255, 0.25) and convert to range 0x00 to 0xff and store as a 2 char string
-    const value = ~~(this.ctx.fillStyle.split(',').at(-1).slice(1, -1) * 255)
-
-    this.options.particles.opacity = {
-      value: value,
-      hex: value.toString(16),
-    }
-
-    // Example: extract 136, 244 and 255 from rgba(136, 244, 255, 0.25) and convert to '#001122' format
-    this.ctx.fillStyle = this.ctx.fillStyle.split(',').slice(0, -1).join(',') + ', 1)'
     this.options.particles.color = this.ctx.fillStyle
+    this.options.particles.colorWithAlpha = this.options.particles.color + this.options.particles.opacity.toString(16)
+
+    this.strokeStyleTable = this.generateStrokeStyleTable(this.options.particles.color) // Recalculate the stroke style cache
   }
 }
 

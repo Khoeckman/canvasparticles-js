@@ -2,10 +2,11 @@
 // https://github.com/Khoeckman/canvasParticles/blob/main/LICENSE
 
 class CanvasParticles {
-  static version = '3.3.4'
+  static version = '3.3.6'
 
   animating = false
   particles = []
+  strokeStyleTable = {}
 
   /**
    * Creates a new CanvasParticles instance.
@@ -110,7 +111,7 @@ class CanvasParticles {
     this.offY = (this.canvas.height - this.height) / 2
 
     // Amount of particles to be created
-    const particles = Math.floor((this.options.particles.ppm * this.width * this.height) / 1000000)
+    const particles = ~~((this.options.particles.ppm * this.width * this.height) / 1_000_000)
     this.particleCount = Math.min(this.options.particles.max, particles)
 
     if (!isFinite(this.particleCount)) throw new RangeError('number of particles must be finite. check `options.particles.ppm`')
@@ -300,6 +301,30 @@ class CanvasParticles {
   }
 
   /**
+   * Generates and caches a stroke style string for a given color and alpha value.
+   *
+   * @param {string} color - The base color in the format `#rrggbb`.
+   * @param {number} alpha - The alpha transparency value as a float between 0 and 255.
+   * @returns {string} - The computed stroke style string in the format `#rrggbbaa`.
+   *
+   * @example
+   * const strokeStyle = getStrokeStyle("#ff0000", 128); // "#ff000080"
+   *
+   * Notes:
+   * - If the alpha value is not already cached, it is converted to a two-character
+   *   hexadecimal string and appended to the color.
+   * - The function caches computed results to improve performance for repeated calls
+   *   with the same alpha values.
+   */
+  getStrokeStyle = (color, alpha) => {
+    if (!this.strokeStyleTable[alpha]) {
+      const alphaHex = alpha.toString(16)
+      return (this.strokeStyleTable[alpha] = color + (alphaHex.length === 2 ? alphaHex : '0' + alphaHex))
+    }
+    return this.strokeStyleTable[alpha]
+  }
+
+  /**
    * Renders the particles and their connections onto the canvas.
    * Connects particles with lines if they are within the connection distance.
    */
@@ -347,12 +372,10 @@ class CanvasParticles {
 
           // Connect the 2 particles with a line if the distance is small enough
           if (dist < this.options.particles.connectDist) {
-            // Calculate the transparency of the line
+            // Calculate the transparency of the line and lookup the stroke style
             if (dist >= this.options.particles.connectDist / 2) {
-              const alpha = Math.floor(
-                Math.min(this.options.particles.connectDist / dist - 1, 1) * this.options.particles.opacity.value
-              ).toString(16)
-              this.ctx.strokeStyle = this.options.particles.color + (alpha.length === 2 ? alpha : '0' + alpha)
+              const alpha = ~~(Math.min(this.options.particles.connectDist / dist - 1, 1) * this.options.particles.opacity.value)
+              this.ctx.strokeStyle = this.getStrokeStyle(this.options.particles.color, alpha)
             } else this.ctx.strokeStyle = this.options.particles.color + this.options.particles.opacity.hex
 
             // Draw the line
@@ -422,6 +445,8 @@ class CanvasParticles {
    * @param {string} color - The color of the particles and their connections. Can be any CSS supported color format.
    */
   setParticleColor = color => {
+    this.strokeStyleTable = {} // Clear the stroke style cache since the color has changed
+
     this.ctx.fillStyle = color
 
     if (this.ctx.fillStyle[0] === '#') {

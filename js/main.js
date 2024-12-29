@@ -151,13 +151,13 @@ backgroundInput.addEventListener('input', function () {
   showcase.coloring.setBackground(this.value)
 
   const stringTokens = document.querySelectorAll('#showcase article:has(#showcase-coloring) code .token.string')
-  stringTokens[1].innerText = "'" + this.value + "'"
+  stringTokens[1].innerText = `'${this.value}'`
 })
 
 colorInput.addEventListener('input', function () {
   this.style.background = this.value
-  showcase.coloring.options.particles.color = this.value
+  showcase.coloring.setParticleColor(this.value)
 
   const stringTokens = document.querySelectorAll('#showcase article:has(#showcase-coloring) code .token.string')
-  stringTokens[2].innerText = "'" + this.value + "'"
+  stringTokens[2].innerText = `'${this.value}'`
 })

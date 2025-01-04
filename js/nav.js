@@ -53,7 +53,7 @@ let debounceUpdateHash
 
 const scrollEventHandler = container => {
   // Small nav
-  const scrolledPastTitle = container.scrollTop >= window.innerHeight
+  const scrolledPastTitle = container.scrollTop >= window.innerHeight - 128 /* Large header height */
   const op = scrolledPastTitle ? 'add' : 'remove'
   header.classList[op]('small')
 

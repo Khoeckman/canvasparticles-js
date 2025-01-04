@@ -79,8 +79,8 @@ https://github.com/Khoeckman/canvasParticles/blob/main/LICENSE
           <span class="invert">JS</span>
         </h1>
         <h2>
-          In an HTML canvas, a bunch of floating particles connected with lines when they approach eachother. Creating a
-          fun and interactive background.
+          In an HTML canvas, a bunch of floating particles connected with lines when they approach each other. Creating
+          a fun and interactive background.
         </h2>
       </div>
       <a href="#installation" aria-label="installation">
@@ -504,9 +504,10 @@ new CanvasParticles('#showcase-pulling-gravity', {
   },
   particles: {
     maxWork: Infinity
+    relSpeed: 0,
   },
   gravity: {
-    repulsive: 5,
+    repulsive: 8.25,
     pulling: 3,
   },
 })</code></pre>
@@ -600,7 +601,7 @@ new CanvasParticles('#showcase-multiple-colors-2', {
         <h3>Presets</h3>
         <ul id="sandbox-preset-choice" class="list choice">
           <li><button class="active" data-preset="all">All options</button></li>
-          <li><button data-preset="gravity">Violent Gravity</button></li>
+          <li><button data-preset="gravity">Violent gravity</button></li>
           <li><button data-preset="shapes">Shapes</button></li>
           <li><button data-preset="empty">Your turn</button></li>
         </ul>
@@ -622,13 +623,47 @@ new CanvasParticles('#showcase-multiple-colors-2', {
       </form>
       <canvas id="cp-sandbox"></canvas>
     </section>
+
+    <section id="information">
+      <h2>Information</h2>
+
+      <h3>Handling particles beyond canvas bounds</h3>
+      <p>Particles are only drawn if they are within the visible area of the canvas, accounting for their size.
+        Particles are considered to still be visible if their edges are within the canvas bounds,
+        preventing large particles from disappearing when their center crosses the edge.</p>
+      <p>When particles move beyond the floating area bounds, they will reappear on the opposite side.</p>
+
+      <h3>Handling particle connections beyond canvas bounds</h3>
+      <p>The floating area for the particles is calculated to ensure no connection between particles will suddenly
+        dissapear near the edges. The floating space added to all 4 sides is exactly equal to
+        <code class="language-js">options.particles.connectDist</code>.
+      </p>
+      <p>By default, a line is not drawn between particles if both are outside the visible canvas area.</p>
+      <p>Each particle's grid position is calculated based on its location relative to the visible canvas area. This
+        allows for determining whether two particles, even when outside the canvas, should have a connecting line
+        drawn between them.</p>
+
+      <h3>Performance optimization</h3>
+      <p>Canvas Particles JS is a highly optimized particle renderer.
+        A lot of time has gone into profiling the code and improving efficiency on expensive tasks.</p>
+      <p>All 256 possible color combinations, accounting for varying opacity levels, are precomputed and stored in a
+        lookup table. This optimization is implemented to improve performance, as dynamically generating these
+        combinations for each line, every frame is a very computationally expensive task.</p>
+
+      <h3 class="contact">Contact me</h3>
+      <p>Do you think something is missing or did you spot a (small) mistake?<br>Don't hesitate to reach out and send me
+        an
+        email at:
+      </p>
+      <a href="mailto:kyle.hoeckman@gmail.com" class="fancy">kyle.hoeckman@gmail.com</a>
+    </section>
   </main>
   <footer>
     <div>
       <div>
         <p>
           Copyright ©
-          <a href="http://kylehoeckman.great-site.net/cv/" class="fancy">Kyle Hoeckman</a>
+          <a href=" http://kylehoeckman.great-site.net/cv/" class="fancy">Kyle Hoeckman</a>
           2022–2024, Licensed under the
           <a href="https://github.com/Khoeckman/canvasParticles?tab=MIT-1-ov-file#readme" class="fancy"
             target="_blank">MIT License</a>.

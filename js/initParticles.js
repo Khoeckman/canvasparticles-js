@@ -111,12 +111,13 @@ showcase['pulling-gravity'] = new CanvasParticles('#showcase-pulling-gravity', {
   },
   particles: {
     color: '#f45c',
-    ppm: 150,
+    ppm: 200,
     max: 80,
-    rotationSpeed: 5,
+    relSpeed: 0,
+    rotationSpeed: 0,
   },
   gravity: {
-    repulsive: 5,
+    repulsive: 8.25,
     pulling: 3,
   },
 })

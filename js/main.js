@@ -51,51 +51,71 @@ const htmlEntities = str => String(str).replace(/&/g, '&amp;').replace(/</g, '&l
 const runButtons = [...document.querySelectorAll('main .run')]
 let hue = 0
 let hueRotateInterval
-let sandbox
+const sandbox = new CanvasParticles('#cp-sandbox')
 
 runButtons.forEach(button => {
-  button.addEventListener('click', () => {
-    if (button.id === 'run-default-stop') showcase.default.stop()
-    else if (button.id === 'run-default-start') showcase.default.start()
-    else if (button.id === 'run-pushing-gravity-new') showcase['pulling-gravity'].newParticles()
-    else if (button.id === 'run-pushing-gravity-max-work' || button.id === 'stop-pushing-gravity-max-work') {
-      const maxWork = button.id === 'run-pushing-gravity-max-work' ? 12 : Infinity
-      showcase['pulling-gravity'].options.particles.maxWork = maxWork
+  switch (button.id) {
+    case 'run-default-stop':
+      button.addEventListener('click', showcase.default.stop)
+      break
 
-      const numberToken = document.querySelectorAll('#showcase article:has(#showcase-pulling-gravity) code .token.number')[2]
-      numberToken.innerText = +maxWork
-    } else if (button.id === 'run-hue-rotation') {
-      clearInterval(hueRotateInterval)
-      console.log('here')
+    case 'run-default-start':
+      button.addEventListener('click', showcase.default.start)
+      break
 
-      hueRotateInterval = setInterval(() => {
-        const color = `hsl(${hue++}, 100%, 50%)`
-        hue %= 360
-        showcase['hue-rotation'].setParticleColor(color)
+    case 'run-pushing-gravity-new':
+      button.addEventListener('click', showcase['pulling-gravity'].newParticles)
+      break
 
-        const stringToken = document.querySelectorAll('#showcase article:has(#showcase-hue-rotation) code .token.string')[2]
-        stringToken.innerText = color
-      }, 20)
-    } else if (button.id === 'stop-hue-rotation') clearTimeout(hueRotateInterval)
-    else if (button.id === 'run-sandbox' || button.id === 'stop-sandbox') {
-      sandbox?.stop()
+    case 'run-pushing-gravity-max-work':
+    case 'stop-pushing-gravity-max-work':
+      button.addEventListener('click', () => {
+        const maxWork = button.id === 'run-pushing-gravity-max-work' ? 12 : Infinity
+        showcase['pulling-gravity'].options.particles.maxWork = maxWork
 
-      if (button.id === 'run-sandbox') {
+        const numberToken = document.querySelectorAll('#showcase article:has(#showcase-pulling-gravity) code .token.number')[2]
+        numberToken.innerText = +maxWork
+      })
+      break
+
+    case 'run-hue-rotation':
+      button.addEventListener('click', () => {
+        clearInterval(hueRotateInterval)
+
+        hueRotateInterval = setInterval(() => {
+          const color = `hsl(${hue++}, 100%, 50%)`
+          hue %= 360
+          showcase['hue-rotation'].setParticleColor(color)
+
+          const stringToken = document.querySelectorAll('#showcase article:has(#showcase-hue-rotation) code .token.string')[2]
+          stringToken.innerText = color
+        }, 20)
+      })
+      break
+
+    case 'stop-hue-rotation':
+      button.addEventListener('click', () => clearInterval(hueRotateInterval))
+      break
+
+    case 'run-sandbox':
+      button.addEventListener('click', () => {
         sandboxError.hidden = true
-        let options
 
         try {
           eval(htmlEntities(sandboxOptions.innerText))
-          if (options === undefined) throw new SyntaxError('Cannot assign options. Use syntax: options = <Object>')
         } catch (err) {
           sandboxError.innerText = err
           sandboxError.hidden = false
         }
-        sandbox = new CanvasParticles('#cp-sandbox', options)
+        sandbox.newParticles()
         sandbox.start()
-      }
-    }
-  })
+      })
+      break
+
+    case 'stop-sandbox':
+      button.addEventListener('click', sandbox.stop)
+      break
+  }
 })
 
 // Choices
@@ -105,40 +125,56 @@ const choiceLists = [...document.querySelectorAll('main .choice')]
 choiceLists.forEach(list => {
   const buttons = list.querySelectorAll('button')
 
-  list.addEventListener('click', e => {
-    const button = e.target.closest('button')
+  switch (list.id) {
+    case 'installation-choice':
+      list.addEventListener('click', e => {
+        const button = e.target.closest('button')
 
-    buttons.forEach(button => button.removeAttribute('class'))
-    button.classList.add('active')
+        buttons.forEach(button => button.removeAttribute('class'))
+        button.classList.add('active')
 
-    if (list.id === 'installation-choice') {
-      const content = document.querySelectorAll('#installation-choice + ul.content li')
-      const choice = +button.getAttribute('data-choice')
+        const content = document.querySelectorAll('#installation-choice + ul.content li')
+        const choice = +button.getAttribute('data-choice')
 
-      content.forEach(li => (li.hidden = true))
-      content[choice].hidden = false
-    }
+        content.forEach(li => (li.hidden = true))
+        content[choice].hidden = false
+      })
+      break
 
-    if (list.id === 'showcase-interact-choice') {
-      const type = button.getAttribute('data-type')
-      const interactionType = Math.min(type, 2)
-      const distRatio = type == 3 ? 0.7 : 1
-      const maxWork = type == 3 ? 20 : Infinity
-      showcase.interact.options.mouse.interactionType = interactionType
-      showcase.interact.options.mouse.distRatio = distRatio
-      showcase.interact.options.particles.maxWork = maxWork
+    case 'showcase-interact-choice':
+      list.addEventListener('click', e => {
+        const button = e.target.closest('button')
 
-      const numberTokens = document.querySelectorAll('#showcase article:has(#showcase-interact) code .token.number')
-      numberTokens[0].innerText = '' + interactionType
-      numberTokens[2].innerText = '' + distRatio
-      numberTokens[3].innerText = '' + maxWork
-    }
+        buttons.forEach(button => button.removeAttribute('class'))
+        button.classList.add('active')
 
-    if (list.id === 'sandbox-preset-choice') {
-      loadPreset(button.getAttribute('data-preset'))
-      Prism.highlightElement(sandboxOptions)
-    }
-  })
+        const type = button.getAttribute('data-type')
+        const interactionType = Math.min(type, 2)
+        const distRatio = type == 3 ? 0.7 : 1
+        const maxWork = type == 3 ? 20 : Infinity
+        showcase.interact.options.mouse.interactionType = interactionType
+        showcase.interact.options.mouse.distRatio = distRatio
+        showcase.interact.options.particles.maxWork = maxWork
+
+        const numberTokens = document.querySelectorAll('#showcase article:has(#showcase-interact) code .token.number')
+        numberTokens[0].innerText = '' + interactionType
+        numberTokens[2].innerText = '' + distRatio
+        numberTokens[3].innerText = '' + maxWork
+      })
+      break
+
+    case 'sandbox-preset-choice':
+      list.addEventListener('click', e => {
+        const button = e.target.closest('button')
+
+        buttons.forEach(button => button.removeAttribute('class'))
+        button.classList.add('active')
+
+        loadPreset(button.getAttribute('data-preset'))
+        Prism.highlightElement(sandboxOptions)
+      })
+      break
+  }
 })
 
 // Color inputs

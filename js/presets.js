@@ -1,5 +1,5 @@
 const presets = {
-  all: `options = {
+  all: `sandbox.setOptions({
   background: '#151019',
   framesPerUpdate: 1,
   resetOnResize: false,
@@ -23,17 +23,17 @@ const presets = {
     pulling: 0,
     friction: 0.99,
   }
-}`,
+})`,
 
-  gravity: `options = {
+  gravity: `sandbox.setOptions({
   background: '#423',
   mouse: {
     interactionType: 2,
   },
   particles: {
     color: '#f45',
-    ppm: 200,
-    maxWork: 20,
+    ppm: 175,
+    maxWork: 30,
     connectDistance: 125,
     relSize: 0.5,
     relSpeed: 5,
@@ -44,9 +44,9 @@ const presets = {
     pulling: 1.25,
     friction: 0.99,
   }
-}`,
+})`,
 
-  shapes: `options = {
+  shapes: `sandbox.setOptions({
   background: 'linear-gradient(100deg, #f80, #0f8 150%)',
   mouse: {
     connectDistMult: 0.7,
@@ -59,11 +59,11 @@ const presets = {
   gravity: {
     repulsive: 3,
   },
-}`,
+})`,
 
-  empty: `options = {
+  empty: `sandbox.setOptions({
   // have fun!
-}`,
+})`,
 }
 
 const sandboxOptions = document.getElementById('sandbox-options')

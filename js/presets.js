@@ -40,8 +40,8 @@ const presets = {
     rotationSpeed: 5,
   },
   gravity: {
-    repulsive: 3.5,
-    pulling: 1.25,
+    repulsive: 5,
+    pulling: 0.3,
     friction: 0.99,
   }
 })`,

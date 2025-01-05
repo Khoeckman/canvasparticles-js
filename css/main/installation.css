@@ -13,21 +13,29 @@
   height: 1.5rem;
 }
 
+#installation .content {
+  background-color: var(--contrast-l);
+  border-radius: var(--rs);
+  margin-bottom: 3rem;
+  padding: clamp(1rem, 6.667vw, 6rem);
+}
+
+#installation .content :first-child {
+  margin-top: 0;
+}
+
+#installation .content :last-child {
+  margin-bottom: 0;
+}
+
 #installation .content h4 {
   font-size: 1.25rem;
   margin-top: 3rem;
   margin-bottom: 0;
 }
 
-#installation .content {
-  background-color: var(--contrast-l);
-  border-radius: var(--rs);
-  margin-bottom: 3rem;
-  padding: 3rem clamp(1rem, 6.667vw, 6rem);
-}
-
 @media only screen and (width < 30em) {
   #installation .content {
-    padding: 3rem 1rem;
+    padding: 1.5rem 1rem;
   }
 }

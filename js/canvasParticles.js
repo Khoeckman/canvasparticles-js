@@ -9,7 +9,7 @@
   typeof self !== 'undefined' ? self : this,
   () =>
     class CanvasParticles {
-      static version = '3.4.4'
+      static version = '3.4.5'
 
       /**
        * Creates a new CanvasParticles instance.

@@ -643,12 +643,12 @@ new CanvasParticles('#showcase-multiple-colors-2', {
         allows for determining whether two particles, even when outside the canvas, should have a connecting line
         drawn between them.</p>
 
-      <h3>Performance optimization</h3>
+      <h3>Performance optimizations</h3>
       <p>Canvas Particles JS is a highly optimized particle renderer.
         A lot of time has gone into profiling the code and improving efficiency on expensive tasks.</p>
-      <p>All 256 possible color combinations, accounting for varying opacity levels, are precomputed and stored in a
-        lookup table. This optimization is implemented to improve performance, as dynamically generating these
-        combinations for each line, every frame is a very computationally expensive task.</p>
+      <p>All possible particle colors, accounting only for varying opacity levels, are precomputed and stored in a
+        lookup table. Dynamically generating these combinations for each line, every frame is still the most
+        computationally expensive task.</p>
 
       <h3 class="contact">Contact me</h3>
       <p>Do you think something is missing or did you spot a (small) mistake?<br>Don't hesitate to reach out and send me

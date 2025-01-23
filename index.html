@@ -646,10 +646,11 @@ new CanvasParticles('#showcase-multiple-colors-2', {
         drawn between them because part of it can still be seen.</p>
 
       <h3>Performance optimizations</h3>
-      <p>Canvas Particles JS is a highly optimized particle renderer.
+      <p>Canvas Particles JS is a highly optimized particle renderer (ignoring the fact that it's coded in JS).
         A lot of time has gone into profiling the code and improving efficiency on expensive tasks.</p>
+      <p>Particles smaller than one pixel are drawn as squares instead of circles.</p>
       <p>All possible particle colors, accounting only for varying opacity levels, are precomputed and stored in a
-        lookup table. Dynamically generating these combinations for each line, every frame is still the most
+        lookup table. Dynamically generating these combinations for each connection times every frame, is still the most
         computationally expensive task.</p>
 
       <h3 class="contact">Contact me</h3>

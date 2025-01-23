@@ -632,17 +632,18 @@ new CanvasParticles('#showcase-multiple-colors-2', {
       <p>Particles are only drawn if they are within the visible area of the canvas, accounting for their size.
         Particles are considered to still be visible if their edges are within the canvas bounds,
         preventing large particles from disappearing when their center crosses the edge.</p>
-      <p>When particles move beyond the floating area bounds, they will reappear on the opposite side.</p>
+      <p>When particles move beyond the floating area bounds, they will teleport to the opposite side.</p>
 
       <h3>Handling particle connections beyond canvas bounds</h3>
-      <p>The floating area for the particles is calculated to ensure no connection between particles will suddenly
-        dissapear near the edges. The floating space added to all 4 sides is exactly equal to
-        <code class="language-js">options.particles.connectDist</code>.
+      <p>The floating area for the particles is larger than the canvas bounds to ensure no lines between particles will
+        suddenly
+        dissapear near the edges. The floating space added to all 4 sides is exactly equal to the maximum length of a
+        line, defined with <code class="language-js">options.particles.connectDist</code>.
       </p>
       <p>By default, a line is not drawn between particles if both are outside the visible canvas area.</p>
       <p>Each particle's grid position is calculated based on its location relative to the visible canvas area. This
         allows for determining whether two particles, even when outside the canvas, should have a connecting line
-        drawn between them.</p>
+        drawn between them because part of it can still be seen.</p>
 
       <h3>Performance optimizations</h3>
       <p>Canvas Particles JS is a highly optimized particle renderer.

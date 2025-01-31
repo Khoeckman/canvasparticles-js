@@ -1,18 +1,6 @@
 import { showcase } from './initParticles.js'
 import { loadPreset } from './presets.js'
 
-// Update github image based on prefers-color-scheme
-
-const darkModePreference = window.matchMedia('(prefers-color-scheme: dark)')
-const githubImg = document.querySelector('header nav li .button.github img')
-
-const updateColorScheme = () => {
-  const colorScheme = darkModePreference.matches ? 'dark' : 'light'
-  githubImg.src = `img/github-${colorScheme}.webp`
-}
-updateColorScheme()
-darkModePreference.onchange = updateColorScheme
-
 // Sandbox
 
 const sandboxError = document.getElementById('sandbox-error')
@@ -45,9 +33,6 @@ togglables.forEach(checkbox => {
 
 // Runners
 
-// https://css-tricks.com/snippets/javascript/htmlentities-for-javascript/
-const htmlEntities = str => String(str).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;')
-
 const runButtons = [...document.querySelectorAll('main .run')]
 let hue = 0
 let hueRotateInterval
@@ -56,15 +41,19 @@ const sandbox = new CanvasParticles('#cp-sandbox')
 runButtons.forEach(button => {
   switch (button.id) {
     case 'run-default-stop':
-      button.addEventListener('click', showcase.default.stop)
+      button.addEventListener('click', () => showcase.default.stop())
+      break
+
+    case 'run-default-stop-noclear':
+      button.addEventListener('click', () => showcase.default.stop({ clear: false }))
       break
 
     case 'run-default-start':
-      button.addEventListener('click', showcase.default.start)
+      button.addEventListener('click', () => showcase.default.start())
       break
 
     case 'run-pushing-gravity-new':
-      button.addEventListener('click', showcase['pulling-gravity'].newParticles)
+      button.addEventListener('click', () => showcase['pulling-gravity'].newParticles())
       break
 
     case 'run-pushing-gravity-max-work':
@@ -102,7 +91,7 @@ runButtons.forEach(button => {
         sandboxError.hidden = true
 
         try {
-          eval(htmlEntities(sandboxOptions.innerText))
+          eval(sandboxOptions.innerText)
         } catch (err) {
           sandboxError.innerText = err
           sandboxError.hidden = false

@@ -1,18 +1,18 @@
 footer {
-  background-color: var(--contrast-xl);
-  border-top: 1px solid var(--contrast-l);
+  background-color: var(--gf7);
+  border-top: 1px solid var(--gd);
   margin-top: 6rem;
 }
 
 footer p {
   margin: 0;
   line-height: 1.5;
-  color: var(--contrast);
+  color: var(--g5);
 }
 
 footer p:first-child {
   font-weight: 600;
-  color: var(--contrast-d);
+  color: var(--g2);
 }
 
 footer > div {
@@ -22,7 +22,7 @@ footer > div {
   gap: 3rem;
   margin: 0 auto;
   max-width: 90rem;
-  padding: 3rem var(--padding-horz);
+  padding: 3rem var(--padding-sides);
 }
 
 footer > div div:last-child {

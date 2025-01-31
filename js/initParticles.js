@@ -1,18 +1,18 @@
-new CanvasParticles('#cp-title', {
+const title = new CanvasParticles('#cp-title', {
   background: 'var(--bg)',
-  resetOnResize: false,
   mouse: {
     interactionType: 1,
     connectDistMult: 1,
     distRatio: 1,
   },
   particles: {
-    color: '#888',
-    ppm: 35,
+    color: '#848888',
+    ppm: 40,
     max: 200,
     connectDistance: 200,
   },
-}).start()
+})
+title.start()
 
 export const showcase = {}
 
@@ -91,6 +91,10 @@ showcase.movement = new CanvasParticles('#showcase-movement', {
 
 showcase['pushing-gravity'] = new CanvasParticles('#showcase-pushing-gravity', {
   background: '#423',
+  animation: {
+    startOnEnter: false,
+    stopOnLeave: false,
+  },
   particles: {
     color: '#f45c',
     ppm: 200,
@@ -105,6 +109,10 @@ showcase['pushing-gravity'] = new CanvasParticles('#showcase-pushing-gravity', {
 
 showcase['pulling-gravity'] = new CanvasParticles('#showcase-pulling-gravity', {
   background: '#423',
+  animation: {
+    startOnEnter: false,
+    stopOnLeave: false,
+  },
   mouse: {
     interactionType: 2,
     distRatio: 1,
@@ -112,12 +120,12 @@ showcase['pulling-gravity'] = new CanvasParticles('#showcase-pulling-gravity', {
   particles: {
     color: '#f45c',
     ppm: 200,
-    max: 80,
+    max: 120,
     relSpeed: 0,
     rotationSpeed: 0,
   },
   gravity: {
-    repulsive: 8.25,
+    repulsive: 10,
     pulling: 3,
   },
 })
@@ -137,6 +145,7 @@ showcase['multiple-colors-1'] = new CanvasParticles('#showcase-multiple-colors-1
   particles: {
     color: 'yellow',
     ppm: 69,
+    maxWork: 30,
   },
 })
 
@@ -148,6 +157,7 @@ showcase['multiple-colors-2'] = new CanvasParticles('#showcase-multiple-colors-2
   particles: {
     color: 'aqua',
     ppm: 69,
+    maxWork: 30,
   },
 })
 

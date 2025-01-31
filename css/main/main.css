@@ -1,6 +1,6 @@
 main section {
   margin: 0 auto;
-  padding: 3rem var(--padding-horz);
+  padding: 3rem var(--padding-sides);
   max-width: 90rem;
 }
 
@@ -32,7 +32,7 @@ main p.br {
 }
 
 main p span.highlight {
-  background-color: var(--contrast-d);
+  background-color: var(--g2);
   border-radius: var(--rs);
   font-weight: 600;
   line-height: 1.5;
@@ -76,7 +76,7 @@ main .choice li button {
 }
 
 main .choice li button:is(:hover, :focus-visible) {
-  background-color: var(--contrast-l);
+  background-color: var(--gd);
 }
 
 main .choice li button.active {
@@ -87,7 +87,7 @@ main .choice li button.active {
 main .codeblock {
   display: block;
   background-color: #1a1b25;
-  border: 1px solid var(--contrast-xd);
+  border: 1px solid var(--g1);
   border-radius: var(--rs);
   color: var(--white);
   position: relative;

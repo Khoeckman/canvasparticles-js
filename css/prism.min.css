@@ -104,7 +104,7 @@ pre[class*='language-'] {
 .token.prolog,
 .token.doctype,
 .token.cdata {
-  color: #565f89;
+  color: #626d9d;
 }
 
 .token.string {
@@ -117,4 +117,8 @@ pre[class*='language-'] {
 
 .token.function {
   color: #7aa2f7;
+}
+
+.param-hint {
+  user-select: none;
 }

@@ -9,7 +9,18 @@
   typeof self !== 'undefined' ? self : this,
   () =>
     class CanvasParticles {
-      static version = '3.4.5'
+      static version = '3.5.0'
+
+      // Start or stop the animation when the canvas enters or exits the viewport
+      static canvasObserver = new IntersectionObserver(entry => {
+        entry.forEach(change => {
+          // CanvasParticles instance of the target canvas
+          const instance = change.target.instance
+
+          if (change.isIntersecting) instance.options.animation.startOnEnter && instance.start()
+          else instance.options.animation.stopOnLeave && instance.stop({ clear: false })
+        })
+      })
 
       /**
        * Creates a new CanvasParticles instance.
@@ -23,6 +34,8 @@
         this.canvas = document.querySelector(selector)
         if (!(this.canvas instanceof HTMLCanvasElement)) throw new Error('selector does not point to a canvas')
 
+        this.canvas.instance = this
+
         // Get 2d drawing functions
         this.ctx = this.canvas.getContext('2d')
 
@@ -30,47 +43,64 @@
         this.particles = []
         this.setOptions(options)
 
-        // Event handling
-        window.addEventListener('resize', this.#resizeCanvas)
-        this.#resizeCanvas()
+        CanvasParticles.canvasObserver.observe(this.canvas)
 
-        window.addEventListener('mousemove', this.#updateMousePos)
-        window.addEventListener('scroll', this.#updateMousePos)
+        this.#setupEventHandlers()
       }
 
-      #updateMousePos = event => {
-        if (!this.animating) return
+      // Helper function
+      #defaultIfNaN(value, defaultValue) {
+        return isNaN(+value) ? defaultValue : +value
+      }
 
-        if (event instanceof MouseEvent) {
-          this.clientX = event.clientX
-          this.clientY = event.clientY
+      #setupEventHandlers() {
+        const updateMousePos = event => {
+          if (!this.animating) return
+
+          if (event instanceof MouseEvent) {
+            this.clientX = event.clientX
+            this.clientY = event.clientY
+          }
+          const { left, top } = this.canvas.getBoundingClientRect()
+          this.mouseX = this.clientX - left
+          this.mouseY = this.clientY - top
         }
-        const { left, top } = this.canvas.getBoundingClientRect()
-        this.mouseX = this.clientX - left
-        this.mouseY = this.clientY - top
+
+        const resizeCanvas = () => {
+          this.canvas.width = this.canvas.offsetWidth
+          this.canvas.height = this.canvas.offsetHeight
+
+          // Prevent the mouse acting like it's at (x: 0, y: 0) before it has moved.
+          this.mouseX = Infinity
+          this.mouseY = Infinity
+
+          this.updateCount = Infinity
+          this.width = this.canvas.width + this.options.particles.connectDist * 2
+          this.height = this.canvas.height + this.options.particles.connectDist * 2
+          this.offX = (this.canvas.width - this.width) / 2
+          this.offY = (this.canvas.height - this.height) / 2
+
+          if (this.options.particles.regenerateOnResize || this.particles.length === 0) this.newParticles()
+          else this.matchParticleCount()
+
+          this.#updateParticleBounds()
+        }
+
+        window.addEventListener('resize', resizeCanvas)
+        resizeCanvas()
+
+        window.addEventListener('mousemove', updateMousePos)
+        window.addEventListener('scroll', updateMousePos)
       }
 
-      #resizeCanvas = () => {
-        this.canvas.width = this.canvas.offsetWidth
-        this.canvas.height = this.canvas.offsetHeight
-
-        // Prevent the mouse from affecting particles at (x: 0, y: 0) before it has moved.
-        this.mouseX = Infinity
-        this.mouseY = Infinity
-
-        this.updateCount = Infinity
-        this.width = this.canvas.width + this.options.particles.connectDist * 2
-        this.height = this.canvas.height + this.options.particles.connectDist * 2
-        this.offX = (this.canvas.width - this.width) / 2
-        this.offY = (this.canvas.height - this.height) / 2
-
-        if (this.options.resetOnResize || this.particles.length === 0) this.newParticles()
-        else this.matchParticleCount()
-
-        this.#updateParticleBounds()
-      }
-
-      #getParticleCount = () => {
+      /**
+       * Update the target number of particles based on the current canvas size and 'options.particles.ppm'
+       * Capped at 'options.particles.max'.
+       *
+       * @private
+       * @throws {RangeError} If the particle count is not finite.
+       */
+      #updateParticleCount() {
         // Amount of particles to be created
         const particleCount = ~~((this.options.particles.ppm * this.width * this.height) / 1_000_000)
         this.particleCount = Math.min(this.options.particles.max, particleCount)
@@ -80,26 +110,26 @@
 
       /**
        * Remove all particles and generate new ones.
-       * The amount of new particles will match 'options.particles.ppm'
+       * The amount of new particles will match 'options.particles.ppm'.
        * */
-      newParticles = () => {
-        this.#getParticleCount()
+      newParticles() {
+        this.#updateParticleCount()
 
         this.particles = []
         for (let i = 0; i < this.particleCount; i++) this.createParticle()
       }
 
       /**
-       * When resizing, add or remove some particles so that the final amount of particles will match 'options.particles.ppm'
+       * When resizing, add or remove some particles so that the final amount of particles will match 'options.particles.ppm'.
        * */
-      matchParticleCount = () => {
-        this.#getParticleCount()
+      matchParticleCount() {
+        this.#updateParticleCount()
 
         this.particles = this.particles.slice(0, this.particleCount)
         while (this.particleCount > this.particles.length) this.createParticle()
       }
 
-      createParticle = (posX, posY, dir, speed, size) => {
+      createParticle(posX, posY, dir, speed, size) {
         size = size || 0.5 + Math.random() ** 5 * 2 * this.options.particles.relSize
 
         this.particles.push({
@@ -118,7 +148,7 @@
         this.#updateParticleBounds()
       }
 
-      #updateParticleBounds = () => {
+      #updateParticleBounds() {
         this.particles.map(
           particle =>
             // Within these bounds the particle is considered visible
@@ -134,8 +164,10 @@
       /**
        * Calculates the gravity properties of each particle on the next frame.
        * Is executed once every 'options.framesPerUpdate' frames.
+       *
+       * @private
        * */
-      #updateGravity = () => {
+      #updateGravity() {
         const isRepulsiveEnabled = this.options.gravity.repulsive !== 0
         const isPullingEnabled = this.options.gravity.pulling !== 0
 
@@ -194,8 +226,10 @@
       /**
        * Calculates the properties of each particle on the next frame.
        * Is executed once every 'options.framesPerUpdate' frames.
+       *
+       * @private
        * */
-      #updateParticles = () => {
+      #updateParticles() {
         for (let particle of this.particles) {
           // Moving the particle
           particle.dir =
@@ -240,7 +274,7 @@
 
       /**
        * Determines the location of the particle in a 3x3 grid on the canvas.
-       * The grid represents different regions of the canvas
+       * The grid represents different regions of the canvas:
        *
        * - { x: 0, y: 0 } = top-left
        * - { x: 1, y: 0 } = top
@@ -252,6 +286,7 @@
        * - { x: 1, y: 2 } = bottom
        * - { x: 2, y: 2 } = bottom-right
        *
+       * @private
        * @param {Object} particle - The coordinates of the particle.
        * @param {number} particle.x - The x-coordinate of the particle.
        * @param {number} particle.y - The y-coordinate of the particle.
@@ -259,7 +294,7 @@
        * @returns {number} x - The horizontal grid position (0, 1, or 2).
        * @returns {number} y - The vertical grid position (0, 1, or 2).
        */
-      #gridPos = particle => {
+      #gridPos(particle) {
         return {
           x: (particle.x >= particle.bounds.left) + (particle.x > particle.bounds.right),
           y: (particle.y >= particle.bounds.top) + (particle.y > particle.bounds.bottom),
@@ -268,6 +303,8 @@
 
       /**
        * Determines whether a line between 2 particles crosses through the visible center of the canvas.
+       *
+       * @private
        * @param {Object} particleA - First particle with {gridPos, isVisible}.
        * @param {Object} particleB - Second particle with {gridPos, isVisible}.
        * @returns {boolean} - True if the line crosses the visible center, false otherwise.
@@ -287,6 +324,7 @@
        * Precomputes and caches stroke style strings for a given base color and all possible alpha values (0–255).
        * This is necessary because the rendering process involves up to [particles ** 2 / 2] lookups per frame.
        *
+       * @private
        * @param {string} color - The base color in the format `#rrggbb`.
        * @returns {Object} - A lookup table mapping each alpha value (0–255) to its corresponding stroke style string in the format `#rrggbbaa`.
        *
@@ -300,7 +338,7 @@
        *   hexadecimal alpha value (0x00–0xFF) to the base color.
        * - The table is stored in `this.strokeStyleTable` for quick lookups.
        */
-      #generateStrokeStyleTable = color => {
+      #generateStrokeStyleTable(color) {
         const table = {}
 
         // Precompute stroke styles for alpha values 0–255
@@ -311,7 +349,12 @@
         return table
       }
 
-      #renderParticles = () => {
+      /**
+       * Renders the particles on the canvas.
+       *
+       * @private
+       */
+      #renderParticles() {
         for (let particle of this.particles) {
           if (particle.isVisible) {
             // Draw the particle as a square if the size is smaller than 1 pixel (±183% faster than drawing only circles, using default settings)
@@ -331,8 +374,10 @@
 
       /**
        * Connects particles with lines if they are within the connection distance.
+       *
+       * @private
        */
-      #renderConnections = () => {
+      #renderConnections() {
         const len = this.particleCount
         const drawAll = this.options.particles.connectDist >= Math.min(this.canvas.width, this.canvas.height)
 
@@ -378,8 +423,10 @@
 
       /**
        * Clear the canvas and render the particles and their connections onto the canvas.
+       *
+       * @private
        */
-      #render = () => {
+      #render() {
         this.canvas.width = this.canvas.width
         this.ctx.fillStyle = this.options.particles.colorWithAlpha
         this.ctx.lineWidth = 1
@@ -390,9 +437,11 @@
 
       /**
        * Main animation loop that updates and renders the particles.
-       * Runs recursively using `requestAnimationFrame`.
+       * Runs recursively using 'requestAnimationFrame'.
+       *
+       * @private
        */
-      #animation = () => {
+      #animation() {
         if (!this.animating) return
 
         requestAnimationFrame(() => this.#animation())
@@ -411,20 +460,26 @@
 
       /**
        * Starts the particle animation.
-       * If already animating, does nothing.
+       * Does nothing if already animating.
+       *
+       * @returns {CanvasParticles} - The current instance.
        */
-      start = () => {
-        if (this.animating) return
-        this.animating = true
-        requestAnimationFrame(() => this.#animation())
+      start() {
+        if (!this.animating) {
+          this.animating = true
+          requestAnimationFrame(() => this.#animation())
+        }
+        return this
       }
 
       /**
        * Stops the particle animation and clears the canvas.
        */
-      stop = () => {
+      stop(options) {
         this.animating = false
-        this.canvas.width = this.canvas.width
+        if (options?.clear !== false) this.canvas.width = this.canvas.width
+
+        return true
       }
 
       /**
@@ -432,36 +487,40 @@
        */
 
       /**
-       * Set and validate the options object
+       * Set and validate the options object.
        * @param {Object} options - Object structure: https://github.com/Khoeckman/canvasParticles?tab=readme-ov-file#options
        */
-      setOptions = options => {
-        const defaultIfNaN = (value, defaultValue) => (isNaN(+value) ? defaultValue : +value)
+      setOptions(options) {
+        const parse = this.#defaultIfNaN
 
         // Format and store options
         this.options = {
           background: options.background ?? false,
-          framesPerUpdate: defaultIfNaN(Math.max(1, parseInt(options.framesPerUpdate)), 1),
-          resetOnResize: !!options.resetOnResize,
+          framesPerUpdate: parse(Math.max(1, parseInt(options.framesPerUpdate)), 1),
+          animation: {
+            startOnEnter: !!(options.animation?.startOnEnter ?? true),
+            stopOnLeave: !!(options.animation?.stopOnLeave ?? true),
+          },
           mouse: {
-            interactionType: defaultIfNaN(parseInt(options.mouse?.interactionType), 1),
-            connectDistMult: defaultIfNaN(options.mouse?.connectDistMult, 2 / 3),
-            distRatio: defaultIfNaN(options.mouse?.distRatio, 2 / 3),
+            interactionType: parse(parseInt(options.mouse?.interactionType), 1),
+            connectDistMult: parse(options.mouse?.connectDistMult, 2 / 3),
+            distRatio: parse(options.mouse?.distRatio, 2 / 3),
           },
           particles: {
+            regenerateOnResize: !!options.particles?.regenerateOnResize,
             color: options.particles?.color ?? 'black',
-            ppm: defaultIfNaN(options.particles?.ppm, 100),
-            max: defaultIfNaN(options.particles?.max, 500),
-            maxWork: defaultIfNaN(Math.max(0, options.particles?.maxWork), Infinity),
-            connectDist: defaultIfNaN(Math.max(1, options.particles?.connectDistance), 150),
-            relSpeed: defaultIfNaN(Math.max(0, options.particles?.relSpeed), 1),
-            relSize: defaultIfNaN(Math.max(0, options.particles?.relSize), 1),
-            rotationSpeed: defaultIfNaN(Math.max(0, options.particles?.rotationSpeed / 100), 0.02),
+            ppm: parse(options.particles?.ppm, 100),
+            max: parse(options.particles?.max, 500),
+            maxWork: parse(Math.max(0, options.particles?.maxWork), Infinity),
+            connectDist: parse(Math.max(1, options.particles?.connectDistance), 150),
+            relSpeed: parse(Math.max(0, options.particles?.relSpeed), 1),
+            relSize: parse(Math.max(0, options.particles?.relSize), 1),
+            rotationSpeed: parse(Math.max(0, options.particles?.rotationSpeed / 100), 0.02),
           },
           gravity: {
-            repulsive: defaultIfNaN(options.gravity?.repulsive, 0),
-            pulling: defaultIfNaN(options.gravity?.pulling, 0),
-            friction: defaultIfNaN(Math.max(0, Math.min(1, options.particles?.friction)), 0.8),
+            repulsive: parse(options.gravity?.repulsive, 0),
+            pulling: parse(options.gravity?.pulling, 0),
+            friction: parse(Math.max(0, Math.min(1, options.particles?.friction)), 0.8),
           },
         }
 
@@ -471,37 +530,38 @@
       }
 
       /**
-       * Set canvas background
+       * Set canvas background.
        * @param {string} background - The style of the background. Can be any CSS supported background format.
        */
-      setBackground = background => {
-        if (typeof background === 'string') this.canvas.style.background = this.options.background = background
+      setBackground(background) {
+        if (typeof background === 'string') return (this.canvas.style.background = this.options.background = background), true
+        return false
       }
 
       /**
-       * Transform distance multiplier to absolute distance
+       * Transform distance multiplier to absolute distance.
        * @param {float} connectDistMult - The maximum distance for the mouse to interact with the particles.
-       * The value is multiplied by particles.connectDistance
+       * The value is multiplied by 'particles.connectDistance'.
        * @example 0.8 connectDistMult * 150 particles.connectDistance = 120 pixels
        */
-      setMouseConnectDistMult = connectDistMult => {
-        this.options.mouse.connectDist = this.options.particles.connectDist * (isNaN(connectDistMult) ? 2 / 3 : connectDistMult)
+      setMouseConnectDistMult(connectDistMult) {
+        this.options.mouse.connectDist = this.options.particles.connectDist * this.#defaultIfNaN(connectDistMult, 2 / 3)
       }
 
       /**
-       * Format particle color and opacity
+       * Format particle color and opacity.
        * @param {string} color - The color of the particles and their connections. Can be any CSS supported color format.
        */
-      setParticleColor = color => {
+      setParticleColor(color) {
         this.ctx.fillStyle = color
 
-        // Check if `ctx.fillStyle` is in hex format ("#RRGGBB" without alpha).
+        // Check if 'ctx.fillStyle' is in hex format ("#RRGGBB" without alpha).
         if (this.ctx.fillStyle[0] === '#') this.options.particles.opacity = 255
         else {
-          // JavaScript's `ctx.fillStyle` ensures the color will otherwise be in rgba format (e.g., "rgba(136, 244, 255, 0.25)")
+          // JavaScript's 'ctx.fillStyle' ensures the color will otherwise be in rgba format (e.g., "rgba(136, 244, 255, 0.25)")
 
           // Extract the alpha value (0.25) from the rgba string, scale it to the range 0x00 to 0xff,
-          // and convert it to an integer. This value represents the opacity as a 2-character hex string.
+          // and convert it to an integer. This value represents the opacity as a 2-character hex string
           this.options.particles.opacity = ~~(this.ctx.fillStyle.split(',').at(-1).slice(1, -1) * 255)
 
           // Example: extract 136, 244 and 255 from rgba(136, 244, 255, 0.25) and convert to hexadecimal '#rrggbb' format

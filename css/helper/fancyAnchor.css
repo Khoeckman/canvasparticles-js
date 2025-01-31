@@ -13,7 +13,7 @@ a.fancy {
 a.fancy::before {
   content: '';
   display: block;
-  background-color: var(--contrast-d);
+  background-color: var(--g2);
   position: absolute;
   left: 0;
   bottom: 0;
@@ -34,6 +34,6 @@ a.fancy:is(:hover, :focus-visible)::before {
 }
 
 a.fancy:active::before {
-  background-color: var(--contrast-d);
+  background-color: var(--g2);
   transition: none;
 }

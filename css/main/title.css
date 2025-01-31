@@ -1,4 +1,5 @@
 #title {
+  cursor: default;
   display: flex;
   flex-direction: column;
   justify-content: center;
@@ -11,21 +12,41 @@
 
 #title h1 {
   font-size: clamp(2.5rem, 8vw, 8.5rem);
-  color: var(--contrast-d);
+  color: var(--g2);
   margin-top: 0;
   margin-bottom: 2.5rem;
 }
 
 #title h2 {
   font-size: clamp(1rem, 2vw, 2.25rem);
-  color: var(--contrast);
+  color: var(--g5);
   margin: 0;
   max-width: 40em;
 }
 
 #title h1,
 #title h2 {
-  transition: transform 50ms;
+  transition: transform 50ms linear;
+}
+
+#title h1 .text-gradient {
+  background: radial-gradient(circle at center left, var(--fg), var(--pri));
+  background-clip: text !important;
+  -webkit-background-clip: text !important;
+  text-shadow: 0.5rem 3rem 3rem var(--bg);
+  color: transparent;
+}
+
+#title h1 .invert {
+  display: inline-block;
+  background: transparent;
+  backdrop-filter: invert(1) saturate(96) hue-rotate(212deg);
+  border-radius: 0.3em;
+  text-align: center;
+  line-height: 1.5;
+  color: var(--bg);
+  width: 1.5em;
+  height: 1.5em;
 }
 
 #title a {
@@ -44,25 +65,14 @@
 }
 
 #title a:is(:hover, :focus-visible) {
-  background-color: var(--contrast-xl);
+  background-color: var(--gf7);
 }
 
 #title .content {
   margin: 0 auto;
-  padding: 3rem var(--padding-horz);
+  padding: 3rem var(--padding-sides);
   max-width: 90rem;
   z-index: 2;
-}
-
-#title .invert {
-  display: inline-block;
-  background: var(--contrast-d);
-  border-radius: 0.3em;
-  text-align: center;
-  line-height: 1.5;
-  color: var(--bg);
-  width: 1.5em;
-  height: 1.5em;
 }
 
 #title .shadow {

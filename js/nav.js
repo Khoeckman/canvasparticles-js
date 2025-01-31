@@ -72,8 +72,9 @@ const scrollEventHandler = container => {
   // Scroll to top link
   scrollToTop.hidden = !scrolledPastTitle
 
-  // Title effect
-  title.style.opacity = 1 - (2 * container.scrollTop) / window.innerHeight
+  // Title effect on scroll
+  title.querySelector('h1 .text-gradient').style.opacity = 1 - (2 * container.scrollTop) / window.innerHeight
+  title.querySelector('h1 .invert').style.opacity = 1 - (2 * container.scrollTop) / window.innerHeight
   title.style.transform = 'translateX(' + (-100 * container.scrollTop) / window.innerHeight + 'px)'
 
   subtitle.style.opacity = 1 - (2 * (container.scrollTop - 187)) / window.innerHeight

@@ -2,7 +2,10 @@ const presets = {
   all: `sandbox.setOptions({
   background: '#151019',
   framesPerUpdate: 1,
-  resetOnResize: false,
+  animation: {
+    startOnEnter: false,
+    stopOnLeave: true,
+  },
   mouse: {
     interactionType: 2,
     connectDistMult: 0.7,
@@ -17,6 +20,7 @@ const presets = {
     relSize: 1,
     relSpeed: 1,
     rotationSpeed: 2,
+    regenerateOnResize: false
   },
   gravity: {
     repulsive: 0.55,
@@ -27,6 +31,9 @@ const presets = {
 
   gravity: `sandbox.setOptions({
   background: '#423',
+  animation: {
+    startOnEnter: false,
+  },
   mouse: {
     interactionType: 2,
   },
@@ -48,6 +55,9 @@ const presets = {
 
   shapes: `sandbox.setOptions({
   background: 'linear-gradient(100deg, #f80, #0f8 150%)',
+  animation: {
+    startOnEnter: false,
+  },
   mouse: {
     connectDistMult: 0.7,
   },
@@ -55,6 +65,7 @@ const presets = {
     color: 'white',
     ppm: 125,
     connectDistance: 175,
+    regenerateOnResize: true
   },
   gravity: {
     repulsive: 3,

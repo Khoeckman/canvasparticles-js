@@ -1,7 +1,73 @@
-h3 {
+#information article {
+  display: flex;
+  justify-content: space-between;
+}
+
+#information article h3 {
   margin: 3rem 0 1.5rem 0;
 }
 
-.contact {
+#information article figure {
+  -webkit-user-drag: none;
+  margin: 6rem;
+  width: min-content;
+  height: min-content;
+}
+
+#information article img {
+  width: 24rem;
+  max-height: 24rem;
+  animation: jiggle 7.5s ease-in-out infinite alternate;
+}
+
+#information article img.shadow {
+  filter: blur(2.5rem);
+  animation: jiggle 7.5s ease-in-out infinite alternate, growBlur 3s ease-in-out infinite alternate;
+}
+
+#information article figure:hover img,
+#information article figure:hover img.shadow {
+  animation: none;
+}
+
+@keyframes jiggle {
+  from {
+    transform: translateX(-3%) rotate(-2deg);
+  }
+
+  25% {
+    transform: translateY(3%) rotate(2deg);
+  }
+
+  50% {
+    transform: translateX(3%) rotate(4deg);
+  }
+
+  to {
+    transform: translateY(3%) rotate(-2deg);
+  }
+}
+
+@keyframes growBlur {
+  from {
+    filter: blur(1rem);
+  }
+
+  to {
+    filter: blur(2.5rem);
+  }
+}
+
+#information .contact {
   margin-top: 6rem;
+}
+
+@media only screen and (width < 80em) {
+  #information article {
+    display: unset;
+  }
+
+  #information article img {
+    display: none;
+  }
 }

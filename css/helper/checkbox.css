@@ -4,7 +4,7 @@ label:has(> .checkbox) {
   align-items: center;
   gap: 1rem;
   background-color: var(--black);
-  border: 1px solid var(--contrast);
+  border: 1px solid var(--g7);
   border-radius: var(--rs);
   color: var(--white);
   line-height: 1;

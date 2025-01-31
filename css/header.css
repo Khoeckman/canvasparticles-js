@@ -38,7 +38,7 @@ header nav li:first-child:is(:hover, :focus-within) img {
 }
 
 header nav li.title {
-  color: var(--contrast-d);
+  color: var(--g2);
   margin-right: auto;
 }
 
@@ -47,12 +47,12 @@ header nav li.title h1 {
 }
 
 header nav li.title .version {
-  color: var(--contrast);
+  color: var(--g7);
   margin: 0;
 }
 
 header nav li.title .version::before {
-  background-color: var(--contrast);
+  background-color: var(--g7);
 }
 
 header nav li.title .version:is(:hover, :focus-visible) {
@@ -92,7 +92,7 @@ header nav li .button:is(:hover, :focus-visible) {
 
 header nav li .button.npm {
   --padding-vert: 0.875rem;
-  background-color: var(--pri);
+  background-color: var(--sec);
 }
 
 header nav li .button :is(svg, img) {
@@ -100,12 +100,18 @@ header nav li .button :is(svg, img) {
   height: calc(var(--height) - 2 * var(--padding-vert));
 }
 
+@media (prefers-color-scheme: light) {
+  header nav li .button.github img {
+    filter: invert(1);
+  }
+}
+
 header nav li .button.github:is(:hover, :focus-visible) {
   color: var(--bg);
 }
 
 header.small {
-  background-color: var(--contrast-a);
+  background-color: var(--header-bg);
   -webkit-backdrop-filter: blur(1rem);
   backdrop-filter: blur(1rem);
 }
@@ -121,8 +127,16 @@ header.small nav {
     margin-left: 0;
   }
 
+  header nav ul {
+    gap: 1rem;
+  }
+
   header nav li.title h1 {
-    display: none;
+    font-size: clamp(1em, calc(9vw - 2rem), 2em);
+  }
+
+  header nav li.title a {
+    font-size: 0.8rem;
   }
 }
 

@@ -25,7 +25,7 @@
   display: flex;
   justify-content: flex-end;
   gap: 0.5rem;
-  text-shadow: 1px 1px 0.1rem var(--contrast-xl);
+  text-shadow: 1px 1px 0.1rem var(--gf7);
   text-decoration: none;
   position: relative;
   transition: color 300ms;
@@ -74,7 +74,7 @@
 #sidenav #scroll-to-top a {
   display: block;
   pointer-events: all;
-  background-color: var(--contrast-l);
+  background-color: var(--gd);
   border: 0;
   border-radius: 50%;
   box-shadow: 0 0 0.5rem var(--black);

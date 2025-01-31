@@ -50,7 +50,7 @@
 }
 
 #title a {
-  background-color: transparent;
+  background: transparent;
   border: 0;
   border-radius: 50%;
   position: absolute;

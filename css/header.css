@@ -72,8 +72,8 @@ header nav li .button {
   text-align: center;
   text-decoration: none;
   color: var(--bg);
-  --padding-vert: 0.8rem;
-  padding: var(--padding-vert) 1rem;
+  --padding-tb: 0.8rem;
+  padding: var(--padding-tb) 1rem;
   --height: 2.5rem;
   width: max-content;
   height: var(--height);
@@ -91,13 +91,13 @@ header nav li .button:is(:hover, :focus-visible) {
 }
 
 header nav li .button.npm {
-  --padding-vert: 0.875rem;
+  --padding-tb: 0.875rem;
   background-color: var(--sec);
 }
 
 header nav li .button :is(svg, img) {
   width: 100%;
-  height: calc(var(--height) - 2 * var(--padding-vert));
+  height: calc(var(--height) - 2 * var(--padding-tb));
 }
 
 @media (prefers-color-scheme: light) {
@@ -114,6 +114,7 @@ header.small {
   background-color: var(--header-bg);
   -webkit-backdrop-filter: blur(1rem);
   backdrop-filter: blur(1rem);
+  z-index: 11;
 }
 
 header.small nav {

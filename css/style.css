@@ -86,7 +86,12 @@ body {
 }
 
 ::-webkit-scrollbar-corner {
-  background-color: transparent;
+  background: transparent;
+}
+
+::selection {
+  background: var(--pri);
+  color: var(--bg);
 }
 
 *,

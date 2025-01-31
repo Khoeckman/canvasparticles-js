@@ -63,7 +63,7 @@ main .choice li {
 }
 
 main .choice li button {
-  background-color: transparent;
+  background: transparent;
   border: 0;
   border-radius: var(--rs);
   font-weight: 600;
@@ -99,7 +99,7 @@ main .codeblock {
 
 main .codeblock pre {
   display: inline-block;
-  background-color: transparent;
+  background: transparent;
   font-size: 0.875rem;
   vertical-align: top;
   margin: 0;

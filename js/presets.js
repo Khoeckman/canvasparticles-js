@@ -3,7 +3,7 @@ const presets = {
   background: '#151019',
   framesPerUpdate: 1,
   animation: {
-    startOnEnter: false,
+    startOnEnter: true,
     stopOnLeave: true,
   },
   mouse: {
@@ -55,9 +55,6 @@ const presets = {
 
   shapes: `sandbox.setOptions({
   background: 'linear-gradient(100deg, #f80, #0f8 150%)',
-  animation: {
-    startOnEnter: false,
-  },
   mouse: {
     connectDistMult: 0.7,
   },

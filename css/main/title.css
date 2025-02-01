@@ -69,7 +69,6 @@
 }
 
 #title .shape {
-  overflow: hidden;
   backdrop-filter: invert(0.1) saturate(48) hue-rotate(21.2deg);
   border-radius: 24rem;
   position: absolute;

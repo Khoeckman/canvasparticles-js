@@ -36,135 +36,133 @@ togglables.forEach(checkbox => {
 const runButtons = [...document.querySelectorAll('main .run')]
 let hue = 0
 let hueRotateInterval
-const sandbox = new CanvasParticles('#cp-sandbox')
+const sandbox = new CanvasParticles('#cp-sandbox', { animation: { startOnEnter: false } })
 
 runButtons.forEach(button => {
-  switch (button.id) {
-    case 'run-default-stop':
-      button.addEventListener('click', () => showcase.default.stop())
-      break
+  button.addEventListener(
+    'click',
+    (() => {
+      switch (button.id) {
+        case 'run-default-stop':
+          return () => showcase.default.stop()
 
-    case 'run-default-stop-noclear':
-      button.addEventListener('click', () => showcase.default.stop({ clear: false }))
-      break
+        case 'run-default-stop-noclear':
+          return () => showcase.default.stop({ clear: false })
 
-    case 'run-default-start':
-      button.addEventListener('click', () => showcase.default.start())
-      break
+        case 'run-default-start':
+          return () => showcase.default.start()
 
-    case 'run-pushing-gravity-new':
-      button.addEventListener('click', () => showcase['pulling-gravity'].newParticles())
-      break
+        case 'run-pushing-gravity-new':
+          return () => showcase['pulling-gravity'].newParticles()
 
-    case 'run-pushing-gravity-max-work':
-    case 'stop-pushing-gravity-max-work':
-      button.addEventListener('click', () => {
-        const maxWork = button.id === 'run-pushing-gravity-max-work' ? 12 : Infinity
-        showcase['pulling-gravity'].options.particles.maxWork = maxWork
+        case 'run-pushing-gravity-max-work':
+        case 'stop-pushing-gravity-max-work':
+          return () => {
+            const maxWork = button.id === 'run-pushing-gravity-max-work' ? 12 : Infinity
+            showcase['pulling-gravity'].options.particles.maxWork = maxWork
 
-        const numberToken = document.querySelectorAll('#showcase article:has(#showcase-pulling-gravity) code .token.number')[2]
-        numberToken.innerText = +maxWork
-      })
-      break
+            const numberToken = document.querySelectorAll('#showcase article:has(#showcase-pulling-gravity) code .token.number')[2]
+            numberToken.innerText = +maxWork
+          }
 
-    case 'run-hue-rotation':
-      button.addEventListener('click', () => {
-        clearInterval(hueRotateInterval)
+        case 'run-hue-rotation':
+          return () => {
+            clearInterval(hueRotateInterval)
 
-        hueRotateInterval = setInterval(() => {
-          const color = `hsl(${hue++}, 100%, 50%)`
-          hue %= 360
-          showcase['hue-rotation'].setParticleColor(color)
+            hueRotateInterval = setInterval(() => {
+              const color = `hsl(${hue++}, 100%, 50%)`
+              hue %= 360
+              showcase['hue-rotation'].setParticleColor(color)
 
-          const stringToken = document.querySelectorAll('#showcase article:has(#showcase-hue-rotation) code .token.string')[2]
-          stringToken.innerText = color
-        }, 20)
-      })
-      break
+              const stringToken = document.querySelectorAll('#showcase article:has(#showcase-hue-rotation) code .token.string')[2]
+              stringToken.innerText = color
+            }, 20)
+          }
 
-    case 'stop-hue-rotation':
-      button.addEventListener('click', () => clearInterval(hueRotateInterval))
-      break
+        case 'stop-hue-rotation':
+          return () => clearInterval(hueRotateInterval)
 
-    case 'run-sandbox':
-      button.addEventListener('click', () => {
-        sandboxError.hidden = true
+        case 'run-sandbox':
+          return () => {
+            sandboxError.hidden = true
 
-        try {
-          eval(sandboxOptions.innerText)
-        } catch (err) {
-          sandboxError.innerText = err
-          sandboxError.hidden = false
-        }
-        sandbox.matchParticleCount()
-        sandbox.start()
-      })
-      break
+            try {
+              eval(sandboxOptions.innerText)
+            } catch (err) {
+              sandboxError.innerText = err
+              sandboxError.hidden = false
+            }
+            sandbox.matchParticleCount()
+            sandbox.start()
+          }
 
-    case 'stop-sandbox':
-      button.addEventListener('click', sandbox.stop)
-      break
-  }
+        case 'stop-sandbox':
+          return () => sandbox.stop({ clear: false })
+      }
+    })()
+  )
 })
 
 // Choices
 
 const choiceLists = [...document.querySelectorAll('main .choice')]
 
-choiceLists.forEach(list => {
-  const buttons = list.querySelectorAll('button')
+choiceLists.forEach(list =>
+  list.addEventListener(
+    'click',
+    (() => {
+      const buttons = list.querySelectorAll('button')
 
-  switch (list.id) {
-    case 'installation-choice':
-      list.addEventListener('click', e => {
-        const button = e.target.closest('button')
+      switch (list.id) {
+        case 'installation-choice':
+          return e => {
+            const button = e.target.closest('button')
 
-        buttons.forEach(button => button.removeAttribute('class'))
-        button.classList.add('active')
+            buttons.forEach(button => button.removeAttribute('class'))
+            button.classList.add('active')
 
-        const content = document.querySelectorAll('#installation-choice + ul.content li')
-        const choice = +button.getAttribute('data-choice')
+            const content = document.querySelectorAll('#installation-choice + ul.content li')
+            const choice = +button.getAttribute('data-choice')
 
-        content.forEach(li => (li.hidden = true))
-        content[choice].hidden = false
-      })
-      break
+            content.forEach(li => (li.hidden = true))
+            content[choice].hidden = false
+          }
 
-    case 'showcase-interact-choice':
-      list.addEventListener('click', e => {
-        const button = e.target.closest('button')
+        case 'showcase-interact-choice':
+          return e => {
+            const button = e.target.closest('button')
 
-        buttons.forEach(button => button.removeAttribute('class'))
-        button.classList.add('active')
+            buttons.forEach(button => button.removeAttribute('class'))
+            button.classList.add('active')
 
-        const type = button.getAttribute('data-type')
-        const interactionType = Math.min(type, 2)
-        const distRatio = type == 3 ? 0.7 : 1
-        const maxWork = type == 3 ? 20 : Infinity
-        showcase.interact.options.mouse.interactionType = interactionType
-        showcase.interact.options.mouse.distRatio = distRatio
-        showcase.interact.options.particles.maxWork = maxWork
+            const type = button.getAttribute('data-type')
+            const interactionType = Math.min(type, 2)
+            const distRatio = type == 3 ? 0.7 : 1
+            const maxWork = type == 3 ? 20 : Infinity
+            showcase.interact.options.mouse.interactionType = interactionType
+            showcase.interact.options.mouse.distRatio = distRatio
+            showcase.interact.options.particles.maxWork = maxWork
 
-        const numberTokens = document.querySelectorAll('#showcase article:has(#showcase-interact) code .token.number')
-        numberTokens[0].innerText = '' + interactionType
-        numberTokens[2].innerText = '' + distRatio
-        numberTokens[3].innerText = '' + maxWork
-      })
-      break
+            const numberTokens = document.querySelectorAll('#showcase article:has(#showcase-interact) code .token.number')
+            numberTokens[0].innerText = '' + interactionType
+            numberTokens[2].innerText = '' + distRatio
+            numberTokens[3].innerText = '' + maxWork
+          }
 
-    case 'sandbox-preset-choice':
-      list.addEventListener('click', e => {
-        const button = e.target.closest('button')
+        case 'sandbox-preset-choice':
+          return e => {
+            const button = e.target.closest('button')
 
-        buttons.forEach(button => button.removeAttribute('class'))
-        button.classList.add('active')
+            buttons.forEach(button => button.removeAttribute('class'))
+            button.classList.add('active')
 
-        loadPreset(button.getAttribute('data-preset'))
-        Prism.highlightElement(sandboxOptions)
-      })
-      break
-  }
-})
+            loadPreset(button.getAttribute('data-preset'))
+            Prism.highlightElement(sandboxOptions)
+          }
+      }
+    })()
+  )
+)
 
 // Color inputs
 

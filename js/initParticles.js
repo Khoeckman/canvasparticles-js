@@ -91,10 +91,6 @@ showcase.movement = new CanvasParticles('#showcase-movement', {
 
 showcase['pushing-gravity'] = new CanvasParticles('#showcase-pushing-gravity', {
   background: '#423',
-  animation: {
-    startOnEnter: false,
-    stopOnLeave: false,
-  },
   particles: {
     color: '#f45c',
     ppm: 200,
@@ -109,10 +105,6 @@ showcase['pushing-gravity'] = new CanvasParticles('#showcase-pushing-gravity', {
 
 showcase['pulling-gravity'] = new CanvasParticles('#showcase-pulling-gravity', {
   background: '#423',
-  animation: {
-    startOnEnter: false,
-    stopOnLeave: false,
-  },
   mouse: {
     interactionType: 2,
     distRatio: 1,

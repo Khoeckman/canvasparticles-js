@@ -24,6 +24,7 @@ https://github.com/Khoeckman/canvasParticles/blob/main/LICENSE
   <!-- Styles -->
   <link rel="stylesheet" href="./css/normalize.css" />
   <link rel="stylesheet" href="./css/style.css" />
+  <link rel="stylesheet" href="./css/homepage.css" />
   <link rel="stylesheet" href="./css/prism.min.css" />
 
   <!-- JS -->
@@ -50,11 +51,14 @@ https://github.com/Khoeckman/canvasParticles/blob/main/LICENSE
           </a>
         </li>
         <li>
+          <a href="./benchmark/" class="button">Benchmark</a>
+        </li>
+        <li>
           <a href="https://www.npmjs.com/package/canvasparticles-js" class="button npm" target="_blank"
             title="View this project on npm">
-            <svg viewBox="0 0 780 250" aria-hidden="true">
+            <svg viewBox="0 0 62 24" aria-hidden="true">
               <path fill="var(--white)"
-                d="M240,250h100v-50h100V0H240V250z M340,50h50v100h-50V50z M480,0v200h100V50h50v150h50V50h50v150h50V0H480z M0,200h100V50h50v150h50V0H0V200z">
+                d="M19 24h8V20h8V4H19V24ZM27 8h4v8H27V8ZM38 4V20h8V8h4V20h4V8h4V20h4V4H38ZM0 20H8V8h4V20h4V4H0V20Z">
               </path>
             </svg>
           </a>
@@ -68,11 +72,12 @@ https://github.com/Khoeckman/canvasParticles/blob/main/LICENSE
       </ul>
     </nav>
   </header>
+
   <main>
     <aside id="sidenav">
       <ul class="list"></ul>
     </aside>
-    <section id="title">
+    <section id="title" class="has-overlay">
       <div class="content">
         <h1>
           <span class="text-gradient">Canvas Particles</span>
@@ -473,10 +478,6 @@ new CanvasParticles(selector, options).start()</code></pre>
           <div class="codeblock">
             <span class="head">JavaScript</span>
             <pre><code class="language-js">new CanvasParticles('#showcase-pushing-gravity', {
-  animation: {
-    startOnEnter: false,
-    stopOnLeave: false,
-  },
   particles: {
     connectDistance: 175,
   },
@@ -509,10 +510,6 @@ new CanvasParticles(selector, options).start()</code></pre>
             <span class="head">JavaScript</span>
             <pre><code class="language-js">const showcasePullingGravity =
 new CanvasParticles('#showcase-pulling-gravity', {
-  animation: {
-    startOnEnter: false,
-    stopOnLeave: false,
-  },
   mouse: {
     interactionType: 2,
     distRatio: 1,
@@ -695,6 +692,7 @@ new CanvasParticles('#showcase-multiple-colors-2', {
       </article>
     </section>
   </main>
+
   <footer>
     <div>
       <div>

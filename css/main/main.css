@@ -1,3 +1,7 @@
+main {
+  flex: 1;
+}
+
 main section {
   margin: 0 auto;
   padding: 3rem var(--padding-sides);
@@ -18,13 +22,6 @@ main h3 {
 
 main p {
   line-height: 1.25;
-}
-
-main :not(#title) canvas {
-  display: block;
-  background-color: var(--white);
-  border-radius: var(--rs);
-  box-shadow: 0.5rem 0.5rem 1rem #0006;
 }
 
 main p.br {

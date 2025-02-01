@@ -1,6 +1,5 @@
 // Version
-const version = document.getElementById('version')
-version.innerText = CanvasParticles.version ?? '3.2.x'
+document.getElementById('version').innerText = CanvasParticles.version ?? 'unknown'
 
 // Populate sidenav
 const sections = [...document.querySelectorAll('main section')]

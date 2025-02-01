@@ -1,0 +1,15 @@
+@import 'main/sidenav.css';
+@import 'main/title.css';
+@import 'main/installation.css';
+@import 'main/showcase.css';
+@import 'main/sandbox.css';
+@import 'main/information.css';
+
+@import 'helper/checkbox.css';
+
+main :not(#title) canvas {
+  display: block;
+  background-color: var(--white);
+  border-radius: var(--rs);
+  box-shadow: 0.5rem 0.5rem 1rem #0006;
+}

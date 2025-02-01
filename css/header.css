@@ -64,50 +64,37 @@ header nav li.title .version:is(:hover, :focus-visible)::before {
 }
 
 header nav li .button {
-  display: block;
-  background-color: var(--fg);
-  border: 0;
-  border-radius: var(--rs);
-  font-weight: 600;
-  text-align: center;
-  text-decoration: none;
-  color: var(--bg);
-  --padding-tb: 0.8rem;
-  padding: var(--padding-tb) 1rem;
-  --height: 2.5rem;
-  width: max-content;
-  height: var(--height);
-  transition: box-shadow 300ms;
+  transition: background 150ms, border-color 150ms, color 150ms, transform 300ms, filter 300ms;
 }
 
 header nav li .button:is(:hover, :focus-visible) {
-  box-shadow: 0 0 0 0.1rem var(--white), 0 0 0.5rem 0.2rem var(--black);
+  transform: scale(1.1);
+  filter: brightness(1.2);
 }
 
-@media (prefers-color-scheme: dark) {
-  header nav li .button:is(:hover, :focus-visible) {
-    box-shadow: 0 0 0 0.1rem var(--black), 0 0 0.2rem 0.2rem var(--white);
-  }
-}
-
-header nav li .button.npm {
-  --padding-tb: 0.875rem;
-  background-color: var(--sec);
+header nav li .button:active {
+  transform: none;
 }
 
 header nav li .button :is(svg, img) {
-  width: 100%;
-  height: calc(var(--height) - 2 * var(--padding-tb));
+  display: block;
+  height: 100%;
+}
+
+header nav li .button.npm {
+  background-color: var(--sec);
+  border-color: transparent;
+}
+
+header nav li .button.github {
+  background-color: var(--g1);
+  border-color: transparent;
 }
 
 @media (prefers-color-scheme: light) {
   header nav li .button.github img {
     filter: invert(1);
   }
-}
-
-header nav li .button.github:is(:hover, :focus-visible) {
-  color: var(--bg);
 }
 
 header.small {
@@ -121,7 +108,7 @@ header.small nav {
   margin: 0 1rem;
 }
 
-@media only screen and (width < 45em) {
+@media only screen and (width < 60em) {
   header nav,
   header.small nav {
     margin-right: 0;
@@ -133,15 +120,15 @@ header.small nav {
   }
 
   header nav li.title h1 {
-    font-size: clamp(1em, calc(9vw - 2rem), 2em);
+    font-size: clamp(1rem, calc(10vw - 3rem), 2rem);
   }
 
   header nav li.title a {
-    font-size: 0.8rem;
+    font-size: clamp(0.8rem, calc(5vw - 1.5rem), 1rem);
   }
 }
 
-@media only screen and (width < 30em) {
+@media only screen and (width < 40em) {
   header nav li:first-child {
     margin-right: auto;
   }

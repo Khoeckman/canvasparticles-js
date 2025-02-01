@@ -9,36 +9,41 @@
   typeof self !== 'undefined' ? self : this,
   () =>
     class CanvasParticles {
-      static version = '3.5.0'
+      static version = '3.5.1'
 
       // Start or stop the animation when the canvas enters or exits the viewport
       static canvasObserver = new IntersectionObserver(entry => {
         entry.forEach(change => {
           // CanvasParticles instance of the target canvas
-          const instance = change.target.instance
+          const canvas = change.target
+          const instance = canvas.instance
 
-          if (change.isIntersecting) instance.options.animation.startOnEnter && instance.start()
-          else instance.options.animation.stopOnLeave && instance.stop({ clear: false })
+          if ((canvas.inViewbox = change.isIntersecting)) instance.options.animation.startOnEnter && instance.start({ auto: true })
+          else instance.options.animation.stopOnLeave && instance.stop({ auto: true, clear: false })
         })
       })
 
       /**
        * Creates a new CanvasParticles instance.
-       * @param {string} [selector] - The CSS selector for the canvas element.
+       * @param {string} [selector] - The CSS selector to the canvas element or the HTMLCanvasElement itself.
        * @param {Object} [options={}] - Object structure: https://github.com/Khoeckman/canvasParticles?tab=readme-ov-file#options
        */
       constructor(selector, options = {}) {
-        // Find and initialize canvas
-        if (typeof selector !== 'string') throw new TypeError('selector is not a string')
+        if (selector instanceof HTMLCanvasElement) this.canvas = selector
+        else {
+          // Find and initialize canvas
+          if (typeof selector !== 'string') throw new TypeError('selector is not a string and neither a HTMLCanvasElement itself')
 
-        this.canvas = document.querySelector(selector)
-        if (!(this.canvas instanceof HTMLCanvasElement)) throw new Error('selector does not point to a canvas')
-
-        this.canvas.instance = this
+          this.canvas = document.querySelector(selector)
+          if (!(this.canvas instanceof HTMLCanvasElement)) throw new Error('selector does not point to a canvas')
+        }
+        this.canvas.instance = this // Circular assignment to find the instance bound to this canvas inside the 'canvasObserver'
+        this.canvas.inViewbox = true
 
         // Get 2d drawing functions
         this.ctx = this.canvas.getContext('2d')
 
+        this.enableAnimating = false
         this.animating = false
         this.particles = []
         this.setOptions(options)
@@ -55,7 +60,7 @@
 
       #setupEventHandlers() {
         const updateMousePos = event => {
-          if (!this.animating) return
+          if (!this.enableAnimating) return
 
           if (event instanceof MouseEvent) {
             this.clientX = event.clientX
@@ -322,8 +327,8 @@
        * This is necessary because the rendering process involves up to [particles ** 2 / 2] lookups per frame.
        *
        * @private
-       * @param {string} color - The base color in the format `#rrggbb`.
-       * @returns {Object} - A lookup table mapping each alpha value (0–255) to its corresponding stroke style string in the format `#rrggbbaa`.
+       * @param {string} color - The base color in the format '#rrggbb'.
+       * @returns {Object} - A lookup table mapping each alpha value (0–255) to its corresponding stroke style string in the format '#rrggbbaa'.
        *
        * @example
        * const strokeStyleTable = this.#generateStrokeStyleTable("#abcdef");
@@ -333,7 +338,7 @@
        * Notes:
        * - This function precomputes all possible stroke styles by appending a two-character
        *   hexadecimal alpha value (0x00–0xFF) to the base color.
-       * - The table is stored in `this.strokeStyleTable` for quick lookups.
+       * - The table is stored in 'this.strokeStyleTable' for quick lookups.
        */
       #generateStrokeStyleTable(color) {
         const table = {}
@@ -457,22 +462,39 @@
 
       /**
        * Starts the particle animation.
-       * Does nothing if already animating.
        *
-       * @returns {CanvasParticles} - The current instance.
+       * - If the animation is already running, do nothing.
+       * - If the canvas is not within the viewbox and 'startOnEnter' is enabled, animation will be stopped until it enters the viewbox.
+       *
+       * @param {Object} [options] - Optional configuration for starting the animation.
+       * @param {boolean} [options.auto] - If true, indicates that the request comes from 'CanvasParticles.canvasObserver'.
+       * @returns {CanvasParticles} The current instance for method chaining.
        */
-      start() {
-        if (!this.animating) {
+      start(options) {
+        if (!this.animating && (!options?.auto || this.enableAnimating)) {
+          this.enableAnimating = true
           this.animating = true
           requestAnimationFrame(() => this.#animation())
         }
+
+        // Stop animating because it will start automatically once the canvas enters the viewbox
+        if (!this.canvas.inViewbox && this.options.animation.startOnEnter) this.animating = false
+
         return this
       }
 
       /**
-       * Stops the particle animation and clears the canvas.
+       * Stops the particle animation and optionally clears the canvas.
+       *
+       * - If 'options.clear' is not strictly false, the canvas will be cleared.
+       *
+       * @param {Object} [options] - Optional configuration for stopping the animation.
+       * @param {boolean} [options.auto] - If true, indicates that the request comes from 'CanvasParticles.canvasObserver'.
+       * @param {boolean} [options.clear] - If strictly false, prevents clearing the canvas-.
+       * @returns {boolean} `true` when the animation is successfully stopped.
        */
       stop(options) {
+        if (!options?.auto) this.enableAnimating = false
         this.animating = false
         if (options?.clear !== false) this.canvas.width = this.canvas.width
 
@@ -527,12 +549,15 @@
       }
 
       /**
-       * Set canvas background.
-       * @param {string} background - The style of the background. Can be any CSS supported background format.
+       * Sets the canvas background.
+       *
+       * @param {string} background - The style of the background. Can be any CSS-supported background value.
+       * @throws {TypeError} If background is not a string.
        */
       setBackground(background) {
-        if (typeof background === 'string') return (this.canvas.style.background = this.options.background = background), true
-        return false
+        if (background === false) return
+        if (typeof background !== 'string') throw new TypeError('background is not a string')
+        this.canvas.style.background = this.options.background = background
       }
 
       /**

@@ -11,6 +11,7 @@ Creating a fun and interactive background. Colors, interaction and gravity can b
 
 [Showcase](#showcase)<br>
 [Implementation](#implementation)<br>
+[Class instantiation](#class-instantiation)<br>
 [Options](#options)<br>
 [One pager example](#one-pager-example)
 
@@ -24,13 +25,13 @@ If you dont like reading documentation this website is for you:<br>
 Particles will be drawn onto this `<canvas>` element
 
 ```html
-<canvas id="canvas-particles"></canvas>
+<canvas id="my-canvas"></canvas>
 ```
 
 Resize the `<canvas>` so it covers the whole page and place it behind all elements.
 
 ```css
-#canvas-particles {
+#my-canvas {
   position: fixed;
   top: 0;
   left: 0;
@@ -60,7 +61,7 @@ Inside _initParticles.js_:
 ```js
 import CanvasParticles from 'canvasparticles-js'
 
-const selector = '#canvas-particles' // Query Selector for the canvas
+const selector = '#my-canvas' // Query Selector for the canvas
 const options = { ... } // See #options
 new CanvasParticles(selector, options).start()
 ```
@@ -99,7 +100,7 @@ Inside _initParticles.js_:
 ```js
 import CanvasParticles from './canvasParticles.mjs'
 
-const selector = '#canvas-particles' // Query Selector for the canvas
+const selector = '#my-canvas' // Query Selector for the canvas
 const options = { ... } // See #options
 new CanvasParticles(selector, options).start()
 ```
@@ -124,7 +125,7 @@ Add an inline `<script>` element at the very bottom of the `<body>`.
 
   <script>
     const initParticles = () => {
-      const selector = '#canvas-particles' // Query Selector for the canvas
+      const selector = '#my-canvas' // Query Selector for the canvas
       const options = { ... } // See #options
       new CanvasParticles(selector, options).start()
     }
@@ -141,7 +142,7 @@ Add an inline `<script>` element at the very bottom of the `<body>`.
 ### Start animating
 
 ```js
-const selector = '#canvas-particles' // Query Selector for the canvas
+const selector = '#my-canvas' // Query Selector for the canvas
 const options = { ... } // See #options
 new CanvasParticles(selector, options).start()
 ```
@@ -152,6 +153,58 @@ new CanvasParticles(selector, options).start()
 const particles = new CanvasParticles(selector, options)
 particles.start()
 particles.stop()
+particles.stop({ clear: false }) // Default: true
+```
+
+## Class instantiation
+
+### Valid ways to instantiate `CanvasParticles`
+
+```js
+const selector = '#my-canvas'
+const options = {}
+const myCanvas = document.querySelector(selector)
+
+let instance, canvas
+
+// Basic instantiation
+instance = new CanvasParticles(selector)
+instance = new CanvasParticles(myCanvas)
+
+// Instantiation with custom options
+instance = new CanvasParticles(selector, options)
+instance = new CanvasParticles(myCanvas, options)
+```
+
+### Chaining methods
+
+You can chain .start() for a cleaner syntax:
+
+```js
+instance = new CanvasParticles(selector).start()
+
+// Access the canvas directly
+canvas = new CanvasParticles(selector).canvas
+canvas = new CanvasParticles(selector).start().canvas
+```
+
+### Without chaining
+
+If you prefer not to chain methods, you can instantiate first and start later:
+
+```js
+instance = new CanvasParticles(selector)
+instance.start()
+canvas = instance.canvas
+```
+
+### Incorrect usage
+
+The following will not return the expected value because `CanvasParticles` only supports method chaining for `.start()`:
+
+```js
+instance = new CanvasParticles(selector).anyOtherMethod()
+canvas = new CanvasParticles(selector).anyOtherMethod().canvas
 ```
 
 ## Options

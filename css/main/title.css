@@ -68,6 +68,19 @@
   background-color: var(--gf7);
 }
 
+#title .shape {
+  overflow: hidden;
+  backdrop-filter: invert(0.1) saturate(48) hue-rotate(21.2deg);
+  border-radius: 24rem;
+  position: absolute;
+  top: -50rem;
+  left: 50%;
+  width: 60rem;
+  height: 60rem;
+  transform: translateX(-50%) rotate(45deg);
+  z-index: 2;
+}
+
 #title .content {
   margin: 0 auto;
   padding: 3rem var(--padding-sides);

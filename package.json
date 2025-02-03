@@ -1,6 +1,6 @@
 {
   "name": "canvasparticles-js",
-  "version": "3.5.1",
+  "version": "3.5.2",
   "description": "In an HTML canvas, a bunch of interactive particles connected with lines when they approach each other.",
   "main": "canvasParticles.js",
   "module": "canvasParticles.mjs",
@@ -16,9 +16,6 @@
       "require": "./canvasParticles.js",
       "import": "./canvasParticles.mjs"
     }
-  },
-  "engines": {
-    "node": ">=14"
   },
   "repository": {
     "type": "git",

@@ -243,9 +243,10 @@ const options = {
   /** @param {Object} [options.mouse] - Mouse interaction settings. */
   mouse: {
     /** @param {0|1|2} [options.mouse.interactionType=1] - The type of interaction the mouse will have with particles.
-     * 0 = No interaction.
-     * 1 = The mouse can visually shift the particles.
-     * 2 = The mouse can move the particles.
+     *
+     * CanvasParticles.interactionType.NONE = 0 = No interaction.
+     * CanvasParticles.interactionType.SHIFT = 1 = The mouse can visually shift the particles.
+     * CanvasParticles.interactionType.MOVE = 2 = The mouse can move the particles.
      * @note mouse.distRatio should be less than 1 to allow dragging, closer to 0 is easier to drag
      */
     interactionType: 2,
@@ -418,7 +419,7 @@ particles.setOptions(options)
       const options = {
         background: 'hsl(125, 42%, 35%)',
         mouse: {
-          interactionType: 2,
+          interactionType: CanvasParticles.interactionType.MOVE, // === 2
         },
         particles: {
           color: 'rgba(150, 255, 105, 0.95)',

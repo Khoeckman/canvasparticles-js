@@ -9,14 +9,20 @@
   typeof self !== 'undefined' ? self : this,
   () =>
     class CanvasParticles {
-      static version = '3.5.1'
+      static version = '3.5.2'
 
-      // Start or stop the animation when the canvas enters or exits the viewport
+      // Mouse interaction with the particles.
+      static interactionType = Object.freeze({
+        NONE: 0, // No interaction
+        SHIFT: 1, // Visually shift the particles
+        MOVE: 2, // Actually move the particles
+      })
+
+      // Start or stop the animation when the canvas enters or exits the viewport.
       static canvasObserver = new IntersectionObserver(entry => {
         entry.forEach(change => {
-          // CanvasParticles instance of the target canvas
           const canvas = change.target
-          const instance = canvas.instance
+          const instance = canvas.instance // The 'CanvasParticles' instance bound to 'canvas'.
 
           if ((canvas.inViewbox = change.isIntersecting)) instance.options.animation.startOnEnter && instance.start({ auto: true })
           else instance.options.animation.stopOnLeave && instance.stop({ auto: true, clear: false })
@@ -29,18 +35,18 @@
        * @param {Object} [options={}] - Object structure: https://github.com/Khoeckman/canvasParticles?tab=readme-ov-file#options
        */
       constructor(selector, options = {}) {
+        // Find the canvas and assign it to 'this.canvas'.
         if (selector instanceof HTMLCanvasElement) this.canvas = selector
         else {
-          // Find and initialize canvas
           if (typeof selector !== 'string') throw new TypeError('selector is not a string and neither a HTMLCanvasElement itself')
 
           this.canvas = document.querySelector(selector)
           if (!(this.canvas instanceof HTMLCanvasElement)) throw new Error('selector does not point to a canvas')
         }
-        this.canvas.instance = this // Circular assignment to find the instance bound to this canvas inside the 'canvasObserver'
+        this.canvas.instance = this // Circular assignment to find the instance bound to this canvas inside the static 'canvasObserver' callback.
         this.canvas.inViewbox = true
 
-        // Get 2d drawing functions
+        // Get 2d drawing methods.
         this.ctx = this.canvas.getContext('2d')
 
         this.enableAnimating = false
@@ -53,22 +59,13 @@
         this.#setupEventHandlers()
       }
 
-      // Helper function
-      #defaultIfNaN(value, defaultValue) {
-        return isNaN(+value) ? defaultValue : +value
-      }
-
       #setupEventHandlers() {
         const updateMousePos = event => {
-          if (!this.enableAnimating) return
+          if (!(this.enableAnimating && event instanceof MouseEvent)) return
 
-          if (event instanceof MouseEvent) {
-            this.clientX = event.clientX
-            this.clientY = event.clientY
-          }
           const { left, top } = this.canvas.getBoundingClientRect()
-          this.mouseX = this.clientX - left
-          this.mouseY = this.clientY - top
+          this.mouseX = event.clientX - left
+          this.mouseY = event.clientY - top
         }
 
         const resizeCanvas = () => {
@@ -99,7 +96,7 @@
       }
 
       /**
-       * Update the target number of particles based on the current canvas size and 'options.particles.ppm'
+       * Update the target number of particles based on the current canvas size and 'options.particles.ppm'.
        * Capped at 'options.particles.max'.
        *
        * @private
@@ -156,7 +153,7 @@
       #updateParticleBounds() {
         this.particles.map(
           particle =>
-            // Within these bounds the particle is considered visible
+            // Within these bounds the particle is considered visible.
             (particle.bounds = {
               top: -particle.size,
               right: this.canvas.width + particle.size,
@@ -185,7 +182,7 @@
 
           for (let i = 0; i < len; i++) {
             for (let j = i + 1; j < len; j++) {
-              // Code in this scope runs [particles ** 2 / 2] times!
+              // Code in this scope runs [particleCount ** 2 / 2] times!
               const particleA = this.particles[i]
               const particleB = this.particles[j]
 
@@ -197,7 +194,7 @@
               let angle, grav
 
               if (dist < maxRepulsiveDist) {
-                // Apply repulsive force on all particles close together
+                // Apply repulsive force on all particles closer than 'dist' / 2.
                 angle = Math.atan2(particleB.posY - particleA.posY, particleB.posX - particleA.posX)
                 grav = (1 / dist) ** 1.8
                 const gravMult = Math.min(maxGrav, grav * gravRepulsiveMult)
@@ -211,7 +208,7 @@
 
               if (!isPullingEnabled) continue
 
-              // Apply pulling force on all particles not close together
+              // Apply pulling force on all particles.
               if (angle === undefined) {
                 angle = Math.atan2(particleB.posY - particleA.posY, particleB.posX - particleA.posX)
                 grav = (1 / dist) ** 1.8
@@ -236,7 +233,7 @@
        * */
       #updateParticles() {
         for (let particle of this.particles) {
-          // Moving the particle
+          // Slightly, randomly change the particle's direction and move it in that direction.
           particle.dir = (particle.dir + Math.random() * this.options.particles.rotationSpeed * 2 - this.options.particles.rotationSpeed) % (2 * Math.PI)
           particle.velX *= this.options.gravity.friction
           particle.velY *= this.options.gravity.friction
@@ -246,8 +243,8 @@
           const distX = particle.posX + this.offX - this.mouseX
           const distY = particle.posY + this.offY - this.mouseY
 
-          // Mouse events
-          if (this.options.mouse.interactionType !== 0) {
+          // If the 'interactionType' is not 'NONE', calculate how much to move the particle away from the mouse.
+          if (this.options.mouse.interactionType !== CanvasParticles.interactionType.NONE) {
             const distRatio = this.options.mouse.connectDist / Math.hypot(distX, distY)
 
             if (this.options.mouse.distRatio < distRatio) {
@@ -258,18 +255,20 @@
               particle.offY -= particle.offY / 4
             }
           }
+
+          // Visually shift the particles
           particle.x = particle.posX + particle.offX
           particle.y = particle.posY + particle.offY
 
-          if (this.options.mouse.interactionType === 2) {
-            // Make the mouse actually move the particles
+          // Actually move the particles if 'interactionType' is 'MOVE'.
+          if (this.options.mouse.interactionType === CanvasParticles.interactionType.MOVE) {
             particle.posX = particle.x
             particle.posY = particle.y
           }
           particle.x += this.offX
           particle.y += this.offY
 
-          particle.gridPos = this.#gridPos(particle) // The location of the particle relative to the visible center of the canvas
+          particle.gridPos = this.#gridPos(particle)
           particle.isVisible = particle.gridPos.x === 1 && particle.gridPos.y === 1
         }
       }
@@ -312,10 +311,10 @@
        * @returns {boolean} - True if the line crosses the visible center, false otherwise.
        */
       #isLineVisible(particleA, particleB) {
-        // Visible if either particle is in the center
+        // Visible if either particle is in the center.
         if (particleA.isVisible || particleB.isVisible) return true
 
-        // Not visible if both particles are in the same vertical or horizontal line but outside the center
+        // Not visible if both particles are in the same vertical or horizontal line but outside the center.
         return !(
           (particleA.gridPos.x === particleB.gridPos.x && particleA.gridPos.x !== 1) ||
           (particleA.gridPos.y === particleB.gridPos.y && particleA.gridPos.y !== 1)
@@ -324,7 +323,7 @@
 
       /**
        * Precomputes and caches stroke style strings for a given base color and all possible alpha values (0–255).
-       * This is necessary because the rendering process involves up to [particles ** 2 / 2] lookups per frame.
+       * This is necessary because the rendering process involves up to [particleCount ** 2 / 2] lookups per frame.
        *
        * @private
        * @param {string} color - The base color in the format '#rrggbb'.
@@ -336,8 +335,7 @@
        * strokeStyleTable[255] -> "#abcdefff"
        *
        * Notes:
-       * - This function precomputes all possible stroke styles by appending a two-character
-       *   hexadecimal alpha value (0x00–0xFF) to the base color.
+       * - This function precomputes all possible stroke styles by appending a two-character hexadecimal alpha value (0x00–0xFF) to the base color.
        * - The table is stored in 'this.strokeStyleTable' for quick lookups.
        */
       #generateStrokeStyleTable(color) {
@@ -359,7 +357,8 @@
       #renderParticles() {
         for (let particle of this.particles) {
           if (particle.isVisible) {
-            // Draw the particle as a square if the size is smaller than 1 pixel (±183% faster than drawing only circles, using default settings)
+            // Draw the particle as a square if the size is smaller than 1 pixel.
+            // This is ±183% faster than drawing all particle's as circles.
             if (particle.size > 1) {
               // Draw circle
               this.ctx.beginPath()
@@ -367,7 +366,7 @@
               this.ctx.fill()
               this.ctx.closePath()
             } else {
-              // Draw square (±335% faster than circle)
+              // Draw square
               this.ctx.fillRect(particle.x - particle.size, particle.y - particle.size, particle.size * 2, particle.size * 2)
             }
           }
@@ -389,22 +388,23 @@
           let particleWork = 0
 
           for (let j = i + 1; j < len; j++) {
-            // Code in this scope runs [particles ** 2 / 2] times!
+            // Code in this scope runs [particleCount ** 2 / 2] times!
             const particleA = this.particles[i]
             const particleB = this.particles[j]
 
             if (!(drawAll || this.#isLineVisible(particleA, particleB))) continue
-            // Draw a line only if will be visible
+            // Draw a line only if it's visible.
 
             const distX = particleA.x - particleB.x
             const distY = particleA.y - particleB.y
 
             const dist = Math.sqrt(distX * distX + distY * distY)
 
+            // Don't connect the 2 particles with a line if their distance is greater than 'options.particles.connectDist'.
             if (dist > this.options.particles.connectDist) continue
-            // Connect the 2 particles with a line only if the distance is small enough
 
-            // Calculate the transparency of the line and lookup the stroke style
+            // Calculate the transparency of the line and lookup the stroke style.
+            // This is the heaviest task of the entire animation process.
             if (dist > this.options.particles.connectDist / 2) {
               const alpha = ~~(Math.min(this.options.particles.connectDist / dist - 1, 1) * this.options.particles.opacity)
               this.ctx.strokeStyle = this.strokeStyleTable[alpha]
@@ -412,12 +412,13 @@
               this.ctx.strokeStyle = this.options.particles.colorWithAlpha
             }
 
-            // Draw the line
+            // Draw the line.
             this.ctx.beginPath()
             this.ctx.moveTo(particleA.x, particleA.y)
             this.ctx.lineTo(particleB.x, particleB.y)
             this.ctx.stroke()
 
+            // Stop drawing lines from this particles if it has already drawn to many.
             if ((particleWork += dist) >= maxWorkPerParticle) break
           }
         }
@@ -477,7 +478,7 @@
           requestAnimationFrame(() => this.#animation())
         }
 
-        // Stop animating because it will start automatically once the canvas enters the viewbox
+        // Stop animating because it will start automatically once the canvas enters the viewbox.
         if (!this.canvas.inViewbox && this.options.animation.startOnEnter) this.animating = false
 
         return this
@@ -510,9 +511,10 @@
        * @param {Object} options - Object structure: https://github.com/Khoeckman/canvasParticles?tab=readme-ov-file#options
        */
       setOptions(options) {
-        const parse = this.#defaultIfNaN
+        // Returns 'defaultValue' if 'value' is NaN, else returns 'value'.
+        const parse = (value, defaultValue) => (isNaN(+value) ? defaultValue : +value)
 
-        // Format and store options
+        // Format or default all options.
         this.options = {
           background: options.background ?? false,
           framesPerUpdate: parse(Math.max(1, parseInt(options.framesPerUpdate)), 1),
@@ -567,7 +569,7 @@
        * @example 0.8 connectDistMult * 150 particles.connectDistance = 120 pixels
        */
       setMouseConnectDistMult(connectDistMult) {
-        this.options.mouse.connectDist = this.options.particles.connectDist * this.#defaultIfNaN(connectDistMult, 2 / 3)
+        this.options.mouse.connectDist = this.options.particles.connectDist * (isNaN(connectDistMult) ? 2 / 3 : connectDistMult)
       }
 
       /**
@@ -583,16 +585,17 @@
           // JavaScript's 'ctx.fillStyle' ensures the color will otherwise be in rgba format (e.g., "rgba(136, 244, 255, 0.25)")
 
           // Extract the alpha value (0.25) from the rgba string, scale it to the range 0x00 to 0xff,
-          // and convert it to an integer. This value represents the opacity as a 2-character hex string
+          // and convert it to an integer. This value represents the opacity as a 2-character hex string.
           this.options.particles.opacity = ~~(this.ctx.fillStyle.split(',').at(-1).slice(1, -1) * 255)
 
-          // Example: extract 136, 244 and 255 from rgba(136, 244, 255, 0.25) and convert to hexadecimal '#rrggbb' format
+          // Example: extract 136, 244 and 255 from rgba(136, 244, 255, 0.25) and convert to hexadecimal '#rrggbb' format.
           this.ctx.fillStyle = this.ctx.fillStyle.split(',').slice(0, -1).join(',') + ', 1)'
         }
         this.options.particles.color = this.ctx.fillStyle
         this.options.particles.colorWithAlpha = this.options.particles.color + this.options.particles.opacity.toString(16)
 
-        this.strokeStyleTable = this.#generateStrokeStyleTable(this.options.particles.color) // Recalculate the stroke style table
+        // Recalculate the stroke style table.
+        this.strokeStyleTable = this.#generateStrokeStyleTable(this.options.particles.color)
       }
     }
 )

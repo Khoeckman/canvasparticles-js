@@ -28,7 +28,7 @@ https://github.com/Khoeckman/canvasParticles/blob/main/LICENSE
   <link rel="stylesheet" href="./css/prism.min.css" />
 
   <!-- JS -->
-  <script src="./js/canvasParticles.js" defer></script>
+  <script src="./node_modules/canvasparticles-js/canvasParticles.js" defer></script>
   <script src="./js/main.js" type="module"></script>
   <script src="./js/nav.js" type="module"></script>
   <script src="./js/prism.min.js" type="module"></script>
@@ -149,16 +149,35 @@ https://github.com/Khoeckman/canvasParticles/blob/main/LICENSE
               <pre><span class="unselectable">&dollar;&nbsp;</span><code class="language-bat">npm install canvasparticles-js</code></pre>
             </div>
 
+            <h4>ES Module import</h4>
+
             <p>
-              Import the
-              <span class="highlight">CanvasParticles</span>
-              class:
+              Be aware that using ES modules is only possible when running the application on a (local) server.
+              <a href="https://developer.mozilla.org/en-US/docs/Web/Security/Same-origin_policy" class="fancy"
+                rel="nofollow">
+                Same Origin Policy
+              </a>
             </p>
 
             <div class="codeblock">
               <span class="head">JavaScript</span>
               <pre><code class="language-js">import CanvasParticles from 'canvasparticles-js'</code></pre>
             </div>
+
+            <p>If you don't have a bundler:</p>
+
+            <div class="codeblock">
+              <span class="head">JavaScript</span>
+              <pre><code class="language-js">import CanvasParticles from './node_modules/canvasparticles-js/canvasParticles.js'</code></pre>
+            </div>
+
+            <h4>Global import</h4>
+
+            <div class="codeblock">
+              <span class="head">HTML</span>
+              <pre><code class="language-html">&#x3C;script src=&#x22;./node_modules/canvasparticles-js/canvasParticles.js&#x22; defer&#x3E;&#x3C;/script&#x3E;</code></pre>
+            </div>
+            <p>No import required in each JavaScript file!</p>
           </li>
           <li hidden>
             <h3>jsDelivr</h3>

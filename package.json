@@ -1,0 +1,10 @@
+{
+  "name": "canvasparticles-js-homepage",
+  "version": "1.0.0",
+  "description": "Canvas Particles JS Homepage",
+  "main": "index.html",
+  "type": "module",
+  "dependencies": {
+    "canvasparticles-js": "^3.5.2"
+  }
+}

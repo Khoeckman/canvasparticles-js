@@ -1,5 +1,5 @@
 // Copyright (c) 2022–2025 Kyle Hoeckman, MIT License
-// https://github.com/Khoeckman/canvasParticles/blob/main/LICENSE
+// https://github.com/Khoeckman/canvasparticles-js/blob/main/LICENSE
 
 'use strict'
 ;((root, factory) =>

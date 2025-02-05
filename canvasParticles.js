@@ -9,7 +9,7 @@
   typeof self !== 'undefined' ? self : this,
   () =>
     class CanvasParticles {
-      static version = '3.5.2'
+      static version = '3.5.3'
 
       // Mouse interaction with the particles.
       static interactionType = Object.freeze({
@@ -35,7 +35,7 @@
        * @param {Object} [options={}] - Object structure: https://github.com/Khoeckman/canvasParticles?tab=readme-ov-file#options
        */
       constructor(selector, options = {}) {
-        // Find the canvas and assign it to 'this.canvas'.
+        // Find the HTMLCanvasElement and assign it to 'this.canvas'.
         if (selector instanceof HTMLCanvasElement) this.canvas = selector
         else {
           if (typeof selector !== 'string') throw new TypeError('selector is not a string and neither a HTMLCanvasElement itself')

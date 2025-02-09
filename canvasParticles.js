@@ -61,11 +61,17 @@
 
       #setupEventHandlers() {
         const updateMousePos = event => {
-          if (!(this.enableAnimating && event instanceof MouseEvent)) return
+          if (!this.enableAnimating) return
 
+          if (event instanceof MouseEvent) {
+            this.clientX = event.clientX
+            this.clientY = event.clientY
+          }
+
+          // On scroll, the mouse position remains the same, but since the canvas position changes, 'left' and 'top' must be recalculated.
           const { left, top } = this.canvas.getBoundingClientRect()
-          this.mouseX = event.clientX - left
-          this.mouseY = event.clientY - top
+          this.mouseX = this.clientX - left
+          this.mouseY = this.clientY - top
         }
 
         const resizeCanvas = () => {

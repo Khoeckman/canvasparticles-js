@@ -2,7 +2,7 @@
 // https://github.com/Khoeckman/canvasparticles-js/blob/main/LICENSE
 
 export default class CanvasParticles {
-  static version = '3.5.3'
+  static version = '3.6.0'
 
   // Mouse interaction with the particles.
   static interactionType = Object.freeze({
@@ -12,7 +12,7 @@ export default class CanvasParticles {
   })
 
   // Start or stop the animation when the canvas enters or exits the viewport.
-  static canvasObserver = new IntersectionObserver(entry => {
+  static canvasIntersectionObserver = new IntersectionObserver(entry => {
     entry.forEach(change => {
       const canvas = change.target
       const instance = canvas.instance // The 'CanvasParticles' instance bound to 'canvas'.
@@ -36,7 +36,7 @@ export default class CanvasParticles {
       this.canvas = document.querySelector(selector)
       if (!(this.canvas instanceof HTMLCanvasElement)) throw new Error('selector does not point to a canvas')
     }
-    this.canvas.instance = this // Circular assignment to find the instance bound to this canvas inside the static 'canvasObserver' callback.
+    this.canvas.instance = this // Circular assignment to find the instance bound to this canvas.
     this.canvas.inViewbox = true
 
     // Get 2d drawing methods.
@@ -47,7 +47,7 @@ export default class CanvasParticles {
     this.particles = []
     this.setOptions(options)
 
-    CanvasParticles.canvasObserver.observe(this.canvas)
+    CanvasParticles.canvasIntersectionObserver.observe(this.canvas)
 
     this.#setupEventHandlers()
   }
@@ -259,7 +259,7 @@ export default class CanvasParticles {
       particle.x = particle.posX + particle.offX
       particle.y = particle.posY + particle.offY
 
-      // Actually move the particles if 'interactionType' is 'MOVE'.
+      // Actually move the particles if the 'interactionType' is 'MOVE'.
       if (this.options.mouse.interactionType === CanvasParticles.interactionType.MOVE) {
         particle.posX = particle.x
         particle.posY = particle.y
@@ -467,7 +467,7 @@ export default class CanvasParticles {
    * - If the canvas is not within the viewbox and 'startOnEnter' is enabled, animation will be stopped until it enters the viewbox.
    *
    * @param {Object} [options] - Optional configuration for starting the animation.
-   * @param {boolean} [options.auto] - If true, indicates that the request comes from 'CanvasParticles.canvasObserver'.
+   * @param {boolean} [options.auto] - If true, indicates that the request comes from within.
    * @returns {CanvasParticles} The current instance for method chaining.
    */
   start(options) {
@@ -489,7 +489,7 @@ export default class CanvasParticles {
    * - If 'options.clear' is not strictly false, the canvas will be cleared.
    *
    * @param {Object} [options] - Optional configuration for stopping the animation.
-   * @param {boolean} [options.auto] - If true, indicates that the request comes from 'CanvasParticles.canvasObserver'.
+   * @param {boolean} [options.auto] - If true, indicates that the request comes from within.
    * @param {boolean} [options.clear] - If strictly false, prevents clearing the canvas-.
    * @returns {boolean} `true` when the animation is successfully stopped.
    */
@@ -499,6 +499,15 @@ export default class CanvasParticles {
     if (options?.clear !== false) this.canvas.width = this.canvas.width
 
     return true
+  }
+
+  /**
+   * Gracefully destroy the instance and remove the canvas element.
+   */
+  destroy() {
+    this.stop()
+    this.canvas.remove()
+    Object.keys(this).forEach(key => delete this[key]) // Remove references to help GC.
   }
 
   /**

@@ -22,23 +22,10 @@ If you dont like reading documentation this website is for you:<br>
 
 ## Implementation
 
-Particles will be drawn onto this `<canvas>` element
+Particles will be drawn onto a `<canvas>` element.
 
 ```html
 <canvas id="my-canvas"></canvas>
-```
-
-Resize the `<canvas>` so it covers the whole page and place it behind all elements.
-
-```css
-#my-canvas {
-  position: fixed;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  z-index: -1; /* Place behind other elements to act as background */
-}
 ```
 
 <details open>
@@ -153,7 +140,21 @@ new CanvasParticles(selector, options).start()
 const particles = new CanvasParticles(selector, options)
 particles.start()
 particles.stop()
+```
+
+To keep the last frame visible when stopping the animation:
+
+```js
 particles.stop({ clear: false }) // Default: true
+```
+
+### Destruction
+
+Gracefully destroy the instance and remove the canvas element.
+
+```js
+particles.destroy()
+delete particles // Optional
 ```
 
 ## Class instantiation
@@ -163,17 +164,17 @@ particles.stop({ clear: false }) // Default: true
 ```js
 const selector = '#my-canvas'
 const options = {}
-const myCanvas = document.querySelector(selector)
+const canvasElement = document.querySelector(selector)
 
 let instance, canvas
 
 // Basic instantiation
 instance = new CanvasParticles(selector)
-instance = new CanvasParticles(myCanvas)
+instance = new CanvasParticles(canvasElement)
 
 // Instantiation with custom options
 instance = new CanvasParticles(selector, options)
-instance = new CanvasParticles(myCanvas, options)
+instance = new CanvasParticles(canvasElement, options)
 ```
 
 ### Chaining methods
@@ -405,7 +406,7 @@ particles.setOptions(options)
         left: 0;
         width: 100%;
         height: 100%;
-        z-index: -1;
+        z-index: -1; /* Place behind other elements to act as background */
       }
     </style>
   </head>

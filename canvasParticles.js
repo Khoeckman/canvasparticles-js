@@ -9,7 +9,7 @@
   typeof self !== 'undefined' ? self : this,
   () =>
     class CanvasParticles {
-      static version = '3.6.0'
+      static version = '3.6.1'
 
       // Mouse interaction with the particles.
       static interactionType = Object.freeze({
@@ -24,8 +24,10 @@
           const canvas = change.target
           const instance = canvas.instance // The 'CanvasParticles' instance bound to 'canvas'.
 
-          if ((canvas.inViewbox = change.isIntersecting)) instance.options.animation.startOnEnter && instance.start({ auto: true })
-          else instance.options.animation.stopOnLeave && instance.stop({ auto: true, clear: false })
+          if (!instance.options?.animation) return
+
+          if ((canvas.inViewbox = change.isIntersecting)) instance.options.animation?.startOnEnter && instance.start({ auto: true })
+          else instance.options.animation?.stopOnLeave && instance.stop({ auto: true, clear: false })
         })
       })
 
@@ -513,6 +515,7 @@
        */
       destroy() {
         this.stop()
+        CanvasParticles.canvasIntersectionObserver.unobserve(this.canvas)
         this.canvas.remove()
         Object.keys(this).forEach(key => delete this[key]) // Remove references to help GC.
       }

@@ -5,6 +5,6 @@
   "main": "index.html",
   "type": "module",
   "dependencies": {
-    "canvasparticles-js": "^3.5.2"
+    "canvasparticles-js": "*"
   }
 }

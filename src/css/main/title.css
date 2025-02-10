@@ -14,8 +14,7 @@
 #title h1 {
   font-size: clamp(2.5rem, 8vw, 8.5rem);
   color: var(--g2);
-  margin-top: 0;
-  margin-bottom: 2.5rem;
+  margin: 0;
 }
 
 #title h2 {
@@ -70,7 +69,7 @@
 }
 
 #title .shape {
-  backdrop-filter: invert(0.1) saturate(48) hue-rotate(21.2deg);
+  backdrop-filter: invert(0.1) saturate(32) hue-rotate(32deg);
   border-radius: 24rem;
   position: absolute;
   top: -50rem;

@@ -21,8 +21,13 @@ const populateCanvasContainer = () => {
   const width = +document.getElementById('canvas-width').value
   const height = +document.getElementById('canvas-height').value
 
+  // Gracefully destroy existing elements
+  if (canvasElements.length) {
+    canvasElements.forEach(canvas => canvas.instance.destroy())
+    canvasElements = []
+  }
+
   canvasContainer.innerHTML = ''
-  canvasElements = []
 
   for (let i = 0; i < count; i++) {
     const canvas = document.createElement('canvas')
@@ -41,6 +46,7 @@ const populateCanvasContainer = () => {
         particles: {
           color: getRandomColor(0, 255),
           ppm,
+          max: Infinity,
           maxWork: 99,
         },
       }).canvas

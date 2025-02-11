@@ -9,7 +9,7 @@
   typeof self !== 'undefined' ? self : this,
   () =>
     class CanvasParticles {
-      static version = '3.6.1'
+      static version = '3.6.2'
 
       // Mouse interaction with the particles.
       static interactionType = Object.freeze({
@@ -58,49 +58,48 @@
 
         CanvasParticles.canvasIntersectionObserver.observe(this.canvas)
 
-        this.#setupEventHandlers()
+        // Setup event handlers
+        window.addEventListener('resize', this.#resizeCanvas)
+        this.#resizeCanvas()
+
+        window.addEventListener('mousemove', this.#updateMousePos)
+        window.addEventListener('scroll', this.#updateMousePos)
       }
 
-      #setupEventHandlers() {
-        const updateMousePos = event => {
-          if (!this.enableAnimating) return
+      #resizeCanvas() {
+        if (!this.canvas) return
 
-          if (event instanceof MouseEvent) {
-            this.clientX = event.clientX
-            this.clientY = event.clientY
-          }
+        this.canvas.width = this.canvas.offsetWidth
+        this.canvas.height = this.canvas.offsetHeight
 
-          // On scroll, the mouse position remains the same, but since the canvas position changes, 'left' and 'top' must be recalculated.
-          const { left, top } = this.canvas.getBoundingClientRect()
-          this.mouseX = this.clientX - left
-          this.mouseY = this.clientY - top
+        // Prevent the mouse acting like it's at (x: 0, y: 0) before the user moved it.
+        this.mouseX = Infinity
+        this.mouseY = Infinity
+
+        this.updateCount = Infinity
+        this.width = this.canvas.width + this.options.particles.connectDist * 2
+        this.height = this.canvas.height + this.options.particles.connectDist * 2
+        this.offX = (this.canvas.width - this.width) / 2
+        this.offY = (this.canvas.height - this.height) / 2
+
+        if (this.options.particles.regenerateOnResize || this.particles.length === 0) this.newParticles()
+        else this.matchParticleCount()
+
+        this.#updateParticleBounds()
+      }
+
+      #updateMousePos(event) {
+        if (!this.enableAnimating) return
+
+        if (event instanceof MouseEvent) {
+          this.clientX = event.clientX
+          this.clientY = event.clientY
         }
 
-        const resizeCanvas = () => {
-          this.canvas.width = this.canvas.offsetWidth
-          this.canvas.height = this.canvas.offsetHeight
-
-          // Prevent the mouse acting like it's at (x: 0, y: 0) before it has moved.
-          this.mouseX = Infinity
-          this.mouseY = Infinity
-
-          this.updateCount = Infinity
-          this.width = this.canvas.width + this.options.particles.connectDist * 2
-          this.height = this.canvas.height + this.options.particles.connectDist * 2
-          this.offX = (this.canvas.width - this.width) / 2
-          this.offY = (this.canvas.height - this.height) / 2
-
-          if (this.options.particles.regenerateOnResize || this.particles.length === 0) this.newParticles()
-          else this.matchParticleCount()
-
-          this.#updateParticleBounds()
-        }
-
-        window.addEventListener('resize', resizeCanvas)
-        resizeCanvas()
-
-        window.addEventListener('mousemove', updateMousePos)
-        window.addEventListener('scroll', updateMousePos)
+        // On scroll, the mouse position remains the same, but since the canvas position changes, 'left' and 'top' must be recalculated.
+        const { left, top } = this.canvas.getBoundingClientRect()
+        this.mouseX = this.clientX - left
+        this.mouseY = this.clientY - top
       }
 
       /**
@@ -515,8 +514,15 @@
        */
       destroy() {
         this.stop()
+
         CanvasParticles.canvasIntersectionObserver.unobserve(this.canvas)
+
+        window.removeEventListener('resize', this.#resizeCanvas)
+        window.removeEventListener('mousemove', this.#updateMousePos)
+        window.removeEventListener('scroll', this.#updateMousePos)
+
         this.canvas.remove()
+
         Object.keys(this).forEach(key => delete this[key]) // Remove references to help GC.
       }
 

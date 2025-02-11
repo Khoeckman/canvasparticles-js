@@ -9,7 +9,7 @@
   typeof self !== 'undefined' ? self : this,
   () =>
     class CanvasParticles {
-      static version = '3.6.2'
+      static version = '3.6.3'
 
       // Mouse interaction with the particles.
       static interactionType = Object.freeze({
@@ -521,7 +521,7 @@
         window.removeEventListener('mousemove', this.#updateMousePos)
         window.removeEventListener('scroll', this.#updateMousePos)
 
-        this.canvas.remove()
+        this.canvas?.remove()
 
         Object.keys(this).forEach(key => delete this[key]) // Remove references to help GC.
       }

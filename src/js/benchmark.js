@@ -1,15 +1,6 @@
 // Version
 document.getElementById('version').innerText = CanvasParticles.version ?? 'unknown'
 
-// Helper
-const getRandomColor = (min = 0, max = 255) => {
-  const range = max - min
-  const red = min + Math.floor(Math.random() * range)
-  const green = min + Math.floor(Math.random() * range)
-  const blue = min + Math.floor(Math.random() * range)
-  return `rgb(${red}, ${green}, ${blue})`
-}
-
 // Populate canvas container
 const root = document.querySelector(':root')
 
@@ -45,13 +36,13 @@ const populateCanvasContainer = () => {
 
     canvasElements.push(
       new CanvasParticles(canvas, {
-        background: getRandomColor(0, 255),
+        background: `hsl(${~~(Math.random() * 360)}, ${~~(Math.random() * 80)}%, ${~~(Math.random() * 100)}%)`,
         animation: {},
         mouse: {
           interactionType: 2,
         },
         particles: {
-          color: getRandomColor(0, 255),
+          color: `hsl(${~~(Math.random() * 360)}, ${80 + ~~(Math.random() * 20)}%, ${40 + ~~(Math.random() * 20)}%)`,
           ppm,
           max: Infinity,
           maxWork: 99,

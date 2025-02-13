@@ -114,6 +114,10 @@ button {
   font-family: inherit;
 }
 
+button:disabled {
+  cursor: initial;
+}
+
 img {
   vertical-align: top;
 }
@@ -192,14 +196,18 @@ input[type='color'] {
   transition: background 150ms, border-color 150ms, color 150ms, filter 150ms;
 }
 
-.button:is(:hover, :focus-visible) {
+.button:not(:disabled):is(:hover, :focus-visible) {
   background-color: var(--fg);
   border-color: transparent;
   color: var(--bg);
 }
 
-.button:hover:active {
+.button:not(:disabled):hover:active {
   filter: brightness(0.8);
+}
+
+.button:disabled {
+  color: var(--g7);
 }
 
 .list {

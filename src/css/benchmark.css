@@ -90,6 +90,20 @@ main section:first-child {
   max-width: unset;
 }
 
+@property --benchmark-width {
+  syntax: '<length>';
+  inherits: false;
+  initial-value: auto;
+}
+
+@property --benchmark-height {
+  syntax: '<length>';
+  inherits: false;
+  initial-value: auto;
+}
+
 #canvas-container canvas {
+  width: var(--benchmark-width);
   max-width: 100%;
+  height: var(--benchmark-height);
 }

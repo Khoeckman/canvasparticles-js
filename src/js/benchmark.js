@@ -11,7 +11,12 @@ const getRandomColor = (min = 0, max = 255) => {
 }
 
 // Populate canvas container
+const root = document.querySelector(':root')
+
 const canvasContainer = document.getElementById('canvas-container')
+
+const startAnimationButton = document.getElementById('start-animation')
+const stopAnimationButton = document.getElementById('stop-animation')
 
 let canvasElements = []
 
@@ -20,6 +25,9 @@ const populateCanvasContainer = () => {
   const ppm = +document.getElementById('ppm-number').value
   const width = +document.getElementById('canvas-width').value
   const height = +document.getElementById('canvas-height').value
+
+  root.style.setProperty('--benchmark-width', width + 'px')
+  root.style.setProperty('--benchmark-height', height + 'px')
 
   // Gracefully destroy existing elements
   if (canvasElements.length) {
@@ -32,8 +40,7 @@ const populateCanvasContainer = () => {
   for (let i = 0; i < count; i++) {
     const canvas = document.createElement('canvas')
     canvas.id = '#benchmark-' + i
-    canvas.width = width
-    canvas.height = height
+
     canvasContainer.appendChild(canvas)
 
     canvasElements.push(
@@ -52,6 +59,9 @@ const populateCanvasContainer = () => {
       }).canvas
     )
   }
+
+  startAnimationButton.disabled = null
+  stopAnimationButton.disabled = null
 }
 
 // Handle settings form
@@ -85,5 +95,5 @@ ppmNumberInput.addEventListener('change', function () {
 // Form actions
 settingsForm.addEventListener('submit', populateCanvasContainer)
 
-document.getElementById('start-animation').addEventListener('click', () => canvasElements.forEach(canvas => canvas.instance.start()))
-document.getElementById('stop-animation').addEventListener('click', () => canvasElements.forEach(canvas => canvas.instance.stop()))
+startAnimationButton.addEventListener('click', () => canvasElements.forEach(canvas => canvas.instance.start()))
+stopAnimationButton.addEventListener('click', () => canvasElements.forEach(canvas => canvas.instance.stop()))

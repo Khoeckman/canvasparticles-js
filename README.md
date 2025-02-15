@@ -3,6 +3,7 @@
 <span class="badge-npmversion"><a href="https://npmjs.org/package/canvasparticles-js" title="View this project on NPM"><img src="https://img.shields.io/npm/v/canvasparticles-js.svg" alt="NPM version" /></a></span>
 <span class="badge-npmversion"><a href="https://npmjs.org/package/canvasparticles-js" title="View this project on NPM"><img src="https://img.shields.io/npm/d18m/canvasparticles-js.svg" alt="NPM downloads" /></a></span>
 <span><a href="https://www.jsdelivr.com/package/npm/canvasparticles-js" title="View this project on jsDelivr"><img src="https://data.jsdelivr.com/v1/package/npm/canvasparticles-js/badge?style=rounded" alt="jsDelivr hits" /></a></span>
+<span><a href="https://github.com/Khoeckman/canvasparticles-js/actions" title="View GitHub workflows"><img src="https://github.com/Khoeckman/canvasparticles-js/actions/workflows/node.js.yml/badge.svg" alt="GitHub workflows" /></a></span>
 
 ## Description
 

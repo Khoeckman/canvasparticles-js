@@ -6,6 +6,9 @@
   "module": "canvasParticles.mjs",
   "types": "canvasParticles.d.ts",
   "type": "module",
+  "scripts": {
+    "test": "exit 0"
+  },
   "files": [
     "./canvasparticles.d.ts",
     "./canvasParticles.js",

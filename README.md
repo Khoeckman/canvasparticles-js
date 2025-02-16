@@ -212,7 +212,7 @@ canvas = new CanvasParticles(selector).anyOtherMethod().canvas
 ## Options
 
 Configuration options for the particles and their behavior.<br>
-Play around with these values: [Sandbox](http://kylehoeckman.great-site.net/canvas-particles/#sandbox)
+Play around with these values: [Sandbox](https://canvasparticleshomepage.onrender.com/src/#sandbox)
 
 <details>
   <summary><h3>Options structure</h3></summary>
@@ -421,7 +421,7 @@ particles.setOptions(options)
       const options = {
         background: 'hsl(125, 42%, 35%)',
         mouse: {
-          interactionType: CanvasParticles.interactionType.MOVE, // === 2
+          interactionType: CanvasParticles.interactionType.MOVE, // MOVE === 2
         },
         particles: {
           color: 'rgba(150, 255, 105, 0.95)',

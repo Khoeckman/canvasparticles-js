@@ -196,18 +196,28 @@ input[type='color'] {
   transition: background 150ms, border-color 150ms, color 150ms, filter 150ms;
 }
 
-.button:not(:disabled):is(:hover, :focus-visible) {
+.button:is(:hover, :focus-visible) {
   background-color: var(--fg);
   border-color: transparent;
   color: var(--bg);
 }
 
-.button:not(:disabled):hover:active {
+.button:hover:active {
   filter: brightness(0.8);
 }
 
 .button:disabled {
+  background-color: transparent;
+  border: 1px solid var(--g9);
   color: var(--g7);
+}
+
+.button:disabled:is(:hover, :focus-visible) {
+  border-color: initial;
+}
+
+.button:disabled:hover:active {
+  filter: initial;
 }
 
 .list {

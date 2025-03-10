@@ -180,7 +180,7 @@ instance = new CanvasParticles(canvasElement, options)
 
 ### Chaining methods
 
-You can chain .start() for a cleaner syntax:
+You can chain `.start()` for a cleaner syntax:
 
 ```js
 instance = new CanvasParticles(selector).start()

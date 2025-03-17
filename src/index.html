@@ -671,8 +671,8 @@ new CanvasParticles('#showcase-multiple-colors-2', {
           <h3>Performance optimizations</h3>
           <p>Canvas Particles JS is a highly optimized particle renderer (ignoring the fact that it's coded in JS).
             A lot of time has gone into profiling the code and improving efficiency on expensive tasks.</p>
-          <p>An <span class="highlight">IntersectionObserver</span> is used to pause and resume the animation based on
-            if the canvas is within the viewbox</p>
+          <p>An <span class="highlight">IntersectionObserver</span> is used to pause and resume the animation when the
+            canvas enters or leaves the viewbox.</p>
           <p>Particles smaller than one pixel are drawn as squares instead of circles which is ±183% faster.</p>
           <p>Dynamically generating the <span class="highlight">fillStyle</span> combinations for each connection in
             every frame is the most expensive task. It's about 5x faster to precomputing all 256 particle colors,

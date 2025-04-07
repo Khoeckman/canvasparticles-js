@@ -339,7 +339,7 @@ const options = {
 
 ### Update options on the fly
 
-**Note:** The new option values are not validated, except for the options with a setter. Assigning invalid values will lead to unexpected behavior and system errors.
+**Note:** The new option values are not validated, except for the options with a setter. Assigning invalid values will lead to unexpected behavior.
 
 #### Using the setter
 
@@ -350,12 +350,12 @@ These options require dedicated setters to ensure proper integration.
 - options.particles.color
 
 ```js
-const particles = new CanvasParticles(selector, options)
+const instance = new CanvasParticles(selector, options)
 
 // Use the setters to update these specific options
-particles.setBackground('red')
-particles.setMouseConnectDistMult(0.8)
-particles.setParticleColor('hsl(149, 100%, 50%)')
+instance.setBackground('red')
+instance.setMouseConnectDistMult(0.8)
+instance.setParticleColor('hsl(149, 100%, 50%)')
 ```
 
 #### Changing the particle count
@@ -366,12 +366,12 @@ After updating the following options, the number of particles is not automatical
 - options.particles.max
 
 ```js
-particles.options.particles.ppm = 100
-particles.options.particles.max = 300
+instance.options.particles.ppm = 100
+instance.options.particles.max = 300
 
 // Apply the changes using one of these methods:
-particles.newParticles() // Remove all particles and create the correct amount of new ones
-particles.matchParticleCount() // Add or remove some particles to match the count
+instance.newParticles() // Remove all particles and create the correct amount of new ones
+instance.matchParticleCount() // Add or remove some particles to match the count
 ```
 
 #### Modifying object properties
@@ -379,9 +379,9 @@ particles.matchParticleCount() // Add or remove some particles to match the coun
 **All** other options can be updated by modifying the `options` object properties, with changes taking immediate effect.
 
 ```js
-particles.options.mouse.interactionType = 0
-particles.options.particles.connectDist = 200
-particles.options.gravity.repulsive = 1
+instance.options.mouse.interactionType = 0
+instance.options.particles.connectDist = 200
+instance.options.gravity.repulsive = 1
 ```
 
 #### Updating options object
@@ -390,7 +390,7 @@ To update all options for the same class, pass a new options object.
 
 ```js
 const options = { ... }
-particles.setOptions(options)
+instance.setOptions(options)
 ```
 
 ## One pager example

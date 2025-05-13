@@ -384,9 +384,9 @@ instance.options.particles.connectDist = 200
 instance.options.gravity.repulsive = 1
 ```
 
-#### Updating options object
+#### Updating entire options object
 
-To update all options for the same class, pass a new options object.
+To reinitialize all options, pass a new options object with `.setOptions()`.
 
 ```js
 const options = { ... }

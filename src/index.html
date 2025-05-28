@@ -624,6 +624,8 @@ new CanvasParticles('#showcase-multiple-colors-2', {
         <div id="sandbox-error" hidden tabindex="-1"></div>
 
         <div class="codeblock">
+          <button id="run-sandbox" class="run" type="submit">▶</button>
+          <button id="stop-sandbox" class="run stop" type="submit">■</button>
           <span class="head">JavaScript (editable)</span>
           <pre id="sandbox-options" contenteditable="true"
             spellcheck="false"><code class="language-js">options = {}</code></pre>
@@ -636,13 +638,6 @@ new CanvasParticles('#showcase-multiple-colors-2', {
             README.md#options
           </a>
         </p>
-
-        <div class="codeblock">
-          <button id="run-sandbox" class="run" type="submit">▶</button>
-          <button id="stop-sandbox" class="run stop" type="submit">■</button>
-          <span class="head">JavaScript</span>
-          <pre><code class="language-js">new CanvasParticles('#cp-sandbox', options).start()</code></pre>
-        </div>
       </form>
       <canvas id="cp-sandbox"></canvas>
     </section>

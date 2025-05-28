@@ -26,7 +26,7 @@ togglables.forEach(checkbox => {
       const currentName = checkbox.id.split(/-(.*)/s)[1]
       if (name === currentName) return
       checkbox.checked = false
-      showcase[currentName]?.stop()
+      showcase[currentName]?.stop({ clear: false })
     })
   })
 })

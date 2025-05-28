@@ -91,7 +91,6 @@ main .codeblock {
   min-width: min(100%, 40rem);
   width: fit-content;
   max-width: 100%;
-  margin: 1.5rem 0;
 }
 
 main .codeblock pre {

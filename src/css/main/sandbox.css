@@ -1,5 +1,11 @@
-#sandbox h3:first-of-type {
-  margin: 0;
+#sandbox .workspaces {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 1.5rem 3rem;
+}
+
+#sandbox .workspaces h3 {
+  margin-top: 0;
 }
 
 #sandbox .codeblock {
@@ -10,7 +16,7 @@
   margin: 1.5rem 0;
 }
 
-#sandbox #sandbox-preset-choice {
+#sandbox .list.choice {
   width: fit-content;
 }
 

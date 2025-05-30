@@ -75,8 +75,31 @@ const presets = {
 }
 
 const sandboxOptions = document.getElementById('sandbox-options')
+const sandbox = document.getElementById('sandbox-options')
+let selectedWorkspace = null
 
 export const loadPreset = presetName => {
-  sandboxOptions.textContent = presets[presetName]
-  Prism.highlightElement(sandboxOptions)
+  selectedWorkspace = null
+  sandbox.textContent = presets[presetName]
+  Prism.highlightElement(sandbox)
 }
+
+export const loadWorkspace = workspaceName => {
+  selectedWorkspace = workspaceName
+  let workspace = localStorage.getItem('cpjs.sandbox.workspace.' + workspaceName)
+
+  if (!workspace) {
+    localStorage.setItem('cpjs.sandbox.workspace.' + workspaceName, presets.empty)
+    workspace = presets.empty
+  }
+
+  sandbox.textContent = workspace
+  Prism.highlightElement(sandbox)
+}
+
+const saveSelectedWorkspace = data => {
+  if (!selectedWorkspace) return
+  localStorage.setItem('cpjs.sandbox.workspace.' + selectedWorkspace, data)
+}
+
+sandbox.addEventListener('input', () => saveSelectedWorkspace(sandboxOptions.innerText))

@@ -6,6 +6,10 @@
   width: 100%;
 }
 
+#sandbox .codeblock + p {
+  margin: 1.5rem 0;
+}
+
 #sandbox #sandbox-preset-choice {
   width: fit-content;
 }

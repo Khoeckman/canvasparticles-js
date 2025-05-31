@@ -6,7 +6,7 @@ import { loadPreset, loadWorkspace } from './workspaces.js'
 const sandboxError = document.getElementById('sandbox-error')
 const sandboxOptions = document.getElementById('sandbox-options')
 
-window.addEventListener('load', () => loadWorkspace('all'))
+window.addEventListener('load', () => loadPreset('all'))
 
 sandboxOptions.addEventListener('blur', function () {
   Prism.highlightElement(this)

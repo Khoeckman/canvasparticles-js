@@ -19,7 +19,7 @@ Creating a fun and interactive background. Colors, interaction and gravity can b
 ## Showcase
 
 If you dont like reading documentation this website is for you:<br>
-[https://canvasparticleshomepage.onrender.com/](https://canvasparticleshomepage.onrender.com/)
+[https://khoeckman.github.io/canvasparticles-js/](https://khoeckman.github.io/canvasparticles-js/)
 
 ## Implementation
 
@@ -212,7 +212,7 @@ canvas = new CanvasParticles(selector).anyOtherMethod().canvas
 ## Options
 
 Configuration options for the particles and their behavior.<br>
-Play around with these values: [Sandbox](https://canvasparticleshomepage.onrender.com/src/#sandbox)
+Play around with these values: [Sandbox](https://khoeckman.github.io/canvasparticles-js/#sandbox)
 
 <details>
   <summary><h3>Options structure</h3></summary>

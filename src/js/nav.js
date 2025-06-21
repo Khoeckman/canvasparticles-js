@@ -63,7 +63,7 @@ const scrollEventHandler = container => {
       section.navButton.classList.add('active')
 
       clearTimeout(debounceUpdateHash)
-      debounceUpdateHash = setTimeout(() => history?.pushState(null, null, section.navButton.children[0].hash), 500)
+      debounceUpdateHash = setTimeout(() => history?.replaceState(null, '', section.navButton.children[0].hash), 500)
       break
     }
   }

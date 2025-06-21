@@ -32,12 +32,6 @@ jobs:
           node-version: 22
           cache: 'npm'
 
-      - name: Install dependencies
-        run: npm ci
-
-      - name: Run build script (optional)
-        run: npm run build --if-present
-
       - name: Setup GitHub Pages
         uses: actions/configure-pages@v5
 

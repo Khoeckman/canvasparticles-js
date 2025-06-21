@@ -9,7 +9,7 @@
   typeof self !== 'undefined' ? self : this,
   () =>
     class CanvasParticles {
-      static version = '3.6.9'
+      static version = '3.7.0'
 
       // Mouse interaction with the particles.
       static interactionType = Object.freeze({

@@ -1,10 +1,11 @@
 {
   "name": "canvasparticles-js-homepage",
+  "private": true,
   "version": "1.0.0",
-  "description": "Canvas Particles JS Homepage",
-  "main": "index.html",
+  "description": "Canvas Particles JS - Homepage",
+  "main": "src/index.html",
   "type": "module",
   "dependencies": {
-    "canvasparticles-js": "3.6.8"
+    "canvasparticles-js": "latest"
   }
 }

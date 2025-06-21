@@ -1,0 +1,139 @@
+header {
+  position: fixed;
+  width: 100%;
+  z-index: 10;
+  transition: background 300ms;
+}
+
+header nav {
+  margin: 1rem;
+  padding: 1rem 6%;
+  transition: margin 300ms;
+}
+
+header nav ul {
+  display: flex;
+  align-items: center;
+  gap: 1.5rem;
+}
+
+header nav li:first-child {
+  border-radius: var(--rs);
+}
+
+header nav li:first-child img {
+  border-radius: var(--rs);
+  width: 4rem;
+  height: 4rem;
+}
+
+header nav li:first-child:is(:hover, :focus-within) img {
+  animation: invert 0.48s linear infinite alternate;
+}
+
+@keyframes invert {
+  to {
+    filter: invert(1);
+  }
+}
+
+header nav li.title {
+  color: var(--g2);
+  margin-right: auto;
+}
+
+header nav li.title h1 {
+  margin: 0;
+}
+
+header nav li.title .version {
+  color: var(--g7);
+  margin: 0;
+}
+
+header nav li.title .version::before {
+  background-color: var(--g7);
+}
+
+header nav li.title .version:is(:hover, :focus-visible) {
+  color: var(--bg);
+}
+
+header nav li.title .version:is(:hover, :focus-visible)::before {
+  background-color: var(--fg);
+}
+
+header nav li .button {
+  transition: background 150ms, border-color 150ms, color 150ms, transform 300ms, filter 300ms;
+}
+
+header nav li .button:is(:hover, :focus-visible) {
+  transform: scale(1.1);
+  filter: brightness(1.2);
+}
+
+header nav li .button:active {
+  transform: none;
+}
+
+header nav li .button :is(svg, img) {
+  display: block;
+  height: 100%;
+}
+
+header nav li .button.npm {
+  background-color: var(--sec);
+  border-color: transparent;
+}
+
+header nav li .button.github {
+  background-color: var(--g1);
+  border-color: transparent;
+}
+
+@media (prefers-color-scheme: light) {
+  header nav li .button.github img {
+    filter: invert(1);
+  }
+}
+
+header.small {
+  background-color: var(--header-bg);
+  -webkit-backdrop-filter: blur(1rem);
+  backdrop-filter: blur(1rem);
+  z-index: 11;
+}
+
+header.small nav {
+  margin: 0 1rem;
+}
+
+@media only screen and (width < 60em) {
+  header nav,
+  header.small nav {
+    margin-right: 0;
+    margin-left: 0;
+  }
+
+  header nav ul {
+    gap: 1rem;
+  }
+
+  header nav li.title h1 {
+    font-size: clamp(1rem, calc(10vw - 3rem), 2rem);
+  }
+
+  header nav li.title a {
+    font-size: clamp(0.8rem, calc(5vw - 1.5rem), 1rem);
+  }
+}
+
+@media only screen and (width < 40em) {
+  header nav li:first-child {
+    margin-right: auto;
+  }
+
+  header nav li.title {
+    display: none;
+  }
+}

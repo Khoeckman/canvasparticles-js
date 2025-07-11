@@ -2,7 +2,7 @@
 // https://github.com/Khoeckman/canvasparticles-js/blob/main/LICENSE
 
 export default class CanvasParticles {
-  static version = '3.7.0'
+  static version = '3.7.1'
 
   // Mouse interaction with the particles.
   static interactionType = Object.freeze({
@@ -105,7 +105,7 @@ export default class CanvasParticles {
    */
   #updateParticleCount() {
     // Amount of particles to be created
-    const particleCount = ~~((this.options.particles.ppm * this.width * this.height) / 1_000_000)
+    const particleCount = ((this.options.particles.ppm * this.width * this.height) / 1_000_000) | 0
     this.particleCount = Math.min(this.options.particles.max, particleCount)
 
     if (!isFinite(this.particleCount)) throw new RangeError('number of particles must be finite. (options.particles.ppm)')
@@ -407,7 +407,7 @@ export default class CanvasParticles {
         // Calculate the transparency of the line and lookup the stroke style.
         // This is the heaviest task of the entire animation process.
         if (dist > this.options.particles.connectDist / 2) {
-          const alpha = ~~(Math.min(this.options.particles.connectDist / dist - 1, 1) * this.options.particles.opacity)
+          const alpha = (Math.min(this.options.particles.connectDist / dist - 1, 1) * this.options.particles.opacity) | 0
           this.ctx.strokeStyle = this.strokeStyleTable[alpha]
         } else {
           this.ctx.strokeStyle = this.options.particles.colorWithAlpha
@@ -604,7 +604,7 @@ export default class CanvasParticles {
 
       // Extract the alpha value (0.25) from the rgba string, scale it to the range 0x00 to 0xff,
       // and convert it to an integer. This value represents the opacity as a 2-character hex string.
-      this.options.particles.opacity = ~~(this.ctx.fillStyle.split(',').at(-1).slice(1, -1) * 255)
+      this.options.particles.opacity = (this.ctx.fillStyle.split(',').at(-1).slice(1, -1) * 255) | 0
 
       // Example: extract 136, 244 and 255 from rgba(136, 244, 255, 0.25) and convert to hexadecimal '#rrggbb' format.
       this.ctx.fillStyle = this.ctx.fillStyle.split(',').slice(0, -1).join(',') + ', 1)'

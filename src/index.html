@@ -4,321 +4,326 @@ https://github.com/Khoeckman/canvasparticles-js/blob/main/LICENSE
 -->
 <!DOCTYPE html>
 <html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="description" content="Homepage" />
+    <meta name="google-site-verification" content="1Mh0lUvuIjThK1wszSkSxEJcTaV4A9HkE9Vaw_MmsFw" />
 
-<head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <meta http-equiv="X-UA-Compatible" content="ie=edge" />
-  <meta name="description" content="Homepage" />
-  <meta name="google-site-verification" content="1Mh0lUvuIjThK1wszSkSxEJcTaV4A9HkE9Vaw_MmsFw" />
+    <!-- Browser Tab -->
+    <title>Canvas Particles JS</title>
+    <link rel="icon" href="img/favicon.webp" />
 
-  <!-- Browser Tab -->
-  <title>Canvas Particles JS</title>
-  <link rel="icon" href="img/favicon.webp" />
+    <!-- Google Fonts: Montserrat -->
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@100..900&display=swap" rel="stylesheet" />
 
-  <!-- Google Fonts: Montserrat -->
-  <link rel="preconnect" href="https://fonts.googleapis.com" />
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-  <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@100..900&display=swap" rel="stylesheet" />
+    <!-- Styles -->
+    <link rel="stylesheet" href="css/normalize.css" />
+    <link rel="stylesheet" href="css/style.css" />
+    <link rel="stylesheet" href="css/homepage.css" />
+    <link rel="stylesheet" href="css/prism.min.css" />
 
-  <!-- Styles -->
-  <link rel="stylesheet" href="css/normalize.css" text="text/html" />
-  <link rel="stylesheet" href="css/style.css" text="text/html" />
-  <link rel="stylesheet" href="css/homepage.css" text="text/html" />
-  <link rel="stylesheet" href="css/prism.min.css" text="text/html" />
+    <!-- JS -->
+    <script src="https://cdn.jsdelivr.net/npm/canvasparticles-js/canvasParticles.min.js" defer></script>
+    <script src="js/main.js" type="module"></script>
+    <script src="js/nav.js" type="module"></script>
+    <script src="js/prism.min.js" type="module"></script>
+  </head>
 
-  <!-- JS -->
-  <script src="https://cdn.jsdelivr.net/npm/canvasparticles-js/canvasParticles.min.js" defer></script>
-  <script src="js/main.js" type="module"></script>
-  <script src="js/nav.js" type="module"></script>
-  <script src="js/prism.min.js" type="module"></script>
-</head>
-
-<body>
-  <header>
-    <nav>
-      <ul class="list">
-        <li class="has-overlay">
-          <img src="img/favicon.webp" alt="Logo with initials KH" />
-          <a href="https://khoeckman.github.io/cv/" class="overlay" aria-label="Homepage"></a>
-        </li>
-        <li class="title">
-          <h1>Canvas Particles JS</h1>
-          <a href="https://www.npmjs.com/package/canvasparticles-js?activeTab=versions" class="version fancy"
-            title="View project versions on npm">
-            Version
-            <span id="version"></span>
-          </a>
-        </li>
-        <li>
-          <a href="benchmark/" class="button">Benchmark</a>
-        </li>
-        <li>
-          <a href="https://www.npmjs.com/package/canvasparticles-js" class="button npm" target="_blank"
-            title="View this project on npm">
-            <svg viewBox="0 0 62 24" aria-hidden="true">
-              <path fill="var(--white)"
-                d="M19 24h8V20h8V4H19V24ZM27 8h4v8H27V8ZM38 4V20h8V8h4V20h4V8h4V20h4V4H38ZM0 20H8V8h4V20h4V4H0V20Z">
-              </path>
-            </svg>
-          </a>
-        </li>
-        <li>
-          <a href="https://github.com/Khoeckman/canvasparticles-js" class="button github" target="_blank"
-            title="View this project on GitHub">
-            <img src="img/github.webp" alt="GitHub" />
-          </a>
-        </li>
-      </ul>
-    </nav>
-  </header>
-
-  <main>
-    <aside id="sidenav">
-      <ul class="list"></ul>
-    </aside>
-    <section id="title" class="has-overlay">
-      <div class="content">
-        <h1>
-          <span class="text-gradient">Canvas Particles</span>
-          <span class="invert">JS</span>
-        </h1>
-        <h2>A smooth yet efficient particle renderer. All in an HTML canvas.</h2>
-      </div>
-      <a href="#installation" aria-label="installation">
-        <svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" fill="var(--g2)"
-          version="1.1" id="Layer_1" viewBox="0 0 407.437 407.437" xml:space="preserve">
-          <polygon points="386.258,91.567 203.718,273.512 21.179,91.567 0,112.815 203.718,315.87 407.437,112.815 " />
-        </svg>
-      </a>
-      <div class="shape"></div>
-      <canvas id="cp-title" class="overlay" aria-hidden="true"></canvas>
-      <div class="overlay shadow" aria-hidden="true"></div>
-    </section>
-
-    <section id="installation">
-      <h2>Installation</h2>
-
-      <form action="javascript:" novalidate>
-        <ul id="installation-choice" class="choice list">
-          <li>
-            <button class="active" data-choice="0">
-              <img src="img/npm.webp" alt="npm logo" aria-hidden="true" />
-              npm
-            </button>
+  <body>
+    <header>
+      <nav>
+        <ul class="list">
+          <li class="has-overlay">
+            <img src="img/favicon.webp" alt="Logo with initials KH" />
+            <a href="https://khoeckman.github.io/cv/" class="overlay" aria-label="Homepage"></a>
+          </li>
+          <li class="title">
+            <h1>Canvas Particles JS</h1>
+            <a
+              href="https://www.npmjs.com/package/canvasparticles-js?activeTab=versions"
+              class="version fancy"
+              title="View project versions on npm">
+              Version
+              <span id="version"></span>
+            </a>
           </li>
           <li>
-            <button data-choice="1">
-              <img src="img/jsdelivr.webp" alt="jsDelivr logo" aria-hidden="true" />
-              jsDelivr
-            </button>
+            <a href="benchmark/" class="button">Benchmark</a>
           </li>
           <li>
-            <button data-choice="2">
-              <img src="img/js.webp" alt="JavaScript logo" aria-hidden="true" />
-              ES Module
-            </button>
+            <a href="https://www.npmjs.com/package/canvasparticles-js" class="button npm" target="_blank" title="View this project on npm">
+              <svg viewBox="0 0 62 24" aria-hidden="true">
+                <path
+                  fill="var(--white)"
+                  d="M19 24h8V20h8V4H19V24ZM27 8h4v8H27V8ZM38 4V20h8V8h4V20h4V8h4V20h4V4H38ZM0 20H8V8h4V20h4V4H0V20Z"></path>
+              </svg>
+            </a>
           </li>
           <li>
-            <button data-choice="3">
-              <img src="img/js.webp" alt="JavaScript logo" aria-hidden="true" />
-              Global
-            </button>
+            <a
+              href="https://github.com/Khoeckman/canvasparticles-js"
+              class="button github"
+              target="_blank"
+              title="View this project on GitHub">
+              <img src="img/github.webp" alt="GitHub" />
+            </a>
           </li>
         </ul>
+      </nav>
+    </header>
 
-        <ul class="content list">
-          <li>
-            <h3>npm</h3>
-            <p>
-              View the package on npm:
-              <a href="https://www.npmjs.com/package/canvasparticles-js?activeTab=code" class="fancy"
-                target="_blank">canvasparticles-js</a>.
-            </p>
-            <span>
-              <a href="https://npmjs.org/package/canvasparticles-js" class="badge" title="View this project on NPM">
-                <img src="https://img.shields.io/npm/d18m/canvasparticles-js.svg" alt="NPM downloads" />
-              </a>
-            </span>
-
-            <div class="codeblock">
-              <span class="head">Console</span>
-              <pre><span class="unselectable">&dollar;&nbsp;</span><code class="language-bat">npm install canvasparticles-js</code></pre>
-            </div>
-
-            <h4>ES Module import</h4>
-
-            <div class="codeblock">
-              <span class="head">ESM</span>
-              <pre><code class="language-js">import CanvasParticles from 'canvasparticles-js'</code></pre>
-            </div>
-
-            <p>If you don't have a bundler:</p>
-
-            <div class="codeblock">
-              <span class="head">ESM</span>
-              <pre><code class="language-js">import CanvasParticles from './node_modules/canvasparticles-js/canvasParticles.js'</code></pre>
-            </div>
-
-            <h4>Global import</h4>
-
-            <div class="codeblock">
-              <span class="head">HTML</span>
-              <pre><code class="language-html">&#x3C;script src=&#x22;./node_modules/canvasparticles-js/canvasParticles.js&#x22; defer&#x3E;&#x3C;/script&#x3E;</code></pre>
-            </div>
-            <p>No import required in each JavaScript file!</p>
-          </li>
-          <li hidden>
-            <h3>jsDelivr</h3>
-            <p>
-              View the package on jsDelivr:
-              <a href="https://www.jsdelivr.com/package/npm/canvasparticles-js" class="fancy"
-                target="_blank">canvasparticles-js</a>.
-            </p>
-            <span>
-              <a href="https://www.jsdelivr.com/package/npm/canvasparticles-js" class="badge"
-                title="View this project on jsDelivr">
-                <img src="https://data.jsdelivr.com/v1/package/npm/canvasparticles-js/badge?style=rounded"
-                  alt="jsDelivr hits" />
-              </a>
-            </span>
-
-            <h4>ES Module import</h4>
-
-            <div class="codeblock">
-              <span class="head">ESM</span>
-              <pre><code class="language-js">import CanvasParticles from 'https://cdn.jsdelivr.net/npm/canvasparticles-js/canvasParticles.min.mjs'</code></pre>
-            </div>
-
-            <h4>Global import</h4>
-
-            <div class="codeblock">
-              <span class="head">HTML</span>
-              <pre><code class="language-html">&#x3C;script src=&#x22;https://cdn.jsdelivr.net/npm/canvasparticles-js/canvasParticles.min.js&#x22; defer&#x3E;&#x3C;/script&#x3E;</code></pre>
-            </div>
-            <p>No import required in each JavaScript file!</p>
-          </li>
-          <li hidden>
-            <h3>ES Module</h3>
-            <p class="br">
-              Be aware that using ES modules is only possible when running the application on a (local) server.
-              <a href="https://developer.mozilla.org/en-US/docs/Web/Security/Same-origin_policy" class="fancy"
-                rel="nofollow">
-                Same Origin Policy
-              </a>
-            </p>
-            <p>
-              Download
-              <span class="highlight">canvasParticles.mjs</span>
-              from
-              <a href="https://github.com/Khoeckman/canvasparticles-js/blob/main/canvasParticles.mjs" class="fancy"
-                target="_blank">GitHub</a>.
-            </p>
-            <p>
-              Import the
-              <span class="highlight">CanvasParticles</span>
-              class:
-            </p>
-
-            <div class="codeblock">
-              <span class="head">ESM</span>
-              <pre><code class="language-js">import CanvasParticles from './canvasParticles.mjs'</code></pre>
-            </div>
-          </li>
-          <li hidden>
-            <h3>Global</h3>
-            <p>
-              Download
-              <span class="highlight">canvasParticles.js</span>
-              from
-              <a href="https://github.com/Khoeckman/canvasparticles-js/blob/main/canvasParticles.js" class="fancy"
-                target="_blank">GitHub</a>.
-            </p>
-            <p>
-              Add script tag to the document
-              <code class="language-html">&#x3C;head&#x3E;</code>:
-            </p>
-
-            <div class="codeblock">
-              <span class="head">HTML</span>
-              <pre><code class="language-html">&#x3C;script src=&#x22;./canvasParticles.js&#x22; defer&#x3E;&#x3C;/script&#x3E;</code></pre>
-            </div>
-          </li>
-        </ul>
-      </form>
-
-      <h3>Start animating</h3>
-      <p>
-        Documentation:
-        <a href="https://github.com/Khoeckman/canvasparticles-js?tab=readme-ov-file#canvas-particles-js" class="fancy"
-          target="_blank">
-          README.md
+    <main>
+      <aside id="sidenav">
+        <ul class="list"></ul>
+      </aside>
+      <section id="title" class="has-overlay">
+        <div class="content">
+          <h1>
+            <span class="text-gradient">Canvas Particles</span>
+            <span class="invert">JS</span>
+          </h1>
+          <h2>A smooth yet efficient particle renderer. All in an HTML canvas.</h2>
+        </div>
+        <a href="#installation" aria-label="installation">
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            xmlns:xlink="http://www.w3.org/1999/xlink"
+            fill="var(--g2)"
+            version="1.1"
+            id="Layer_1"
+            viewBox="0 0 407.437 407.437"
+            xml:space="preserve">
+            <polygon points="386.258,91.567 203.718,273.512 21.179,91.567 0,112.815 203.718,315.87 407.437,112.815 " />
+          </svg>
         </a>
-      </p>
-      <p>
-        Options documentation:
-        <a href="https://github.com/Khoeckman/canvasparticles-js?tab=readme-ov-file#options" class="fancy"
-          target="_blank">
-          README.md#options
-        </a>
-      </p>
+        <div class="shape"></div>
+        <canvas id="cp-title" class="overlay" aria-hidden="true"></canvas>
+        <div class="overlay shadow" aria-hidden="true"></div>
+      </section>
 
-      <div class="codeblock">
-        <span class="head">JavaScript</span>
-        <pre><code class="language-js">const selector = '#my-canvas'
+      <section id="installation">
+        <h2>Installation</h2>
+
+        <form action="javascript:" novalidate>
+          <ul id="installation-choice" class="choice list">
+            <li>
+              <button class="active" data-choice="0">
+                <img src="img/npm.webp" alt="npm logo" aria-hidden="true" />
+                npm
+              </button>
+            </li>
+            <li>
+              <button data-choice="1">
+                <img src="img/jsdelivr.webp" alt="jsDelivr logo" aria-hidden="true" />
+                jsDelivr
+              </button>
+            </li>
+            <li>
+              <button data-choice="2">
+                <img src="img/js.webp" alt="JavaScript logo" aria-hidden="true" />
+                ES Module
+              </button>
+            </li>
+            <li>
+              <button data-choice="3">
+                <img src="img/js.webp" alt="JavaScript logo" aria-hidden="true" />
+                Global
+              </button>
+            </li>
+          </ul>
+
+          <ul class="content list">
+            <li>
+              <h3>npm</h3>
+              <p>
+                View the package on npm:
+                <a href="https://www.npmjs.com/package/canvasparticles-js?activeTab=code" class="fancy" target="_blank"
+                  >canvasparticles-js</a
+                >.
+              </p>
+              <span>
+                <a href="https://npmjs.org/package/canvasparticles-js" class="badge" title="View this project on NPM">
+                  <img src="https://img.shields.io/npm/d18m/canvasparticles-js.svg" alt="NPM downloads" />
+                </a>
+              </span>
+
+              <div class="codeblock">
+                <span class="head">Console</span>
+                <pre><span class="unselectable">&dollar;&nbsp;</span><code class="language-bat">npm install canvasparticles-js</code></pre>
+              </div>
+
+              <h4>ES Module import</h4>
+
+              <div class="codeblock">
+                <span class="head">ESM</span>
+                <pre><code class="language-js">import CanvasParticles from 'canvasparticles-js'</code></pre>
+              </div>
+
+              <p>If you don't have a bundler:</p>
+
+              <div class="codeblock">
+                <span class="head">ESM</span>
+                <pre><code class="language-js">import CanvasParticles from './node_modules/canvasparticles-js/canvasParticles.js'</code></pre>
+              </div>
+
+              <h4>Global import</h4>
+
+              <div class="codeblock">
+                <span class="head">HTML</span>
+                <pre><code class="language-html">&#x3C;script src=&#x22;./node_modules/canvasparticles-js/canvasParticles.js&#x22; defer&#x3E;&#x3C;/script&#x3E;</code></pre>
+              </div>
+              <p>No import required in each JavaScript file!</p>
+            </li>
+            <li hidden>
+              <h3>jsDelivr</h3>
+              <p>
+                View the package on jsDelivr:
+                <a href="https://www.jsdelivr.com/package/npm/canvasparticles-js" class="fancy" target="_blank">canvasparticles-js</a>.
+              </p>
+              <span>
+                <a href="https://www.jsdelivr.com/package/npm/canvasparticles-js" class="badge" title="View this project on jsDelivr">
+                  <img src="https://data.jsdelivr.com/v1/package/npm/canvasparticles-js/badge?style=rounded" alt="jsDelivr hits" />
+                </a>
+              </span>
+
+              <h4>ES Module import</h4>
+
+              <div class="codeblock">
+                <span class="head">ESM</span>
+                <pre><code class="language-js">import CanvasParticles from 'https://cdn.jsdelivr.net/npm/canvasparticles-js/canvasParticles.min.mjs'</code></pre>
+              </div>
+
+              <h4>Global import</h4>
+
+              <div class="codeblock">
+                <span class="head">HTML</span>
+                <pre><code class="language-html">&#x3C;script src=&#x22;https://cdn.jsdelivr.net/npm/canvasparticles-js/canvasParticles.min.js&#x22; defer&#x3E;&#x3C;/script&#x3E;</code></pre>
+              </div>
+              <p>No import required in each JavaScript file!</p>
+            </li>
+            <li hidden>
+              <h3>ES Module</h3>
+              <p class="br">
+                Be aware that using ES modules is only possible when running the application on a (local) server.
+                <a href="https://developer.mozilla.org/en-US/docs/Web/Security/Same-origin_policy" class="fancy" rel="nofollow">
+                  Same Origin Policy
+                </a>
+              </p>
+              <p>
+                Download
+                <span class="highlight">canvasParticles.mjs</span>
+                from
+                <a href="https://github.com/Khoeckman/canvasparticles-js/blob/main/canvasParticles.mjs" class="fancy" target="_blank"
+                  >GitHub</a
+                >.
+              </p>
+              <p>
+                Import the
+                <span class="highlight">CanvasParticles</span>
+                class:
+              </p>
+
+              <div class="codeblock">
+                <span class="head">ESM</span>
+                <pre><code class="language-js">import CanvasParticles from './canvasParticles.mjs'</code></pre>
+              </div>
+            </li>
+            <li hidden>
+              <h3>Global</h3>
+              <p>
+                Download
+                <span class="highlight">canvasParticles.js</span>
+                from
+                <a href="https://github.com/Khoeckman/canvasparticles-js/blob/main/canvasParticles.js" class="fancy" target="_blank"
+                  >GitHub</a
+                >.
+              </p>
+              <p>
+                Add script tag to the document
+                <code class="language-html">&#x3C;head&#x3E;</code>:
+              </p>
+
+              <div class="codeblock">
+                <span class="head">HTML</span>
+                <pre><code class="language-html">&#x3C;script src=&#x22;./canvasParticles.js&#x22; defer&#x3E;&#x3C;/script&#x3E;</code></pre>
+              </div>
+            </li>
+          </ul>
+        </form>
+
+        <h3>Start animating</h3>
+        <p>
+          Documentation:
+          <a href="https://github.com/Khoeckman/canvasparticles-js?tab=readme-ov-file#canvas-particles-js" class="fancy" target="_blank">
+            README.md
+          </a>
+        </p>
+        <p>
+          Options documentation:
+          <a href="https://github.com/Khoeckman/canvasparticles-js?tab=readme-ov-file#options" class="fancy" target="_blank">
+            README.md#options
+          </a>
+        </p>
+
+        <div class="codeblock">
+          <span class="head">JavaScript</span>
+          <pre><code class="language-js">const selector = '#my-canvas'
 const options = {}
 new CanvasParticles(selector, options).start()</code></pre>
-      </div>
-    </section>
-
-    <section id="showcase">
-      <h2>Showcase</h2>
-
-      <article>
-        <div class="content">
-          <h3>Default</h3>
-          <p>
-            Instantiation of the
-            <span class="highlight">CanvasParticles</span>
-            class with the default options.
-          </p>
-
-          <div class="codeblock">
-            <span class="head">JavaScript</span>
-            <pre><code class="language-js">const showcaseDefault = new CanvasParticles('#showcase-default').start()</code></pre>
-          </div>
-
-          <p>Start and stop the animation.</p>
-
-          <div class="codeblock">
-            <button id="run-default-stop" class="run">▶</button>
-            <span class="head">Stop</span>
-            <pre><code class="language-js">showcaseDefault.stop()</code></pre>
-          </div>
-
-          <div class="codeblock">
-            <button id="run-default-stop-noclear" class="run">▶</button>
-            <span class="head">Stop (no clear)</span>
-            <pre><code class="language-js">showcaseDefault.stop({clear: false})</code></pre>
-          </div>
-
-          <div class="codeblock">
-            <button id="run-default-start" class="run">▶</button>
-            <span class="head">Start</span>
-            <pre><code class="language-js">showcaseDefault.start()</code></pre>
-          </div>
         </div>
-        <canvas id="showcase-default"></canvas>
-      </article>
+      </section>
 
-      <article>
-        <div class="content">
-          <h3>Coloring</h3>
-          <p>Setting the canvas and the particle colors.</p>
+      <section id="showcase">
+        <h2>Showcase</h2>
 
-          <div class="codeblock">
-            <span class="head">JavaScript</span>
-            <pre><code class="language-js">new CanvasParticles('#showcase-coloring', {
+        <article>
+          <div class="content">
+            <h3>Default</h3>
+            <p>
+              Instantiation of the
+              <span class="highlight">CanvasParticles</span>
+              class with the default options.
+            </p>
+
+            <div class="codeblock">
+              <span class="head">JavaScript</span>
+              <pre><code class="language-js">const showcaseDefault = new CanvasParticles('#showcase-default').start()</code></pre>
+            </div>
+
+            <p>Start and stop the animation.</p>
+
+            <div class="codeblock">
+              <button id="run-default-stop" class="run">▶</button>
+              <span class="head">Stop</span>
+              <pre><code class="language-js">showcaseDefault.stop()</code></pre>
+            </div>
+
+            <div class="codeblock">
+              <button id="run-default-stop-noclear" class="run">▶</button>
+              <span class="head">Stop (no clear)</span>
+              <pre><code class="language-js">showcaseDefault.stop({clear: false})</code></pre>
+            </div>
+
+            <div class="codeblock">
+              <button id="run-default-start" class="run">▶</button>
+              <span class="head">Start</span>
+              <pre><code class="language-js">showcaseDefault.start()</code></pre>
+            </div>
+          </div>
+          <canvas id="showcase-default"></canvas>
+        </article>
+
+        <article>
+          <div class="content">
+            <h3>Coloring</h3>
+            <p>Setting the canvas and the particle colors.</p>
+
+            <div class="codeblock">
+              <span class="head">JavaScript</span>
+              <pre><code class="language-js">new CanvasParticles('#showcase-coloring', {
   // Any CSS Supported value for the 'background' property
   background: 'rgb(21, 16, 25)',
   particles: {
@@ -326,54 +331,53 @@ new CanvasParticles(selector, options).start()</code></pre>
     color: 'hsl(206, 100%, 77%)',
   },
 }).start()</code></pre>
+            </div>
+
+            <form id="showcase-coloring-form" action="javascript:" novalidate>
+              <label>
+                Background
+                <input id="set-background-coloring" type="color" value="#151019" />
+              </label>
+
+              <label>
+                Particle color
+                <input id="set-color-coloring" type="color" value="#8accff" />
+              </label>
+            </form>
           </div>
+          <canvas id="showcase-coloring"></canvas>
+        </article>
 
-          <form id="showcase-coloring-form" action="javascript:" novalidate>
-            <label>
-              Background
-              <input id="set-background-coloring" type="color" value="#151019" />
-            </label>
+        <article>
+          <div class="content">
+            <h3>Interaction</h3>
+            <p>Choose how the mouse can interact.</p>
+            <p>
+              <span class="highlight orange">Info</span>
+              Setting
+              <span class="highlight">mouse.distRatio</span>
+              below 1 allows particles to stick.
+            </p>
+            <p class="smart-wrap">
+              <span class="highlight red">Important</span>
+              When using
+              <span class="highlight">Stick</span>, set
+              <span class="highlight">particles.maxWork</span>
+              below 30 to prevent performance drops when collecting all particles in one place.
+            </p>
 
-            <label>
-              Particle color
-              <input id="set-color-coloring" type="color" value="#8accff" />
-            </label>
-          </form>
-        </div>
-        <canvas id="showcase-coloring"></canvas>
-      </article>
+            <form action="javascript:" novalidate>
+              <ul id="showcase-interact-choice" class="list choice">
+                <li><button data-type="0">Off</button></li>
+                <li><button data-type="1">Shift</button></li>
+                <li><button data-type="2">Push</button></li>
+                <li><button class="active" data-type="3">Stick</button></li>
+              </ul>
+            </form>
 
-      <article>
-        <div class="content">
-          <h3>Interaction</h3>
-          <p>Choose how the mouse can interact.</p>
-          <p>
-            <span class="highlight orange">Info</span>
-            Setting
-            <span class="highlight">mouse.distRatio</span>
-            below 1 allows particles to stick.
-          </p>
-          <p class="smart-wrap">
-            <span class="highlight red">Important</span>
-            When using
-            <span class="highlight">Stick</span>,
-            set
-            <span class="highlight">particles.maxWork</span>
-            below 30 to prevent performance drops when collecting all particles in one place.
-          </p>
-
-          <form action="javascript:" novalidate>
-            <ul id="showcase-interact-choice" class="list choice">
-              <li><button data-type="0">Off</button></li>
-              <li><button data-type="1">Shift</button></li>
-              <li><button data-type="2">Push</button></li>
-              <li><button class="active" data-type="3">Stick</button></li>
-            </ul>
-          </form>
-
-          <div class="codeblock">
-            <span class="head">JavaScript</span>
-            <pre><code class="language-js">new CanvasParticles('#showcase-interact', {
+            <div class="codeblock">
+              <span class="head">JavaScript</span>
+              <pre><code class="language-js">new CanvasParticles('#showcase-interact', {
   mouse: {
     interactionType: 2,
     connectDistMult: 0.8,
@@ -383,26 +387,26 @@ new CanvasParticles(selector, options).start()</code></pre>
       maxWork: 20,
   },
 }).start()</code></pre>
+            </div>
           </div>
-        </div>
-        <canvas id="showcase-interact"></canvas>
-      </article>
+          <canvas id="showcase-interact"></canvas>
+        </article>
 
-      <article>
-        <div class="content">
-          <h3>Quantity</h3>
-          <p>
-            Define the amount of particles by setting
-            <span class="highlight">particles.ppm</span>.
-          </p>
-          <p>
-            <span class="highlight orange">Info</span>
-            ppm = Particles Per Million pixels the canvas covers.
-          </p>
+        <article>
+          <div class="content">
+            <h3>Quantity</h3>
+            <p>
+              Define the amount of particles by setting
+              <span class="highlight">particles.ppm</span>.
+            </p>
+            <p>
+              <span class="highlight orange">Info</span>
+              ppm = Particles Per Million pixels the canvas covers.
+            </p>
 
-          <div class="codeblock">
-            <span class="head">JavaScript</span>
-            <pre><code class="language-js">new CanvasParticles('#showcase-quantity', {
+            <div class="codeblock">
+              <span class="head">JavaScript</span>
+              <pre><code class="language-js">new CanvasParticles('#showcase-quantity', {
   mouse: {
     connectDistMult: 1,
   },
@@ -411,19 +415,19 @@ new CanvasParticles(selector, options).start()</code></pre>
     max: 300,
   },
 }).start()</code></pre>
+            </div>
           </div>
-        </div>
-        <canvas id="showcase-quantity"></canvas>
-      </article>
+          <canvas id="showcase-quantity"></canvas>
+        </article>
 
-      <article>
-        <div class="content">
-          <h3>Connect distance</h3>
-          <p>Define the maximum length of a connection.</p>
+        <article>
+          <div class="content">
+            <h3>Connect distance</h3>
+            <p>Define the maximum length of a connection.</p>
 
-          <div class="codeblock">
-            <span class="head">JavaScript</span>
-            <pre><code class="language-js">new CanvasParticles('#showcase-connect-distance', {
+            <div class="codeblock">
+              <span class="head">JavaScript</span>
+              <pre><code class="language-js">new CanvasParticles('#showcase-connect-distance', {
   background: 'linear-gradient(100deg, #f80, #0f8 150%)',
   mouse: {
     interactionType: 2,
@@ -434,51 +438,51 @@ new CanvasParticles(selector, options).start()</code></pre>
     connectDistance: 400,
   },
 }).start()</code></pre>
+            </div>
           </div>
-        </div>
-        <canvas id="showcase-connect-distance"></canvas>
-      </article>
+          <canvas id="showcase-connect-distance"></canvas>
+        </article>
 
-      <article>
-        <div class="content">
-          <h3>Movement</h3>
-          <p>Customize the movement of the particles.</p>
+        <article>
+          <div class="content">
+            <h3>Movement</h3>
+            <p>Customize the movement of the particles.</p>
 
-          <div class="codeblock">
-            <span class="head">JavaScript</span>
-            <pre><code class="language-js">new CanvasParticles('#showcase-movement', {
+            <div class="codeblock">
+              <span class="head">JavaScript</span>
+              <pre><code class="language-js">new CanvasParticles('#showcase-movement', {
   particles: {
     relSpeed: 3,
     relSize: 2,
     rotationSpeed: 40,
   },
 }).start()</code></pre>
+            </div>
           </div>
-        </div>
-        <canvas id="showcase-movement"></canvas>
-      </article>
+          <canvas id="showcase-movement"></canvas>
+        </article>
 
-      <article>
-        <div class="content">
-          <div class="togglable">
-            <h3>Pushing Gravity</h3>
-            <label>
-              Enabled
-              <span class="checkbox">
-                <input id="toggle-pushing-gravity" type="checkbox" />
-                <span></span>
-              </span>
-            </label>
-          </div>
+        <article>
+          <div class="content">
+            <div class="togglable">
+              <h3>Pushing Gravity</h3>
+              <label>
+                Enabled
+                <span class="checkbox">
+                  <input id="toggle-pushing-gravity" type="checkbox" />
+                  <span></span>
+                </span>
+              </label>
+            </div>
 
-          <p>
-            <span class="highlight red">Important</span>
-            Gravity requires heavy calculations.
-          </p>
+            <p>
+              <span class="highlight red">Important</span>
+              Gravity requires heavy calculations.
+            </p>
 
-          <div class="codeblock">
-            <span class="head">JavaScript</span>
-            <pre><code class="language-js">new CanvasParticles('#showcase-pushing-gravity', {
+            <div class="codeblock">
+              <span class="head">JavaScript</span>
+              <pre><code class="language-js">new CanvasParticles('#showcase-pushing-gravity', {
   particles: {
     connectDistance: 175,
   },
@@ -487,29 +491,29 @@ new CanvasParticles(selector, options).start()</code></pre>
     fricion: 0.995,
   },
 }).start()</code></pre>
+            </div>
           </div>
-        </div>
-        <canvas id="showcase-pushing-gravity"></canvas>
-      </article>
+          <canvas id="showcase-pushing-gravity"></canvas>
+        </article>
 
-      <article>
-        <div class="content">
-          <div class="togglable">
-            <h3>Pulling Gravity</h3>
-            <label>
-              Enabled
-              <span class="checkbox">
-                <input id="toggle-pulling-gravity" type="checkbox" />
-                <span></span>
-              </span>
-            </label>
-          </div>
+        <article>
+          <div class="content">
+            <div class="togglable">
+              <h3>Pulling Gravity</h3>
+              <label>
+                Enabled
+                <span class="checkbox">
+                  <input id="toggle-pulling-gravity" type="checkbox" />
+                  <span></span>
+                </span>
+              </label>
+            </div>
 
-          <p>Also requires repulsive gravity to avoid forming a singularity.</p>
+            <p>Also requires repulsive gravity to avoid forming a singularity.</p>
 
-          <div class="codeblock">
-            <span class="head">JavaScript</span>
-            <pre><code class="language-js">const showcasePullingGravity =
+            <div class="codeblock">
+              <span class="head">JavaScript</span>
+              <pre><code class="language-js">const showcasePullingGravity =
 new CanvasParticles('#showcase-pulling-gravity', {
   mouse: {
     interactionType: 2,
@@ -524,69 +528,68 @@ new CanvasParticles('#showcase-pulling-gravity', {
     pulling: 3,
   },
 })</code></pre>
+            </div>
+
+            <div class="codeblock">
+              <button id="run-pushing-gravity-new" class="run">▶</button>
+              <span class="head">Reset</span>
+              <pre><code class="language-js">showcasePullingGravity.newParticles()</code></pre>
+            </div>
+
+            <div class="codeblock">
+              <button id="run-pushing-gravity-max-work" class="run">▶</button>
+              <button id="stop-pushing-gravity-max-work" class="run stop">■</button>
+              <span class="head">Prevent heavy load</span>
+              <pre><code class="language-js">showcasePullingGravity.options.particles.maxWork = 12</code></pre>
+            </div>
           </div>
+          <canvas id="showcase-pulling-gravity"></canvas>
+        </article>
 
-          <div class="codeblock">
-            <button id="run-pushing-gravity-new" class="run">▶</button>
-            <span class="head">Reset</span>
-            <pre><code class="language-js">showcasePullingGravity.newParticles()</code></pre>
-          </div>
+        <article>
+          <div class="content">
+            <h3>Hue Rotation Effect</h3>
+            <p>
+              Use
+              <span class="highlight">JavaScript</span>
+              to edit options on the fly.
+            </p>
 
-          <div class="codeblock">
-            <button id="run-pushing-gravity-max-work" class="run">▶</button>
-            <button id="stop-pushing-gravity-max-work" class="run stop">■</button>
-            <span class="head">Prevent heavy load</span>
-            <pre><code class="language-js">showcasePullingGravity.options.particles.maxWork = 12</code></pre>
-          </div>
-        </div>
-        <canvas id="showcase-pulling-gravity"></canvas>
-      </article>
-
-      <article>
-        <div class="content">
-          <h3>Hue Rotation Effect</h3>
-          <p>
-            Use
-            <span class="highlight">JavaScript</span>
-            to edit options on the fly.
-          </p>
-
-          <div class="codeblock">
-            <span class="head">JavaScript</span>
-            <pre><code class="language-js">const showcaseHueRotation =
+            <div class="codeblock">
+              <span class="head">JavaScript</span>
+              <pre><code class="language-js">const showcaseHueRotation =
 new CanvasParticles('#showcase-hue-rotation', {
   background: 'var(--bg)',
   particles: {
     color: 'hsl(0, 100%, 50%)'
   },
 }).start()</code></pre>
-          </div>
+            </div>
 
-          <div class="codeblock">
-            <button id="run-hue-rotation" class="run">▶</button>
-            <button id="stop-hue-rotation" class="run stop">■</button>
-            <span class="head">Rotate hue</span>
-            <pre><code class="language-js">setInterval(() => {
+            <div class="codeblock">
+              <button id="run-hue-rotation" class="run">▶</button>
+              <button id="stop-hue-rotation" class="run stop">■</button>
+              <span class="head">Rotate hue</span>
+              <pre><code class="language-js">setInterval(() => {
   const color = `hsl(${hue++}, 100%, 50%)`
   hue %= 360
   showcaseHueRotation.setParticleColor(color)
 }, 20)</code></pre>
+            </div>
           </div>
-        </div>
-        <canvas id="showcase-hue-rotation"></canvas>
-      </article>
+          <canvas id="showcase-hue-rotation"></canvas>
+        </article>
 
-      <article>
-        <div class="content">
-          <h3>Multiple Colors</h3>
-          <p>
-            Overlap multiple <code class="language-html">&#x3C;canvas&#x3E;</code> elements using CSS and initialize
-            each one seperately.
-          </p>
+        <article>
+          <div class="content">
+            <h3>Multiple Colors</h3>
+            <p>
+              Overlap multiple <code class="language-html">&#x3C;canvas&#x3E;</code> elements using CSS and initialize each one seperately.
+            </p>
 
-          <div class="codeblock">
-            <span class="head">JavaScript</span>
-            <pre><code class="language-js">new CanvasParticles('#showcase-multiple-colors-1', {
+            <div class="codeblock">
+              <span class="head">JavaScript</span>
+              <pre><code class="language-js">new CanvasParticles('#showcase-multiple-colors-1', {
   background: 'black',
   particles: {
     color: 'yellow',
@@ -599,45 +602,45 @@ new CanvasParticles('#showcase-multiple-colors-2', {
     color: 'aqua',
   },
 }).start()</code></pre>
+            </div>
           </div>
-        </div>
-        <div class="canvas-stack">
-          <canvas id="showcase-multiple-colors-1"></canvas>
-          <canvas id="showcase-multiple-colors-2" class="overlay"></canvas>
-        </div>
-      </article>
-    </section>
-
-    <section id="sandbox">
-      <h2>Sandbox</h2>
-
-      <form action="javascript:" novalidate>
-        <div class="workspaces">
-          <div>
-            <h3>Presets</h3>
-
-            <ul id="sandbox-preset-choice" class="list choice">
-              <li><button class="active" data-preset="all">All options</button></li>
-              <li><button data-preset="gravity">Violent gravity</button></li>
-              <li><button data-preset="shapes">Shapes</button></li>
-            </ul>
+          <div class="canvas-stack">
+            <canvas id="showcase-multiple-colors-1"></canvas>
+            <canvas id="showcase-multiple-colors-2" class="overlay"></canvas>
           </div>
-          <div>
-            <h3>Persistent workspaces</h3>
-            <ul id="sandbox-workspace-choice" class="list choice">
-              <li><button data-workspace="a">Workspace A</button></li>
-              <li><button data-workspace="b">Workspace B</button></li>
-            </ul>
+        </article>
+      </section>
+
+      <section id="sandbox">
+        <h2>Sandbox</h2>
+
+        <form action="javascript:" novalidate>
+          <div class="workspaces">
+            <div>
+              <h3>Presets</h3>
+
+              <ul id="sandbox-preset-choice" class="list choice">
+                <li><button class="active" data-preset="all">All options</button></li>
+                <li><button data-preset="gravity">Violent gravity</button></li>
+                <li><button data-preset="shapes">Shapes</button></li>
+              </ul>
+            </div>
+            <div>
+              <h3>Persistent workspaces</h3>
+              <ul id="sandbox-workspace-choice" class="list choice">
+                <li><button data-workspace="a">Workspace A</button></li>
+                <li><button data-workspace="b">Workspace B</button></li>
+              </ul>
+            </div>
           </div>
-        </div>
 
-        <div id="sandbox-error" hidden tabindex="-1"></div>
+          <div id="sandbox-error" hidden tabindex="-1"></div>
 
-        <div class="codeblock">
-          <button id="run-sandbox" class="run" type="submit">▶</button>
-          <button id="stop-sandbox" class="run stop" type="submit">■</button>
-          <span class="head">JavaScript (editable)</span>
-          <pre id="sandbox-options" contenteditable="true" spellcheck="false"><code class="language-js">sandbox.setOptions({
+          <div class="codeblock">
+            <button id="run-sandbox" class="run" type="submit">▶</button>
+            <button id="stop-sandbox" class="run stop" type="submit">■</button>
+            <span class="head">JavaScript (editable)</span>
+            <pre id="sandbox-options" contenteditable="true" spellcheck="false"><code class="language-js">sandbox.setOptions({
   background: '#151019',
   framesPerUpdate: 1,
   animation: {
@@ -666,97 +669,104 @@ new CanvasParticles('#showcase-multiple-colors-2', {
     friction: 0.99,
   }
 })</code></pre>
-        </div>
+          </div>
 
-        <p>
-          Options documentation:
-          <a href="https://github.com/Khoeckman/canvasParticles?tab=readme-ov-file#options" class="fancy"
-            target="_blank">
-            README.md#options
-          </a>
-        </p>
-      </form>
-      <canvas id="cp-sandbox"></canvas>
-    </section>
+          <p>
+            Options documentation:
+            <a href="https://github.com/Khoeckman/canvasParticles?tab=readme-ov-file#options" class="fancy" target="_blank">
+              README.md#options
+            </a>
+          </p>
+        </form>
+        <canvas id="cp-sandbox"></canvas>
+      </section>
 
-    <section id="information">
-      <h2>Information</h2>
+      <section id="information">
+        <h2>Information</h2>
 
-      <article>
+        <article>
+          <div>
+            <h3>Handling particles beyond canvas bounds</h3>
+            <p>
+              Particles are only drawn if they are within the visible area of the canvas, accounting for their size. Particles are
+              considered to still be visible if their edges are within the canvas bounds, preventing large particles from disappearing when
+              their center crosses the edge.
+            </p>
+            <p>When particles move beyond the floating area bounds, they will teleport to the opposite side.</p>
+
+            <h3>Handling particle connections beyond canvas bounds</h3>
+            <p>
+              The floating area for the particles is larger than the canvas bounds to ensure no lines between particles will suddenly
+              dissapear near the edges. The floating space added to all 4 sides is exactly equal to the maximum length of a line, defined
+              with <span class="highlight">options.particles.connectDist</span>.
+            </p>
+            <p>By default, a line is not drawn between particles if both are outside the visible canvas area.</p>
+            <p>
+              Each particle's grid position is calculated based on its location relative to the visible canvas area. This allows for
+              determining whether two particles, even when outside the canvas, should have a connecting line drawn between them because part
+              of it can still be seen.
+            </p>
+
+            <h3>Performance optimizations</h3>
+            <p>
+              Canvas Particles JS is a highly optimized particle renderer (ignoring the fact that it's coded in JS). A lot of time has gone
+              into profiling the code and improving efficiency on expensive tasks.
+            </p>
+            <p>
+              An <span class="highlight">IntersectionObserver</span> is used to pause and resume the animation when the canvas enters or
+              leaves the viewbox.
+            </p>
+            <p>Particles smaller than one pixel are drawn as squares instead of circles which is ±183% faster.</p>
+            <p>
+              Dynamically generating the <span class="highlight">fillStyle</span> combinations for each connection in every frame is the
+              most expensive task. It's about 5x faster to precomputing all 256 particle colors, accounting only for varying opacity levels,
+              and storing them in a lookup table.
+            </p>
+
+            <h3 class="contact">Contact me</h3>
+            <p>
+              Do you think something is missing or did you spot a (small) mistake?<br />Don't hesitate to reach out and send me an email at:
+            </p>
+            <a href="mailto:kyle.hoeckman@gmail.com" class="fancy">kyle.hoeckman@gmail.com</a>
+          </div>
+          <figure class="has-overlay">
+            <img src="img/codeicon.webp" class="overlay shadow" aria-hidden="true" />
+            <img src="img/codeicon.webp" aria-hidden="true" />
+          </figure>
+        </article>
+      </section>
+    </main>
+
+    <footer>
+      <div>
         <div>
-          <h3>Handling particles beyond canvas bounds</h3>
-          <p>Particles are only drawn if they are within the visible area of the canvas, accounting for their size.
-            Particles are considered to still be visible if their edges are within the canvas bounds,
-            preventing large particles from disappearing when their center crosses the edge.</p>
-          <p>When particles move beyond the floating area bounds, they will teleport to the opposite side.</p>
-
-          <h3>Handling particle connections beyond canvas bounds</h3>
-          <p>The floating area for the particles is larger than the canvas bounds to ensure no lines between particles
-            will suddenly dissapear near the edges. The floating space added to all 4 sides is exactly equal to the
-            maximum length of a line, defined with <span class="highlight">options.particles.connectDist</span>.
+          <p>
+            Copyright ©
+            <a href="https://khoeckman.github.io/cv/" class="fancy">Kyle Hoeckman</a>
+            2022–2024, Licensed under the
+            <a href="https://github.com/Khoeckman/canvasparticles-js?tab=MIT-1-ov-file#readme" class="fancy" target="_blank">MIT License</a
+            >.
           </p>
-          <p>By default, a line is not drawn between particles if both are outside the visible canvas area.</p>
-          <p>Each particle's grid position is calculated based on its location relative to the visible canvas area. This
-            allows for determining whether two particles, even when outside the canvas, should have a connecting line
-            drawn between them because part of it can still be seen.</p>
-
-          <h3>Performance optimizations</h3>
-          <p>Canvas Particles JS is a highly optimized particle renderer (ignoring the fact that it's coded in JS).
-            A lot of time has gone into profiling the code and improving efficiency on expensive tasks.</p>
-          <p>An <span class="highlight">IntersectionObserver</span> is used to pause and resume the animation when the
-            canvas enters or leaves the viewbox.</p>
-          <p>Particles smaller than one pixel are drawn as squares instead of circles which is ±183% faster.</p>
-          <p>Dynamically generating the <span class="highlight">fillStyle</span> combinations for each connection in
-            every frame is the most expensive task. It's about 5x faster to precomputing all 256 particle colors,
-            accounting only for varying opacity levels, and storing them in a lookup table.</p>
-
-          <h3 class="contact">Contact me</h3>
-          <p>Do you think something is missing or did you spot a (small) mistake?<br>Don't hesitate to reach out and
-            send me an email at:
-          </p>
-          <a href="mailto:kyle.hoeckman@gmail.com" class="fancy">kyle.hoeckman@gmail.com</a>
+          <p>Canvas Particles JS has no dependencies.</p>
         </div>
-        <figure class="has-overlay">
-          <img src="img/codeicon.webp" class="overlay shadow" aria-hidden="true">
-          <img src="img/codeicon.webp" aria-hidden="true">
-        </figure>
-      </article>
-    </section>
-  </main>
-
-  <footer>
-    <div>
-      <div>
-        <p>
-          Copyright ©
-          <a href="https://khoeckman.github.io/cv/" class="fancy">Kyle Hoeckman</a>
-          2022–2024, Licensed under the
-          <a href="https://github.com/Khoeckman/canvasparticles-js?tab=MIT-1-ov-file#readme" class="fancy"
-            target="_blank">MIT License</a>.
-        </p>
-        <p>Canvas Particles JS has no dependencies.</p>
+        <div>
+          <span>
+            <a href="https://npmjs.org/package/canvasparticles-js" class="badge" title="View this project on NPM">
+              <img src="https://img.shields.io/npm/v/canvasparticles-js.svg" alt="NPM version" />
+            </a>
+          </span>
+          <span>
+            <a href="https://npmjs.org/package/canvasparticles-js" class="badge" title="View this project on NPM">
+              <img src="https://img.shields.io/npm/d18m/canvasparticles-js.svg" alt="NPM downloads" />
+            </a>
+          </span>
+          <span>
+            <a href="https://www.jsdelivr.com/package/npm/canvasparticles-js" class="badge" title="View this project on jsDelivr">
+              <img src="https://data.jsdelivr.com/v1/package/npm/canvasparticles-js/badge?style=rounded" alt="jsDelivr hits" />
+            </a>
+          </span>
+        </div>
       </div>
-      <div>
-        <span>
-          <a href="https://npmjs.org/package/canvasparticles-js" class="badge" title="View this project on NPM">
-            <img src="https://img.shields.io/npm/v/canvasparticles-js.svg" alt="NPM version" />
-          </a>
-        </span>
-        <span>
-          <a href="https://npmjs.org/package/canvasparticles-js" class="badge" title="View this project on NPM">
-            <img src="https://img.shields.io/npm/d18m/canvasparticles-js.svg" alt="NPM downloads" />
-          </a>
-        </span>
-        <span>
-          <a href="https://www.jsdelivr.com/package/npm/canvasparticles-js" class="badge"
-            title="View this project on jsDelivr">
-            <img src="https://data.jsdelivr.com/v1/package/npm/canvasparticles-js/badge?style=rounded"
-              alt="jsDelivr hits" />
-          </a>
-        </span>
-      </div>
-    </div>
-  </footer>
-</body>
-
+    </footer>
+  </body>
 </html>

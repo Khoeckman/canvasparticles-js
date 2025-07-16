@@ -5,5 +5,10 @@
   "printWidth": 140,
   "semi": false,
   "arrowParens": "avoid",
-  "htmlWhitespaceSensitivity": "ignore"
+
+  "htmlWhitespaceSensitivity": "css",
+  "singleAttributePerLine": false,
+  "bracketSameLine": true,
+  "endOfLine": "lf",
+  "htmlSelfClosing": false
 }

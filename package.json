@@ -7,5 +7,9 @@
   "type": "module",
   "dependencies": {
     "canvasparticles-js": "latest"
-  }
+  },
+  "devDependencies": {
+    "prettier": "^3.6.2"
+  },
+  "scripts": {}
 }

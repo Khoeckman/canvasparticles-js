@@ -2,7 +2,7 @@
 Copyright (c) 2022–2024 Kyle Hoeckman, MIT License
 https://github.com/Khoeckman/canvasparticles-js/blob/main/LICENSE
 -->
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
   <head>
     <meta charset="UTF-8" />
@@ -640,35 +640,7 @@ new CanvasParticles('#showcase-multiple-colors-2', {
             <button id="run-sandbox" class="run" type="submit">▶</button>
             <button id="stop-sandbox" class="run stop" type="submit">■</button>
             <span class="head">JavaScript (editable)</span>
-            <pre id="sandbox-options" contenteditable="true" spellcheck="false"><code class="language-js">sandbox.setOptions({
-  background: '#151019',
-  framesPerUpdate: 1,
-  animation: {
-    startOnEnter: true,
-    stopOnLeave: true,
-  },
-  mouse: {
-    interactionType: 2,
-    connectDistMult: 0.7,
-    distRatio: 0.6,
-  },
-  particles: {
-    color: '#8cf',
-    ppm: 120,
-    max: 250,
-    maxWork: 30,
-    connectDistance: 125,
-    relSize: 1,
-    relSpeed: 1,
-    rotationSpeed: 2,
-    regenerateOnResize: false
-  },
-  gravity: {
-    repulsive: 0.55,
-    pulling: 0,
-    friction: 0.99,
-  }
-})</code></pre>
+            <pre contenteditable="true" spellcheck="false"><code id="sandbox-options" class="language-js"></code></pre>
           </div>
 
           <p>

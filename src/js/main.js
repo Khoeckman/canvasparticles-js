@@ -1,5 +1,6 @@
 import { showcase } from './initParticles.js'
 import { loadPreset, loadWorkspace } from './workspaces.js'
+import CaretManager from './CaretManager.js'
 
 // Sandbox
 
@@ -7,9 +8,12 @@ const sandboxError = document.getElementById('sandbox-error')
 const sandboxOptions = document.getElementById('sandbox-options')
 
 window.addEventListener('load', () => loadPreset('all'))
+const caretManager = new CaretManager(sandboxOptions)
 
-sandboxOptions.addEventListener('blur', function () {
-  Prism.highlightElement(this)
+sandboxOptions.closest('pre[contenteditable=true]').addEventListener('input', function () {
+  caretManager.saveCaretPosition()
+  Prism.highlightElement(sandboxOptions)
+  caretManager.restoreCaretPosition()
 })
 
 // Togglables
@@ -158,7 +162,6 @@ choiceLists.forEach(list => {
           button.classList.add('active')
 
           loadPreset(button.getAttribute('data-preset'))
-          Prism.highlightElement(sandboxOptions)
         }
       case 'sandbox-workspace-choice':
         return e => {
@@ -172,7 +175,6 @@ choiceLists.forEach(list => {
           button.classList.add('active')
 
           loadWorkspace(button.getAttribute('data-workspace'))
-          Prism.highlightElement(sandboxOptions)
         }
     }
   })()

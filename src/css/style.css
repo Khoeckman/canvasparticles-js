@@ -56,7 +56,16 @@
 html {
   scroll-behavior: smooth;
   background: var(--bg);
-  font-family: 'Segoe UI', system-ui, -apple-system, BlinkMacSystemFont, Montserrat, Roboto, 'Helvetica Neue', Arial, sans-serif;
+  font-family:
+    'Segoe UI',
+    system-ui,
+    -apple-system,
+    BlinkMacSystemFont,
+    Montserrat,
+    Roboto,
+    'Helvetica Neue',
+    Arial,
+    sans-serif;
   color: var(--fg);
 }
 
@@ -134,6 +143,10 @@ input[type='color'] {
   height: 3rem;
 }
 
+pre {
+  user-select: none;
+}
+
 ::-moz-color-swatch {
   border: 0;
 }
@@ -193,7 +206,11 @@ input[type='color'] {
   color: var(--fg);
   padding: 0.75rem 1rem;
   height: 2.5rem;
-  transition: background 150ms, border-color 150ms, color 150ms, filter 150ms;
+  transition:
+    background 150ms,
+    border-color 150ms,
+    color 150ms,
+    filter 150ms;
 }
 
 .button:is(:hover, :focus-visible) {

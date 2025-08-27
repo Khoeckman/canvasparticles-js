@@ -9,7 +9,7 @@
   typeof self !== 'undefined' ? self : this,
   () =>
     class CanvasParticles {
-      static version = '3.7.1'
+      static version = '3.7.2'
 
       // Mouse interaction with the particles.
       static interactionType = Object.freeze({
@@ -86,7 +86,7 @@
         if (this.options.particles.regenerateOnResize || this.particles.length === 0) this.newParticles()
         else this.matchParticleCount()
 
-        this.#updateParticleBounds()
+        this.particles.forEach(particle => this.#updateParticleBounds(particle))
       }
 
       updateMousePos(event) {
@@ -140,9 +140,7 @@
       }
 
       createParticle(posX, posY, dir, speed, size) {
-        size = size || 0.5 + Math.random() ** 5 * 2 * this.options.particles.relSize
-
-        this.particles.push({
+        const particle = {
           posX: posX - this.offX || Math.random() * this.width, // Logical position in pixels
           posY: posY - this.offY || Math.random() * this.height, // Logical position in pixels
           x: posX, // Visual position in pixels
@@ -153,22 +151,20 @@
           offY: 0, // Vertical distance from drawn to logical position in pixels
           dir: dir || Math.random() * 2 * Math.PI, // Direction in radians
           speed: speed || (0.5 + Math.random() * 0.5) * this.options.particles.relSpeed, // Velocity in pixels per update
-          size, // Ray in pixels of the particle
-        })
-        this.#updateParticleBounds()
+          size: size || (0.5 + Math.random() ** 5 * 2) * this.options.particles.relSize, // Ray in pixels of the particle
+        }
+        this.#updateParticleBounds(particle)
+        this.particles.push(particle)
       }
 
-      #updateParticleBounds() {
-        this.particles.map(
-          particle =>
-            // Within these bounds the particle is considered visible.
-            (particle.bounds = {
-              top: -particle.size,
-              right: this.canvas.width + particle.size,
-              bottom: this.canvas.height + particle.size,
-              left: -particle.size,
-            })
-        )
+      #updateParticleBounds(particle) {
+        // Within these bounds the particle is considered visible.
+        particle.bounds = {
+          top: -particle.size,
+          right: this.canvas.width + particle.size,
+          bottom: this.canvas.height + particle.size,
+          left: -particle.size,
+        }
       }
 
       /**
@@ -242,11 +238,14 @@
       #updateParticles() {
         for (let particle of this.particles) {
           // Slightly, randomly change the particle's direction and move it in that direction.
-          particle.dir = (particle.dir + Math.random() * this.options.particles.rotationSpeed * 2 - this.options.particles.rotationSpeed) % (2 * Math.PI)
+          particle.dir =
+            (particle.dir + Math.random() * this.options.particles.rotationSpeed * 2 - this.options.particles.rotationSpeed) % (2 * Math.PI)
           particle.velX *= this.options.gravity.friction
           particle.velY *= this.options.gravity.friction
-          particle.posX = (particle.posX + particle.velX + ((Math.sin(particle.dir) * particle.speed) % this.width) + this.width) % this.width
-          particle.posY = (particle.posY + particle.velY + ((Math.cos(particle.dir) * particle.speed) % this.height) + this.height) % this.height
+          particle.posX =
+            (particle.posX + particle.velX + ((Math.sin(particle.dir) * particle.speed) % this.width) + this.width) % this.width
+          particle.posY =
+            (particle.posY + particle.velY + ((Math.cos(particle.dir) * particle.speed) % this.height) + this.height) % this.height
 
           const distX = particle.posX + this.offX - this.mouseX
           const distY = particle.posY + this.offY - this.mouseY
@@ -622,5 +621,5 @@
         // Recalculate the stroke style table.
         this.strokeStyleTable = this.#generateStrokeStyleTable(this.options.particles.color)
       }
-    }
+    },
 )

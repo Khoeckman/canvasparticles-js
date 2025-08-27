@@ -2,7 +2,7 @@
 // https://github.com/Khoeckman/canvasparticles-js/blob/main/LICENSE
 
 export default class CanvasParticles {
-  static version = '3.7.1'
+  static version = '3.7.2'
 
   // Mouse interaction with the particles.
   static interactionType = Object.freeze({
@@ -160,7 +160,7 @@ export default class CanvasParticles {
           right: this.canvas.width + particle.size,
           bottom: this.canvas.height + particle.size,
           left: -particle.size,
-        })
+        }),
     )
   }
 
@@ -235,11 +235,13 @@ export default class CanvasParticles {
   #updateParticles() {
     for (let particle of this.particles) {
       // Slightly, randomly change the particle's direction and move it in that direction.
-      particle.dir = (particle.dir + Math.random() * this.options.particles.rotationSpeed * 2 - this.options.particles.rotationSpeed) % (2 * Math.PI)
+      particle.dir =
+        (particle.dir + Math.random() * this.options.particles.rotationSpeed * 2 - this.options.particles.rotationSpeed) % (2 * Math.PI)
       particle.velX *= this.options.gravity.friction
       particle.velY *= this.options.gravity.friction
       particle.posX = (particle.posX + particle.velX + ((Math.sin(particle.dir) * particle.speed) % this.width) + this.width) % this.width
-      particle.posY = (particle.posY + particle.velY + ((Math.cos(particle.dir) * particle.speed) % this.height) + this.height) % this.height
+      particle.posY =
+        (particle.posY + particle.velY + ((Math.cos(particle.dir) * particle.speed) % this.height) + this.height) % this.height
 
       const distX = particle.posX + this.offX - this.mouseX
       const distY = particle.posY + this.offY - this.mouseY

@@ -79,7 +79,7 @@ export default class CanvasParticles {
     if (this.options.particles.regenerateOnResize || this.particles.length === 0) this.newParticles()
     else this.matchParticleCount()
 
-    this.#updateParticleBounds()
+    this.particles.forEach(particle => this.#updateParticleBounds(particle))
   }
 
   updateMousePos(event) {
@@ -90,7 +90,7 @@ export default class CanvasParticles {
       this.clientY = event.clientY
     }
 
-    // On scroll, the mouse position remains the same, but since the canvas position changes, 'left' and 'top' must be recalculated.
+    // On scroll, the mouse position remains the same, but since the canvas position changes, `left` and `top` must be recalculated.
     const { left, top } = this.canvas.getBoundingClientRect()
     this.mouseX = this.clientX - left
     this.mouseY = this.clientY - top
@@ -133,9 +133,7 @@ export default class CanvasParticles {
   }
 
   createParticle(posX, posY, dir, speed, size) {
-    size = size || 0.5 + Math.random() ** 5 * 2 * this.options.particles.relSize
-
-    this.particles.push({
+    const particle = {
       posX: posX - this.offX || Math.random() * this.width, // Logical position in pixels
       posY: posY - this.offY || Math.random() * this.height, // Logical position in pixels
       x: posX, // Visual position in pixels
@@ -146,22 +144,20 @@ export default class CanvasParticles {
       offY: 0, // Vertical distance from drawn to logical position in pixels
       dir: dir || Math.random() * 2 * Math.PI, // Direction in radians
       speed: speed || (0.5 + Math.random() * 0.5) * this.options.particles.relSpeed, // Velocity in pixels per update
-      size, // Ray in pixels of the particle
-    })
-    this.#updateParticleBounds()
+      size: size || (0.5 + Math.random() ** 5 * 2) * this.options.particles.relSize, // Ray in pixels of the particle
+    }
+    this.#updateParticleBounds(particle)
+    this.particles.push(particle)
   }
 
-  #updateParticleBounds() {
-    this.particles.map(
-      particle =>
-        // Within these bounds the particle is considered visible.
-        (particle.bounds = {
-          top: -particle.size,
-          right: this.canvas.width + particle.size,
-          bottom: this.canvas.height + particle.size,
-          left: -particle.size,
-        }),
-    )
+  #updateParticleBounds(particle) {
+    // Within these bounds the particle is considered visible.
+    particle.bounds = {
+      top: -particle.size,
+      right: this.canvas.width + particle.size,
+      bottom: this.canvas.height + particle.size,
+      left: -particle.size,
+    }
   }
 
   /**
@@ -183,7 +179,7 @@ export default class CanvasParticles {
 
       for (let i = 0; i < len; i++) {
         for (let j = i + 1; j < len; j++) {
-          // Code in this scope runs [particleCount ** 2 / 2] times!
+          // Code in this scope runs { particleCount ** 2 / 2 } times per update!
           const particleA = this.particles[i]
           const particleB = this.particles[j]
 
@@ -195,7 +191,7 @@ export default class CanvasParticles {
           let angle, grav
 
           if (dist < maxRepulsiveDist) {
-            // Apply repulsive force on all particles closer than 'dist' / 2.
+            // Apply repulsive force on all particles closer than `dist` / 2.
             angle = Math.atan2(particleB.posY - particleA.posY, particleB.posX - particleA.posX)
             grav = (1 / dist) ** 1.8
             const gravMult = Math.min(maxGrav, grav * gravRepulsiveMult)
@@ -246,7 +242,7 @@ export default class CanvasParticles {
       const distX = particle.posX + this.offX - this.mouseX
       const distY = particle.posY + this.offY - this.mouseY
 
-      // If the 'interactionType' is not 'NONE', calculate how much to move the particle away from the mouse.
+      // If the `interactionType` is not `NONE`, calculate how much to move the particle away from the mouse.
       if (this.options.mouse.interactionType !== CanvasParticles.interactionType.NONE) {
         const distRatio = this.options.mouse.connectDist / Math.hypot(distX, distY)
 
@@ -263,7 +259,7 @@ export default class CanvasParticles {
       particle.x = particle.posX + particle.offX
       particle.y = particle.posY + particle.offY
 
-      // Actually move the particles if the 'interactionType' is 'MOVE'.
+      // Actually move the particles if the `interactionType` is `MOVE`.
       if (this.options.mouse.interactionType === CanvasParticles.interactionType.MOVE) {
         particle.posX = particle.x
         particle.posY = particle.y
@@ -326,11 +322,11 @@ export default class CanvasParticles {
 
   /**
    * Precomputes and caches stroke style strings for a given base color and all possible alpha values (0–255).
-   * This is necessary because the rendering process involves up to [particleCount ** 2 / 2] lookups per frame.
+   * This is necessary because the rendering process involves up to { particleCount ** 2 / 2 } lookups per frame.
    *
    * @private
    * @param {string} color - The base color in the format '#rrggbb'.
-   * @returns {Object} - A lookup table mapping each alpha value (0–255) to its corresponding stroke style string in the format '#rrggbbaa'.
+   * @returns {Object} - A lookup table mapping each alpha value (0–255) to its corresponding stroke style string in the format `#rrggbbaa`.
    *
    * @example
    * const strokeStyleTable = this.#generateStrokeStyleTable("#abcdef");
@@ -339,7 +335,7 @@ export default class CanvasParticles {
    *
    * Notes:
    * - This function precomputes all possible stroke styles by appending a two-character hexadecimal alpha value (0x00–0xFF) to the base color.
-   * - The table is stored in 'this.strokeStyleTable' for quick lookups.
+   * - The table is stored in `this.strokeStyleTable` for quick lookups.
    */
   #generateStrokeStyleTable(color) {
     const table = {}
@@ -391,7 +387,7 @@ export default class CanvasParticles {
       let particleWork = 0
 
       for (let j = i + 1; j < len; j++) {
-        // Code in this scope runs [particleCount ** 2 / 2] times!
+        // Code in this scope runs { particleCount ** 2 / 2 } times per frame!
         const particleA = this.particles[i]
         const particleB = this.particles[j]
 
@@ -403,7 +399,7 @@ export default class CanvasParticles {
 
         const dist = Math.sqrt(distX * distX + distY * distY)
 
-        // Don't connect the 2 particles with a line if their distance is greater than 'options.particles.connectDist'.
+        // Don't connect the 2 particles with a line if their distance is greater than `options.particles.connectDist`.
         if (dist > this.options.particles.connectDist) continue
 
         // Calculate the transparency of the line and lookup the stroke style.
@@ -531,7 +527,7 @@ export default class CanvasParticles {
    * @param {Object} options - Object structure: https://github.com/Khoeckman/canvasParticles?tab=readme-ov-file#options
    */
   setOptions(options) {
-    // Returns 'defaultValue' if 'value' is NaN, else returns 'value'.
+    // Returns `defaultValue` if `value` is NaN, else returns `value`.
     const parse = (value, defaultValue) => (isNaN(+value) ? defaultValue : +value)
 
     // Format or default all options.

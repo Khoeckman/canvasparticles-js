@@ -9,7 +9,7 @@
   typeof self !== 'undefined' ? self : this,
   () =>
     class CanvasParticles {
-      static version = '3.7.3'
+      static version = '3.7.4'
 
       // Mouse interaction with the particles.
       static interactionType = Object.freeze({
@@ -84,12 +84,7 @@
         this.offY = (this.canvas.height - this.height) / 2
 
         if (this.options.particles.regenerateOnResize || this.particles.length === 0) this.newParticles()
-        else {
-          // Only update bounds of reused particles
-          this.particles.forEach(particle => this.#updateParticleBounds(particle))
-
-          this.matchParticleCount()
-        }
+        else this.matchParticleCount({ updateBounds: true })
       }
 
       updateMousePos(event) {
@@ -135,10 +130,11 @@
       /**
        * When resizing, add or remove some particles so that the final amount of particles will match 'options.particles.ppm'.
        * */
-      matchParticleCount() {
+      matchParticleCount({ updateBounds } = {}) {
         this.#updateParticleCount()
 
         this.particles = this.particles.slice(0, this.particleCount)
+        if (updateBounds) this.particles.forEach(particle => this.#updateParticleBounds(particle))
         while (this.particleCount > this.particles.length) this.createParticle()
       }
 
@@ -497,17 +493,19 @@
       /**
        * Stops the particle animation and optionally clears the canvas.
        *
-       * - If 'options.clear' is not strictly false, the canvas will be cleared.
+       * - If `clear` is not strictly `false`, the canvas will be cleared.
        *
-       * @param {Object} [options] - Optional configuration for stopping the animation.
-       * @param {boolean} [options.auto] - If true, indicates that the request comes from within.
-       * @param {boolean} [options.clear] - If strictly false, prevents clearing the canvas-.
-       * @returns {boolean} `true` when the animation is successfully stopped.
+       * @param {Object} [options={}] - Optional configuration object.
+       * @param {boolean} [options.auto=false] - If `true`, indicates the stop request came from inside
+       *                                         the animation loop rather than an external call.
+       * @param {boolean} [options.clear=true] - If `false`, prevents the canvas from being cleared
+       *                                         when the animation stops.
+       * @returns {boolean} `true` if the animation state was successfully updated.
        */
-      stop(options) {
-        if (!options?.auto) this.enableAnimating = false
+      stop({ auto, clear } = {}) {
+        if (!auto) this.enableAnimating = false
         this.animating = false
-        if (options?.clear !== false) this.canvas.width = this.canvas.width
+        if (clear !== false) this.canvas.width = this.canvas.width
 
         return true
       }

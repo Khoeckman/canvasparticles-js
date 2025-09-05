@@ -9,7 +9,7 @@
   typeof self !== 'undefined' ? self : this,
   () =>
     class CanvasParticles {
-      static version = '3.7.2'
+      static version = '3.7.3'
 
       // Mouse interaction with the particles.
       static interactionType = Object.freeze({
@@ -84,9 +84,12 @@
         this.offY = (this.canvas.height - this.height) / 2
 
         if (this.options.particles.regenerateOnResize || this.particles.length === 0) this.newParticles()
-        else this.matchParticleCount()
+        else {
+          // Only update bounds of reused particles
+          this.particles.forEach(particle => this.#updateParticleBounds(particle))
 
-        this.particles.forEach(particle => this.#updateParticleBounds(particle))
+          this.matchParticleCount()
+        }
       }
 
       updateMousePos(event) {
@@ -621,5 +624,5 @@
         // Recalculate the stroke style table.
         this.strokeStyleTable = this.#generateStrokeStyleTable(this.options.particles.color)
       }
-    },
+    }
 )

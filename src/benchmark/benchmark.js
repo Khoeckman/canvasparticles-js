@@ -47,7 +47,7 @@ const populateCanvasContainer = () => {
           max: Infinity,
           maxWork: 99,
         },
-      }).canvas
+      }).canvas,
     )
   }
 
@@ -87,4 +87,4 @@ ppmNumberInput.addEventListener('change', function () {
 settingsForm.addEventListener('submit', populateCanvasContainer)
 
 startAnimationButton.addEventListener('click', () => canvasElements.forEach(canvas => canvas.instance.start()))
-stopAnimationButton.addEventListener('click', () => canvasElements.forEach(canvas => canvas.instance.stop()))
+stopAnimationButton.addEventListener('click', () => canvasElements.forEach(canvas => canvas.instance.stop({ clear: false })))

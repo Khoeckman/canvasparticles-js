@@ -5,14 +5,14 @@ import CaretManager from './CaretManager.js'
 // Sandbox
 
 const sandboxError = document.getElementById('sandbox-error')
-const sandboxOptions = document.getElementById('sandbox-options')
+const sandboxOptionsCode = document.getElementById('sandbox-options')
 
 window.addEventListener('load', () => loadPreset('all'))
-const caretManager = new CaretManager(sandboxOptions)
+const caretManager = new CaretManager(sandboxOptionsCode)
 
-sandboxOptions.closest('pre[contenteditable=true]').addEventListener('input', function () {
+sandboxOptionsCode.closest('pre[contenteditable=true]').addEventListener('input', function () {
   caretManager.saveCaretPosition()
-  Prism.highlightElement(sandboxOptions)
+  Prism.highlightElement(sandboxOptionsCode)
   caretManager.restoreCaretPosition()
 })
 
@@ -89,7 +89,7 @@ runButtons.forEach(button => {
           sandboxError.hidden = true
 
           try {
-            eval(sandboxOptions.innerText)
+            eval(sandboxOptionsCode.innerText)
           } catch (err) {
             sandboxError.innerText = err
             sandboxError.hidden = false
@@ -154,6 +154,7 @@ choiceLists.forEach(list => {
         return e => {
           const button = e.target.closest('button')
 
+          // Clear own list then (next) sibling
           buttons.forEach(button => button.removeAttribute('class'))
           document
             .getElementById('sandbox-workspace-choice')
@@ -161,12 +162,13 @@ choiceLists.forEach(list => {
             .forEach(button => button.removeAttribute('class'))
           button.classList.add('active')
 
-          loadPreset(button.getAttribute('data-preset'))
+          loadPreset(button.getAttribute('name'))
         }
       case 'sandbox-workspace-choice':
         return e => {
           const button = e.target.closest('button')
 
+          // Clear own list then (previous) sibling
           buttons.forEach(button => button.removeAttribute('class'))
           document
             .getElementById('sandbox-preset-choice')
@@ -174,7 +176,7 @@ choiceLists.forEach(list => {
             .forEach(button => button.removeAttribute('class'))
           button.classList.add('active')
 
-          loadWorkspace(button.getAttribute('data-workspace'))
+          loadWorkspace(button.getAttribute('name'))
         }
     }
   })()

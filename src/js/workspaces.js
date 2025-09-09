@@ -74,31 +74,43 @@ const presets = {
 })`,
 }
 
-const sandboxOptions = document.getElementById('sandbox-options')
-let selectedWorkspace = null
+const sandboxOptionsCode = document.getElementById('sandbox-options')
+const sandboxOptionsPre = document.getElementById('sandbox-options').closest('pre[contenteditable=true]')
+const localStorageItemKey = 'cpjs.sandbox.workspace'
+let selectedWorkspaceName = null
 
 export const loadPreset = presetName => {
-  selectedWorkspace = null
-  sandboxOptions.textContent = presets[presetName]
-  Prism.highlightElement(sandboxOptions)
+  selectedWorkspaceName = null
+  sandboxOptionsCode.textContent = presets[presetName]
+  Prism.highlightElement(sandboxOptionsCode)
 }
 
 export const loadWorkspace = workspaceName => {
-  selectedWorkspace = workspaceName
-  let workspace = localStorage.getItem('cpjs.sandbox.workspace.' + workspaceName)
+  selectedWorkspaceName = workspaceName
+  let workspaces = {}
 
-  if (!workspace) {
-    localStorage.setItem('cpjs.sandbox.workspace.' + workspaceName, presets.empty)
-    workspace = presets.empty
+  try {
+    workspaces = JSON.parse(localStorage.getItem(localStorageItemKey) ?? '{}')
+
+    // Make sure that `workspaces` is a dictionary
+    if (!workspaces || workspaces.constructor !== Object) workspaces = { [workspaceName]: presets.empty }
+    // If the workspace does not exist, initialize it with the empty preset
+    else if (!workspaces?.[workspaceName]) workspaces[workspaceName] = presets.empty
+  } catch (err) {
+    workspaces = {}
+    console.error('Error while loading workspace:', err)
   }
 
-  sandboxOptions.textContent = workspace
-  Prism.highlightElement(sandbox)
+  localStorage.setItem(localStorageItemKey, JSON.stringify(workspaces))
+
+  sandboxOptionsCode.textContent = workspaces[selectedWorkspaceName]
+  Prism.highlightElement(sandboxOptionsCode)
 }
 
-const saveSelectedWorkspace = data => {
-  if (!selectedWorkspace) return
-  localStorage.setItem('cpjs.sandbox.workspace.' + selectedWorkspace, data)
+const saveWorkspace = (workspaceName, code) => {
+  const workspaces = JSON.parse(localStorage.getItem(localStorageItemKey) ?? '{}')
+  workspaces[workspaceName] = code
+  localStorage.setItem(localStorageItemKey, JSON.stringify(workspaces))
 }
 
-sandboxOptions.addEventListener('input', () => saveSelectedWorkspace(sandboxOptions.innerText))
+sandboxOptionsPre.addEventListener('input', () => saveWorkspace(selectedWorkspaceName, sandboxOptionsCode.innerText))

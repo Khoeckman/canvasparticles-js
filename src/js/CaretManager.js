@@ -49,6 +49,8 @@ export default class CaretManager {
   }
 
   #setCaretCharacterOffsetWithin(element, offset) {
+    if (offset < 0) return
+
     const range = document.createRange()
     const selection = window.getSelection()
 

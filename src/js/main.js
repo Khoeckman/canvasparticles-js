@@ -5,14 +5,14 @@ import CaretManager from './CaretManager.js'
 // Sandbox
 
 const sandboxError = document.getElementById('sandbox-error')
-const sandboxOptionsCode = document.getElementById('sandbox-options')
+const sandboxOptions = document.getElementById('sandbox-options')
 
 window.addEventListener('load', () => loadPreset('all'))
-const caretManager = new CaretManager(sandboxOptionsCode)
+const caretManager = new CaretManager(sandboxOptions)
 
-sandboxOptionsCode.closest('pre[contenteditable=true]').addEventListener('input', function () {
+sandboxOptions.closest('pre').addEventListener('input', function () {
   caretManager.saveCaretPosition()
-  Prism.highlightElement(sandboxOptionsCode)
+  Prism.highlightElement(sandboxOptions)
   caretManager.restoreCaretPosition()
 })
 
@@ -89,7 +89,7 @@ runButtons.forEach(button => {
           sandboxError.hidden = true
 
           try {
-            eval(sandboxOptionsCode.innerText)
+            eval(sandboxOptions.innerText)
           } catch (err) {
             sandboxError.innerText = err
             sandboxError.hidden = false

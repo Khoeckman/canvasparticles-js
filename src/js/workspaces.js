@@ -74,15 +74,14 @@ const presets = {
 })`,
 }
 
-const sandboxOptionsCode = document.getElementById('sandbox-options')
-const sandboxOptionsPre = document.getElementById('sandbox-options').closest('pre[contenteditable=true]')
+const sandboxOptions = document.getElementById('sandbox-options')
 const localStorageItemKey = 'cpjs.sandbox.workspace'
 let selectedWorkspaceName = null
 
 export const loadPreset = presetName => {
   selectedWorkspaceName = null
-  sandboxOptionsCode.textContent = presets[presetName]
-  Prism.highlightElement(sandboxOptionsCode)
+  sandboxOptions.textContent = presets[presetName]
+  Prism.highlightElement(sandboxOptions)
 }
 
 export const loadWorkspace = workspaceName => {
@@ -97,14 +96,13 @@ export const loadWorkspace = workspaceName => {
     // If the workspace does not exist, initialize it with the empty preset
     else if (!workspaces?.[workspaceName]) workspaces[workspaceName] = presets.empty
   } catch (err) {
-    workspaces = {}
-    console.error('Error while loading workspace:', err)
+    workspaces = { [workspaceName]: presets.empty }
   }
 
   localStorage.setItem(localStorageItemKey, JSON.stringify(workspaces))
 
-  sandboxOptionsCode.textContent = workspaces[selectedWorkspaceName]
-  Prism.highlightElement(sandboxOptionsCode)
+  sandboxOptions.textContent = workspaces[selectedWorkspaceName]
+  Prism.highlightElement(sandboxOptions)
 }
 
 const saveWorkspace = (workspaceName, code) => {
@@ -113,4 +111,6 @@ const saveWorkspace = (workspaceName, code) => {
   localStorage.setItem(localStorageItemKey, JSON.stringify(workspaces))
 }
 
-sandboxOptionsPre.addEventListener('input', () => saveWorkspace(selectedWorkspaceName, sandboxOptionsCode.innerText))
+sandboxOptions.addEventListener('input', () => {
+  saveWorkspace(selectedWorkspaceName, sandboxOptions.innerText)
+})

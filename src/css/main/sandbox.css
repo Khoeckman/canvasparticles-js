@@ -16,6 +16,16 @@
   margin: 1.5rem 0;
 }
 
+#sandbox .codeblock .run {
+  top: unset;
+  bottom: 2rem;
+}
+
+#sandbox .codeblock .run.stop {
+  top: unset;
+  bottom: 0;
+}
+
 #sandbox .list.choice {
   width: fit-content;
 }

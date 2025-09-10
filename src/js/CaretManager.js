@@ -62,6 +62,7 @@ export default class CaretManager {
 
       if (node.nodeType === Node.TEXT_NODE) {
         const nextOffset = currentOffset + node.length
+
         if (offset <= nextOffset) {
           range.setStart(node, offset - currentOffset)
           range.collapse(true)

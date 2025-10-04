@@ -1,6 +1,5 @@
-// Type definitions for canvasParticles 3.6.9
-// Project: https://github.com/Khoeckman/canvasParticles
-// Definitions by: Grok (based on provided JavaScript code and options documentation)
+// Type definitions for canvasparticles-js@3.8.0 (https://github.com/Khoeckman/canvasparticles-js)
+// Definitions by: Grok (based on documented JavaScript code)
 
 export default class CanvasParticles {
   /**
@@ -25,14 +24,23 @@ export default class CanvasParticles {
   /**
    * Creates a new CanvasParticles instance.
    * @param selector - The CSS selector to the canvas element or the HTMLCanvasElement itself.
-   * @param options - Configuration options for the particle system.
+   * @param options - Configuration options for the particle system. Defaults to an empty object.
    */
   constructor(selector: string | HTMLCanvasElement, options?: CanvasParticlesOptions)
 
   /**
    * The canvas element associated with this instance.
    */
-  canvas: HTMLCanvasElement
+  canvas: HTMLCanvasElement & {
+    /**
+     * Reference to this CanvasParticles instance.
+     */
+    instance: CanvasParticles
+    /**
+     * Whether the canvas is currently in the viewport.
+     */
+    inViewbox: boolean
+  }
 
   /**
    * The 2D rendering context of the canvas.
@@ -105,7 +113,7 @@ export default class CanvasParticles {
   particleCount: number
 
   /**
-   * Lookup table for stroke styles with varying alpha values.
+   * Lookup table for stroke styles with varying alpha values (0–255).
    */
   strokeStyleTable: { [alpha: number]: string }
 
@@ -132,8 +140,10 @@ export default class CanvasParticles {
 
   /**
    * Adjusts the number of particles to match the target count.
+   * @param options - Configuration for particle count adjustment.
+   * @param options.updateBounds - Whether to update particle bounds during adjustment.
    */
-  matchParticleCount(): void
+  matchParticleCount(options?: { updateBounds?: boolean }): void
 
   /**
    * Creates a new particle with specified or random properties.
@@ -148,6 +158,7 @@ export default class CanvasParticles {
   /**
    * Starts the particle animation.
    * @param options - Optional configuration for starting the animation.
+   * @param options.auto - Indicates if the start is triggered automatically (e.g., by IntersectionObserver).
    * @returns The current instance for method chaining.
    */
   start(options?: { auto?: boolean }): this
@@ -155,6 +166,8 @@ export default class CanvasParticles {
   /**
    * Stops the particle animation and optionally clears the canvas.
    * @param options - Optional configuration for stopping the animation.
+   * @param options.auto - Indicates if the stop is triggered automatically (e.g., by IntersectionObserver).
+   * @param options.clear - Whether to clear the canvas when stopping. Defaults to true.
    * @returns `true` when the animation is successfully stopped.
    */
   stop(options?: { auto?: boolean; clear?: boolean }): boolean
@@ -244,14 +257,14 @@ interface CanvasParticlesOptions {
 
     /**
      * The maximum distance for the mouse to interact with the particles.
-     * The value is multiplied by `particles.connectDistance`.
+     * The value is multiplied by `particles.connectDist`.
      * @default 2/3
      * @example 0.8 connectDistMult * 150 particles.connectDistance = 120 pixels
      */
     connectDistMult?: number
 
     /**
-     * All particles within set radius from the mouse will be drawn to `mouse.connectDistance` pixels from the mouse.
+     * All particles within set radius from the mouse will be drawn to `mouse.connectDist` pixels from the mouse.
      * @default 2/3
      * @example radius = 150 connectDistance / 0.4 distRatio = 375 pixels
      * @remarks Keep this value above `mouse.connectDistMult`. Recommended: 0.2 - 1.
@@ -285,7 +298,7 @@ interface CanvasParticlesOptions {
      * Particles per million pixels (ppm). Determines how many particles are created per million pixels of the canvas.
      * @default 100
      * @example FHD on Chrome = 1920 width * 937 height = 1799040 pixels; 1799040 pixels * 100 ppm / 1_000_000 = 179.904 = 179 particles
-     * @remarks The amount of particles exponentially reduces performance. People with large screens will have a bad experience with high values. One solution is to increase `particles.connectDistance` and decrease this value. Recommended: < 120.
+     * @remarks The amount of particles exponentially reduces performance. Recommended: < 120.
      */
     ppm?: number
 
@@ -324,9 +337,9 @@ interface CanvasParticlesOptions {
     relSize?: number
 
     /**
-     * The speed at which the particles randomly change direction.
+     * The speed at which the particles randomly change direction, scaled by dividing by 100.
      * @default 2
-     * @example 1 rotationSpeed = max direction change of 0.01 radians per update
+     * @example 2 rotationSpeed = max direction change of 0.02 radians per update
      * @remarks Recommended: < 10
      */
     rotationSpeed?: number

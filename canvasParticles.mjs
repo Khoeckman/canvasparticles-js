@@ -2,7 +2,7 @@
 // https://github.com/Khoeckman/canvasparticles-js/blob/main/LICENSE
 
 export default class CanvasParticles {
-  static version = '3.7.4'
+  static version = '3.8.0'
 
   // Mouse interaction with the particles.
   static interactionType = Object.freeze({

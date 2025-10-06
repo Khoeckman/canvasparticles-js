@@ -22,7 +22,7 @@ const populateCanvasContainer = () => {
 
   // Gracefully destroy existing elements
   if (canvasElements.length) {
-    canvasElements.forEach(canvas => canvas.instance.destroy())
+    canvasElements.forEach((canvas) => canvas.instance.destroy())
     canvasElements = []
   }
 
@@ -47,7 +47,7 @@ const populateCanvasContainer = () => {
           max: Infinity,
           maxWork: 99,
         },
-      }).canvas,
+      }).canvas
     )
   }
 
@@ -64,15 +64,15 @@ const settingsForm = document.getElementById('settings-form')
 const canvasCountNumberInput = document.querySelector('#canvas-count-number')
 const canvasCountRangeInput = document.querySelector('#canvas-count-range')
 
-canvasCountNumberInput.addEventListener('input', e => (canvasCountRangeInput.value = e.target.value))
-canvasCountRangeInput.addEventListener('input', e => (canvasCountNumberInput.value = e.target.value))
+canvasCountNumberInput.addEventListener('input', (e) => (canvasCountRangeInput.value = e.target.value))
+canvasCountRangeInput.addEventListener('input', (e) => (canvasCountNumberInput.value = e.target.value))
 
 // Sync number field and slider
 const ppmNumberInput = document.querySelector('#ppm-number')
 const ppmRangeInput = document.querySelector('#ppm-range')
 
-ppmNumberInput.addEventListener('input', e => (ppmRangeInput.value = e.target.value))
-ppmRangeInput.addEventListener('input', e => (ppmNumberInput.value = e.target.value))
+ppmNumberInput.addEventListener('input', (e) => (ppmRangeInput.value = e.target.value))
+ppmRangeInput.addEventListener('input', (e) => (ppmNumberInput.value = e.target.value))
 
 // Enforce min and max limits
 canvasCountNumberInput.addEventListener('change', function () {
@@ -86,5 +86,7 @@ ppmNumberInput.addEventListener('change', function () {
 // Form actions
 settingsForm.addEventListener('submit', populateCanvasContainer)
 
-startAnimationButton.addEventListener('click', () => canvasElements.forEach(canvas => canvas.instance.start()))
-stopAnimationButton.addEventListener('click', () => canvasElements.forEach(canvas => canvas.instance.stop({ clear: false })))
+startAnimationButton.addEventListener('click', () => canvasElements.forEach((canvas) => canvas.instance.start()))
+stopAnimationButton.addEventListener('click', () =>
+  canvasElements.forEach((canvas) => canvas.instance.stop({ clear: false }))
+)

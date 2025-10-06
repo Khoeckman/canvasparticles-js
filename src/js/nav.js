@@ -50,7 +50,7 @@ const title = document.querySelector('#title h1')
 const subtitle = document.querySelector('#title h2')
 let debounceUpdateHash
 
-const scrollEventHandler = container => {
+const scrollEventHandler = (container) => {
   // Small nav
   const scrolledPastTitle = container.scrollTop >= window.innerHeight - 128 /* Large header height */
   const op = scrolledPastTitle ? 'add' : 'remove'

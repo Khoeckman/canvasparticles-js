@@ -20,13 +20,13 @@ sandboxOptions.closest('pre').addEventListener('input', function () {
 
 const togglables = [...document.querySelectorAll('main .togglable input')]
 
-togglables.forEach(checkbox => {
-  checkbox.addEventListener('click', e => {
+togglables.forEach((checkbox) => {
+  checkbox.addEventListener('click', (e) => {
     const name = e.target.id.split(/-(.*)/s)[1]
     const op = e.target.checked ? 'start' : 'stop'
     showcase[name]?.[op]()
 
-    togglables.forEach(checkbox => {
+    togglables.forEach((checkbox) => {
       const currentName = checkbox.id.split(/-(.*)/s)[1]
       if (name === currentName) return
       checkbox.checked = false
@@ -42,7 +42,7 @@ let hue = 0
 let hueRotateInterval
 const sandbox = new CanvasParticles('#cp-sandbox', { animation: { startOnEnter: false } })
 
-runButtons.forEach(button => {
+runButtons.forEach((button) => {
   const handler = (() => {
     switch (button.id) {
       case 'run-default-stop':
@@ -63,7 +63,9 @@ runButtons.forEach(button => {
           const maxWork = button.id === 'run-pushing-gravity-max-work' ? 12 : Infinity
           showcase['pulling-gravity'].options.particles.maxWork = maxWork
 
-          const numberToken = document.querySelectorAll('#showcase article:has(#showcase-pulling-gravity) code .token.number')[2]
+          const numberToken = document.querySelectorAll(
+            '#showcase article:has(#showcase-pulling-gravity) code .token.number'
+          )[2]
           numberToken.innerText = +maxWork
         }
 
@@ -76,7 +78,9 @@ runButtons.forEach(button => {
             hue %= 360
             showcase['hue-rotation'].setParticleColor(color)
 
-            const stringToken = document.querySelectorAll('#showcase article:has(#showcase-hue-rotation) code .token.string')[2]
+            const stringToken = document.querySelectorAll(
+              '#showcase article:has(#showcase-hue-rotation) code .token.string'
+            )[2]
             stringToken.innerText = color
           }, 20)
         }
@@ -110,30 +114,30 @@ runButtons.forEach(button => {
 
 const choiceLists = [...document.querySelectorAll('main .choice')]
 
-choiceLists.forEach(list => {
+choiceLists.forEach((list) => {
   const handler = (() => {
     const buttons = list.querySelectorAll('button')
 
     switch (list.id) {
       case 'installation-choice':
-        return e => {
+        return (e) => {
           const button = e.target.closest('button')
 
-          buttons.forEach(button => button.removeAttribute('class'))
+          buttons.forEach((button) => button.removeAttribute('class'))
           button.classList.add('active')
 
           const content = document.querySelectorAll('#installation-choice + ul.content li')
           const choice = +button.getAttribute('data-choice')
 
-          content.forEach(li => (li.hidden = true))
+          content.forEach((li) => (li.hidden = true))
           content[choice].hidden = false
         }
 
       case 'showcase-interact-choice':
-        return e => {
+        return (e) => {
           const button = e.target.closest('button')
 
-          buttons.forEach(button => button.removeAttribute('class'))
+          buttons.forEach((button) => button.removeAttribute('class'))
           button.classList.add('active')
 
           const type = button.getAttribute('data-type')
@@ -151,29 +155,29 @@ choiceLists.forEach(list => {
         }
 
       case 'sandbox-preset-choice':
-        return e => {
+        return (e) => {
           const button = e.target.closest('button')
 
           // Clear own list then (next) sibling
-          buttons.forEach(button => button.removeAttribute('class'))
+          buttons.forEach((button) => button.removeAttribute('class'))
           document
             .getElementById('sandbox-workspace-choice')
             .querySelectorAll('button')
-            .forEach(button => button.removeAttribute('class'))
+            .forEach((button) => button.removeAttribute('class'))
           button.classList.add('active')
 
           loadPreset(button.getAttribute('name'))
         }
       case 'sandbox-workspace-choice':
-        return e => {
+        return (e) => {
           const button = e.target.closest('button')
 
           // Clear own list then (previous) sibling
-          buttons.forEach(button => button.removeAttribute('class'))
+          buttons.forEach((button) => button.removeAttribute('class'))
           document
             .getElementById('sandbox-preset-choice')
             .querySelectorAll('button')
-            .forEach(button => button.removeAttribute('class'))
+            .forEach((button) => button.removeAttribute('class'))
           button.classList.add('active')
 
           loadWorkspace(button.getAttribute('name'))

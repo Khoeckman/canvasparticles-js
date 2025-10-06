@@ -78,13 +78,13 @@ const sandboxOptions = document.getElementById('sandbox-options')
 const localStorageItemKey = 'cpjs.sandbox.workspace'
 let selectedWorkspaceName = null
 
-export const loadPreset = presetName => {
+export const loadPreset = (presetName) => {
   selectedWorkspaceName = null
   sandboxOptions.textContent = presets[presetName]
   Prism.highlightElement(sandboxOptions)
 }
 
-export const loadWorkspace = workspaceName => {
+export const loadWorkspace = (workspaceName) => {
   selectedWorkspaceName = workspaceName
   let workspaces = {}
 

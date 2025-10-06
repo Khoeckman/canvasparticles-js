@@ -51,6 +51,10 @@ header nav li.title .version {
   margin: 0;
 }
 
+span#version {
+  display: inline-block; 
+}
+
 header nav li.title .version::before {
   background-color: var(--g7);
 }

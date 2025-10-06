@@ -9,7 +9,7 @@
   typeof self !== 'undefined' ? self : this,
   () =>
     class CanvasParticles {
-      static version = '3.7.4'
+      static version = '3.8.2'
 
       // Mouse interaction with the particles.
       static interactionType = Object.freeze({
@@ -17,7 +17,6 @@
         SHIFT: 1, // Visually shift the particles
         MOVE: 2, // Actually move the particles
       })
-
       // Start or stop the animation when the canvas enters or exits the viewport.
       static canvasIntersectionObserver = new IntersectionObserver(entry => {
         entry.forEach(change => {

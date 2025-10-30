@@ -1,14 +1,14 @@
 ;(function (global, factory) {
   typeof exports === 'object' && typeof module !== 'undefined'
-    ? factory(exports)
+    ? (module.exports = factory())
     : typeof define === 'function' && define.amd
-      ? define(['exports'], factory)
+      ? define(factory)
       : ((global = typeof globalThis !== 'undefined' ? globalThis : global || self),
-        factory((global.CanvasParticles = {})))
-})(this, function (exports) {
+        (global.CanvasParticles = factory()))
+})(this, function () {
   'use strict'
   class CanvasParticles {
-    static version = '4.0.1'
+    static version = '4.0.2'
     static interactionType = Object.freeze({
       NONE: 0,
       SHIFT: 1,
@@ -436,8 +436,5 @@
       this.strokeStyleTable = this.#generateHexAlphaTable(this.option.particles.color)
     }
   }
-  exports.default = CanvasParticles
-  Object.defineProperty(exports, '__esModule', {
-    value: true,
-  })
+  return CanvasParticles
 })

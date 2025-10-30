@@ -1,6 +1,6 @@
 {
   "name": "canvasparticles-js",
-  "version": "4.0.1",
+  "version": "4.0.2",
   "description": "In an HTML canvas, a bunch of interactive particles connected with lines when they approach each other.",
   "author": "Khoeckman",
   "license": "MIT",

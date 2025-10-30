@@ -1,11 +1,7 @@
 'use strict'
 
-Object.defineProperty(exports, '__esModule', {
-  value: true,
-})
-
 class CanvasParticles {
-  static version = '4.0.1'
+  static version = '4.0.2'
   static interactionType = Object.freeze({
     NONE: 0,
     SHIFT: 1,
@@ -431,4 +427,4 @@ class CanvasParticles {
   }
 }
 
-exports.default = CanvasParticles
+module.exports = CanvasParticles

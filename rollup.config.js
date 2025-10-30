@@ -13,10 +13,10 @@ export default {
       file: 'dist/index.umd.js',
       format: 'umd',
       name: 'CanvasParticles',
-      exports: 'named',
+      exports: 'default',
     },
     { file: 'dist/index.mjs', format: 'es' },
-    { file: 'dist/index.cjs', format: 'cjs', exports: 'named' },
+    { file: 'dist/index.cjs', format: 'cjs' },
   ],
   plugins: [
     del({ targets: 'dist/*' }),

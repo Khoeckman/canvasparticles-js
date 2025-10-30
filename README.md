@@ -57,7 +57,7 @@ new CanvasParticles(selector, options).start()
 </details>
 
 <details>
-  <summary><h3>Import with jsDelivr</h3></summary>
+  <summary><h3>Import with jsDelivr (click to expand)</h3></summary>
 
 Add a `<script>` element in the `<head>` to import `CanvasParticles`.
 
@@ -70,7 +70,7 @@ Add a `<script>` element in the `<head>` to import `CanvasParticles`.
 </details>
 
 <details>
-  <summary><h3>Import raw file as ES module</h3></summary>
+  <summary><h3>Import raw file as ES module (click to expand)</h3></summary>
 
 Be aware that using ES modules is only possible when running the application on a (local) server.<br>
 [Same Origin Policy](https://developer.mozilla.org/en-US/docs/Web/Security/Same-origin_policy)
@@ -96,7 +96,7 @@ new CanvasParticles(selector, options).start()
 </details>
 
 <details>
-  <summary><h3>Import raw file globally</h3></summary>
+  <summary><h3>Import raw file globally (click to expand)</h3></summary>
   
   Add a `<script>` element in the `<head>` to import the *canvasParticles.js* file.<br>
   ```html
@@ -215,7 +215,7 @@ Configuration options for the particles and their behavior.<br>
 Play around with these values: [Sandbox](https://khoeckman.github.io/canvasparticles-js/#sandbox)
 
 <details>
-  <summary><h3>Options structure</h3></summary>
+  <summary><h3>Options structure (click to expand)</h3></summary>
 
 The default value will be used when an option is assigned an invalid value.<br>
 Your screen resolution and refresh rate will directly impact perfomance!
@@ -339,7 +339,7 @@ const options = {
 
 ### Update options on the fly
 
-**Note:** The new option values are not validated, except for the options with a setter. Assigning invalid values will lead to unexpected behavior.
+**Note:** The new option values are not validated, except for the options with a `set...()` function. Assigning invalid values will lead to unexpected behavior.
 
 #### Using the setter
 
@@ -362,12 +362,13 @@ instance.setParticleColor('hsl(149, 100%, 50%)')
 
 After updating the following options, the number of particles is not automatically adjusted:
 
-- options.particles.ppm
-- options.particles.max
+- option.particles.ppm
+- option.particles.max
 
 ```js
-instance.options.particles.ppm = 100
-instance.options.particles.max = 300
+// Note: the backing field is called `option` not `options`!
+instance.option.particles.ppm = 100
+instance.option.particles.max = 300
 
 // Apply the changes using one of these methods:
 instance.newParticles() // Remove all particles and create the correct amount of new ones
@@ -376,21 +377,22 @@ instance.matchParticleCount() // Add or remove some particles to match the count
 
 #### Modifying object properties
 
-**All** other options can be updated by modifying the `options` object properties, with changes taking immediate effect.
+**All** other options can be updated by modifying the `option` internal field properties, with changes taking immediate effect.
 
 ```js
-instance.options.mouse.interactionType = 0
-instance.options.particles.connectDist = 200
-instance.options.gravity.repulsive = 1
+// Note: the backing field is called `option` not `options`!
+instance.option.mouse.interactionType = 0
+instance.option.particles.connectDist = 200
+instance.option.gravity.repulsive = 1
 ```
 
 #### Updating entire options object
 
-To reinitialize all options, pass a new options object with `.setOptions()`.
+To reinitialize all options, pass a new options object to the `options` setter.
 
 ```js
 const options = { ... }
-instance.setOptions(options)
+instance.options = options
 ```
 
 ## One pager example

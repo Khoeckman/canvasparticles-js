@@ -1,5 +1,5 @@
 import type { CanvasParticlesCanvas, Particle } from './types'
-import type { CanvasParticlesOptionsInput } from './types/options'
+import type { CanvasParticlesOptions, CanvasParticlesOptionsInput } from './types/options'
 export default class CanvasParticles {
   #private
   static version: string
@@ -27,6 +27,7 @@ export default class CanvasParticles {
   strokeStyleTable: Record<string, string>
   clientX: number
   clientY: number
+  option: CanvasParticlesOptions
   /**
    * Initialize a CanvasParticles instance
    * @param selector - Canvas element or CSS selector
@@ -51,6 +52,7 @@ export default class CanvasParticles {
   destroy(): void
   /** Set and validate options (https://github.com/Khoeckman/canvasParticles?tab=readme-ov-file#options) */
   set options(options: CanvasParticlesOptionsInput)
+  get options(): CanvasParticlesOptions
   /** @public Sets the canvas background */
   setBackground(background: CanvasParticlesOptionsInput['background']): void
   /** @public Transform the distance multiplier (float) to absolute distance (px) */

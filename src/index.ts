@@ -49,7 +49,7 @@ export default class CanvasParticles {
   strokeStyleTable: Record<string, string>
   clientX: number
   clientY: number
-  #options!: CanvasParticlesOptions
+  option!: CanvasParticlesOptions
 
   /**
    * Initialize a CanvasParticles instance
@@ -116,12 +116,12 @@ export default class CanvasParticles {
     this.mouseY = Infinity
 
     this.updateCount = Infinity
-    this.width = this.canvas.width + this.#options.particles.connectDist * 2
-    this.height = this.canvas.height + this.#options.particles.connectDist * 2
+    this.width = this.canvas.width + this.option.particles.connectDist * 2
+    this.height = this.canvas.height + this.option.particles.connectDist * 2
     this.offX = (this.canvas.width - this.width) / 2
     this.offY = (this.canvas.height - this.height) / 2
 
-    if (this.#options.particles.regenerateOnResize || this.particles.length === 0) this.newParticles()
+    if (this.option.particles.regenerateOnResize || this.particles.length === 0) this.newParticles()
     else this.matchParticleCount({ updateBounds: true })
   }
 
@@ -143,8 +143,8 @@ export default class CanvasParticles {
   /** @private Update the target number of particles based on the current canvas size and `options.particles.ppm`, capped at `options.particles.max`. */
   #updateParticleCount() {
     // Amount of particles to be created
-    const particleCount = ((this.#options.particles.ppm * this.width * this.height) / 1_000_000) | 0
-    this.particleCount = Math.min(this.#options.particles.max, particleCount)
+    const particleCount = ((this.option.particles.ppm * this.width * this.height) / 1_000_000) | 0
+    this.particleCount = Math.min(this.option.particles.max, particleCount)
 
     if (!isFinite(this.particleCount))
       throw new RangeError('number of particles must be finite. (options.particles.ppm)')
@@ -182,8 +182,8 @@ export default class CanvasParticles {
       offX: 0, // Horizontal distance from drawn to logical position in pixels
       offY: 0, // Vertical distance from drawn to logical position in pixels
       dir: dir || Math.random() * 2 * Math.PI, // Direction in radians
-      speed: speed || (0.5 + Math.random() * 0.5) * this.#options.particles.relSpeed, // Velocity in pixels per update
-      size: size || (0.5 + Math.random() ** 5 * 2) * this.#options.particles.relSize, // Ray in pixels of the particle
+      speed: speed || (0.5 + Math.random() * 0.5) * this.option.particles.relSpeed, // Velocity in pixels per update
+      size: size || (0.5 + Math.random() ** 5 * 2) * this.option.particles.relSize, // Ray in pixels of the particle
       gridPos: { x: 1, y: 1 },
       isVisible: false,
     }
@@ -204,15 +204,15 @@ export default class CanvasParticles {
 
   /** @private Apply gravity forces between particles once every `options.framesPerUpdate` frames */
   #updateGravity() {
-    const isRepulsiveEnabled = this.#options.gravity.repulsive !== 0
-    const isPullingEnabled = this.#options.gravity.pulling !== 0
+    const isRepulsiveEnabled = this.option.gravity.repulsive !== 0
+    const isPullingEnabled = this.option.gravity.pulling !== 0
 
     if (isRepulsiveEnabled || isPullingEnabled) {
       const len = this.particleCount
-      const gravRepulsiveMult = this.#options.particles.connectDist * this.#options.gravity.repulsive
-      const gravPullingMult = this.#options.particles.connectDist * this.#options.gravity.pulling
-      const maxRepulsiveDist = this.#options.particles.connectDist / 2
-      const maxGrav = this.#options.particles.connectDist * 0.1
+      const gravRepulsiveMult = this.option.particles.connectDist * this.option.gravity.repulsive
+      const gravPullingMult = this.option.particles.connectDist * this.option.gravity.pulling
+      const maxRepulsiveDist = this.option.particles.connectDist / 2
+      const maxGrav = this.option.particles.connectDist * 0.1
 
       for (let i = 0; i < len; i++) {
         for (let j = i + 1; j < len; j++) {
@@ -265,12 +265,10 @@ export default class CanvasParticles {
     for (let particle of this.particles) {
       // Randomly perturb direction
       particle.dir =
-        (particle.dir +
-          Math.random() * this.#options.particles.rotationSpeed * 2 -
-          this.#options.particles.rotationSpeed) %
+        (particle.dir + Math.random() * this.option.particles.rotationSpeed * 2 - this.option.particles.rotationSpeed) %
         (2 * Math.PI)
-      particle.velX *= this.#options.gravity.friction
-      particle.velY *= this.#options.gravity.friction
+      particle.velX *= this.option.gravity.friction
+      particle.velY *= this.option.gravity.friction
       particle.posX =
         (particle.posX + particle.velX + ((Math.sin(particle.dir) * particle.speed) % this.width) + this.width) %
         this.width
@@ -282,10 +280,10 @@ export default class CanvasParticles {
       const distY = particle.posY + this.offY - this.mouseY
 
       // Mouse interaction
-      if (this.#options.mouse.interactionType !== CanvasParticles.interactionType.NONE) {
-        const distRatio = this.#options.mouse.connectDist / Math.hypot(distX, distY)
+      if (this.option.mouse.interactionType !== CanvasParticles.interactionType.NONE) {
+        const distRatio = this.option.mouse.connectDist / Math.hypot(distX, distY)
 
-        if (this.#options.mouse.distRatio < distRatio) {
+        if (this.option.mouse.distRatio < distRatio) {
           particle.offX += (distRatio * distX - distX - particle.offX) / 4
           particle.offY += (distRatio * distY - distY - particle.offY) / 4
         } else {
@@ -299,7 +297,7 @@ export default class CanvasParticles {
       particle.y = particle.posY + particle.offY
 
       // Move the particles
-      if (this.#options.mouse.interactionType === CanvasParticles.interactionType.MOVE) {
+      if (this.option.mouse.interactionType === CanvasParticles.interactionType.MOVE) {
         particle.posX = particle.x
         particle.posY = particle.y
       }
@@ -394,9 +392,9 @@ export default class CanvasParticles {
   /** @private Draw lines between particles if they are close enough */
   #renderConnections() {
     const len = this.particleCount
-    const drawAll = this.#options.particles.connectDist >= Math.min(this.canvas.width, this.canvas.height)
+    const drawAll = this.option.particles.connectDist >= Math.min(this.canvas.width, this.canvas.height)
 
-    const maxWorkPerParticle = this.#options.particles.connectDist * this.#options.particles.maxWork
+    const maxWorkPerParticle = this.option.particles.connectDist * this.option.particles.maxWork
 
     for (let i = 0; i < len; i++) {
       let particleWork = 0
@@ -415,16 +413,15 @@ export default class CanvasParticles {
         const dist = Math.sqrt(distX * distX + distY * distY)
 
         // Don't draw the line if the particles are too far away
-        if (dist > this.#options.particles.connectDist) continue
+        if (dist > this.option.particles.connectDist) continue
 
         // Calculate the transparency of the line and lookup the stroke style
         // Note: This is the heaviest task of the entire animation process
-        if (dist > this.#options.particles.connectDist / 2) {
-          const alpha =
-            (Math.min(this.#options.particles.connectDist / dist - 1, 1) * this.#options.particles.opacity) | 0
+        if (dist > this.option.particles.connectDist / 2) {
+          const alpha = (Math.min(this.option.particles.connectDist / dist - 1, 1) * this.option.particles.opacity) | 0
           this.ctx.strokeStyle = this.strokeStyleTable[alpha]
         } else {
-          this.ctx.strokeStyle = this.#options.particles.colorWithAlpha
+          this.ctx.strokeStyle = this.option.particles.colorWithAlpha
         }
 
         // Draw the line
@@ -442,7 +439,7 @@ export default class CanvasParticles {
   /** @private Clear the canvas and render the particles and their connections onto the canvas */
   #render() {
     this.canvas.width = this.canvas.width
-    this.ctx.fillStyle = this.#options.particles.colorWithAlpha
+    this.ctx.fillStyle = this.option.particles.colorWithAlpha
     this.ctx.lineWidth = 1
 
     this.#renderParticles()
@@ -455,7 +452,7 @@ export default class CanvasParticles {
 
     requestAnimationFrame(() => this.#animation())
 
-    if (++this.updateCount >= this.#options.framesPerUpdate) {
+    if (++this.updateCount >= this.option.framesPerUpdate) {
       this.updateCount = 0
       this.#updateGravity()
       this.#updateParticles()
@@ -472,7 +469,7 @@ export default class CanvasParticles {
     }
 
     // Stop animating because it will start automatically once the canvas enters the viewbox
-    if (!this.canvas.inViewbox && this.#options.animation.startOnEnter) this.animating = false
+    if (!this.canvas.inViewbox && this.option.animation.startOnEnter) this.animating = false
 
     return this
   }
@@ -515,7 +512,7 @@ export default class CanvasParticles {
     }
 
     // Format and parse all options
-    this.#options = {
+    this.option = {
       background: options.background ?? false,
       framesPerUpdate: parseNumericOption(options.framesPerUpdate, 1, { min: 1 }),
       animation: {
@@ -548,22 +545,26 @@ export default class CanvasParticles {
       },
     }
 
-    this.setBackground(this.#options.background)
-    this.setMouseConnectDistMult(this.#options.mouse.connectDistMult)
-    this.setParticleColor(this.#options.particles.color)
+    this.setBackground(this.option.background)
+    this.setMouseConnectDistMult(this.option.mouse.connectDistMult)
+    this.setParticleColor(this.option.particles.color)
+  }
+
+  get options(): CanvasParticlesOptions {
+    return this.option
   }
 
   /** @public Sets the canvas background */
   setBackground(background: CanvasParticlesOptionsInput['background']) {
     if (!background) return
     if (typeof background !== 'string') throw new TypeError('background is not a string')
-    this.canvas.style.background = this.#options.background = background
+    this.canvas.style.background = this.option.background = background
   }
 
   /** @public Transform the distance multiplier (float) to absolute distance (px) */
   setMouseConnectDistMult(connectDistMult: number) {
-    this.#options.mouse.connectDist =
-      this.#options.particles.connectDist * (isNaN(connectDistMult) ? 2 / 3 : connectDistMult)
+    this.option.mouse.connectDist =
+      this.option.particles.connectDist * (isNaN(connectDistMult) ? 2 / 3 : connectDistMult)
   }
 
   /** @public Format particle color and opacity */
@@ -571,22 +572,21 @@ export default class CanvasParticles {
     this.ctx.fillStyle = color
 
     // Check if `ctx.fillStyle` is in hex format ("#RRGGBB")
-    if (String(this.ctx.fillStyle)[0] === '#') this.#options.particles.opacity = 255
+    if (String(this.ctx.fillStyle)[0] === '#') this.option.particles.opacity = 255
     else {
       // JavaScript's `ctx.fillStyle` causes the color to otherwise end up in in rgba format ("rgba(136, 244, 255, 0.25)")
 
       // Extract the alpha value (0.25) from the rgba string and scale it from 0x00 to 0xff
-      this.#options.particles.opacity =
+      this.option.particles.opacity =
         (parseFloat(String(this.ctx.fillStyle).split(',').at(-1)?.slice(1, -1) ?? '1') * 255) | 0
 
       // Extracts e.g. 136, 244 and 255 from rgba(136, 244, 255, 0.25) and converts it to '#rrggbb'
       this.ctx.fillStyle = String(this.ctx.fillStyle).split(',').slice(0, -1).join(',') + ', 1)'
     }
-    this.#options.particles.color = this.ctx.fillStyle
-    this.#options.particles.colorWithAlpha =
-      this.#options.particles.color + this.#options.particles.opacity.toString(16)
+    this.option.particles.color = this.ctx.fillStyle
+    this.option.particles.colorWithAlpha = this.option.particles.color + this.option.particles.opacity.toString(16)
 
     // Recalculate the stroke style lookup table
-    this.strokeStyleTable = this.#generateHexAlphaTable(this.#options.particles.color)
+    this.strokeStyleTable = this.#generateHexAlphaTable(this.option.particles.color)
   }
 }

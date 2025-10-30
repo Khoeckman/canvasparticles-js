@@ -61,7 +61,7 @@ runButtons.forEach((button) => {
       case 'stop-pushing-gravity-max-work':
         return () => {
           const maxWork = button.id === 'run-pushing-gravity-max-work' ? 12 : Infinity
-          showcase['pulling-gravity'].options.particles.maxWork = maxWork
+          showcase['pulling-gravity'].option.particles.maxWork = maxWork
 
           const numberToken = document.querySelectorAll(
             '#showcase article:has(#showcase-pulling-gravity) code .token.number'
@@ -144,9 +144,9 @@ choiceLists.forEach((list) => {
           const interactionType = Math.min(type, 2)
           const distRatio = type == 3 ? 0.7 : 1
           const maxWork = type == 3 ? 20 : Infinity
-          showcase.interact.options.mouse.interactionType = interactionType
-          showcase.interact.options.mouse.distRatio = distRatio
-          showcase.interact.options.particles.maxWork = maxWork
+          showcase.interact.option.mouse.interactionType = interactionType
+          showcase.interact.option.mouse.distRatio = distRatio
+          showcase.interact.option.particles.maxWork = maxWork
 
           const numberTokens = document.querySelectorAll('#showcase article:has(#showcase-interact) code .token.number')
           numberTokens[0].innerText = '' + interactionType

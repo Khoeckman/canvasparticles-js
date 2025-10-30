@@ -38,17 +38,17 @@ export default class CanvasParticles {
 
   particles: Particle[]
 
-  mouseX: number
-  mouseY: number
-  width: number
-  height: number
-  offX: number
-  offY: number
-  updateCount: number
-  particleCount: number
-  strokeStyleTable: Record<string, string>
-  clientX: number
-  clientY: number
+  mouseX!: number
+  mouseY!: number
+  width!: number
+  height!: number
+  offX!: number
+  offY!: number
+  updateCount!: number
+  particleCount!: number
+  strokeStyleTable!: Record<string, string>
+  clientX!: number
+  clientY!: number
   option!: CanvasParticlesOptions
 
   /**
@@ -91,19 +91,6 @@ export default class CanvasParticles {
 
     window.addEventListener('mousemove', this.updateMousePos)
     window.addEventListener('scroll', this.updateMousePos)
-
-    // Assign default value to comfort TypeScript
-    this.mouseX = Infinity
-    this.mouseY = Infinity
-    this.width = 0
-    this.height = 0
-    this.offX = 0
-    this.offY = 0
-    this.updateCount = 0
-    this.particleCount = 0
-    this.strokeStyleTable = {}
-    this.clientX = 0
-    this.clientY = 0
   }
 
   /** @public Resize the canvas and update particles accordingly */
@@ -116,8 +103,8 @@ export default class CanvasParticles {
     this.mouseY = Infinity
 
     this.updateCount = Infinity
-    this.width = this.canvas.width + this.option.particles.connectDist * 2
-    this.height = this.canvas.height + this.option.particles.connectDist * 2
+    this.width = Math.max(this.canvas.width + this.option.particles.connectDist * 2, 1)
+    this.height = Math.max(this.canvas.height + this.option.particles.connectDist * 2, 1)
     this.offX = (this.canvas.width - this.width) / 2
     this.offY = (this.canvas.height - this.height) / 2
 
@@ -262,6 +249,8 @@ export default class CanvasParticles {
 
   /** @private Update positions, directions, and visibility of all particles once every `options.framesPerUpdate` frames */
   #updateParticles() {
+    if (this.width <= 0 || this.height <= 0) this.resizeCanvas()
+
     for (let particle of this.particles) {
       // Randomly perturb direction
       particle.dir =

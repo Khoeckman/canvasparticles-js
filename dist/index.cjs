@@ -1,7 +1,7 @@
 'use strict'
 
 class CanvasParticles {
-  static version = '4.0.2'
+  static version = '4.0.3'
   static interactionType = Object.freeze({
     NONE: 0,
     SHIFT: 1,
@@ -66,17 +66,6 @@ class CanvasParticles {
     this.resizeCanvas()
     window.addEventListener('mousemove', this.updateMousePos)
     window.addEventListener('scroll', this.updateMousePos)
-    this.mouseX = Infinity
-    this.mouseY = Infinity
-    this.width = 0
-    this.height = 0
-    this.offX = 0
-    this.offY = 0
-    this.updateCount = 0
-    this.particleCount = 0
-    this.strokeStyleTable = {}
-    this.clientX = 0
-    this.clientY = 0
   }
   resizeCanvas() {
     this.canvas.width = this.canvas.offsetWidth
@@ -84,8 +73,8 @@ class CanvasParticles {
     this.mouseX = Infinity
     this.mouseY = Infinity
     this.updateCount = Infinity
-    this.width = this.canvas.width + this.option.particles.connectDist * 2
-    this.height = this.canvas.height + this.option.particles.connectDist * 2
+    this.width = Math.max(this.canvas.width + this.option.particles.connectDist * 2, 1)
+    this.height = Math.max(this.canvas.height + this.option.particles.connectDist * 2, 1)
     this.offX = (this.canvas.width - this.width) / 2
     this.offY = (this.canvas.height - this.height) / 2
     if (this.option.particles.regenerateOnResize || this.particles.length === 0) this.newParticles()
@@ -199,6 +188,7 @@ class CanvasParticles {
     }
   }
   #updateParticles() {
+    if (this.width <= 0 || this.height <= 0) this.resizeCanvas()
     for (let particle of this.particles) {
       particle.dir =
         (particle.dir + Math.random() * this.option.particles.rotationSpeed * 2 - this.option.particles.rotationSpeed) %

@@ -1,35 +1,54 @@
 {
   "name": "canvasparticles-js",
-  "version": "3.8.2",
+  "version": "4.0.0",
   "description": "In an HTML canvas, a bunch of interactive particles connected with lines when they approach each other.",
-  "main": "canvasParticles.js",
-  "module": "canvasParticles.mjs",
-  "types": "canvasParticles.d.ts",
+  "author": "Khoeckman",
+  "license": "MIT",
   "type": "module",
-  "scripts": {
-    "test": "exit 0"
-  },
-  "files": [
-    "./canvasparticles.d.ts",
-    "./canvasParticles.js",
-    "./canvasParticles.mjs"
-  ],
+  "main": "dist/index.umd.js",
+  "module": "dist/index.mjs",
+  "types": "dist/index.d.ts",
   "exports": {
     ".": {
-      "require": "./canvasParticles.js",
-      "import": "./canvasParticles.mjs"
+      "types": "./dist/index.d.ts",
+      "require": "./dist/index.cjs",
+      "import": "./dist/index.mjs",
+      "default": "./dist/index.umd.js"
     }
   },
+  "files": [
+    "src/",
+    "dist/"
+  ],
+  "scripts": {
+    "test": "exit 0",
+    "build": "rollup -c && prettier --write \"dist/**/*.{js,mjs,cjs,d.ts}\"",
+    "prepack": "npm update && npm run build"
+  },
+  "devDependencies": {
+    "@rollup/plugin-commonjs": "^29.0.0",
+    "@rollup/plugin-node-resolve": "^16.0.3",
+    "@rollup/plugin-replace": "^6.0.3",
+    "@rollup/plugin-terser": "^0.4.4",
+    "@rollup/plugin-typescript": "^12.3.0",
+    "@types/node": "^24.9.2",
+    "prettier": "^3.6.2",
+    "rollup": "^4.52.5",
+    "rollup-plugin-delete": "^3.0.1",
+    "tslib": "^2.8.1",
+    "typescript": "^5.9.3"
+  },
+  "publishConfig": {
+    "access": "public"
+  },
+  "homepage": "https://khoeckman.github.io/canvasparticles-js/",
   "repository": {
     "type": "git",
     "url": "git+https://github.com/Khoeckman/canvasparticles-js.git"
   },
-  "author": "Kyle Hoeckman",
-  "license": "MIT",
   "bugs": {
     "url": "https://github.com/Khoeckman/canvasparticles-js/issues"
   },
-  "homepage": "https://khoeckman.github.io/canvasparticles-js/",
   "keywords": [
     "front-end",
     "frontend",

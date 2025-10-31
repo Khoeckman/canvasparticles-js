@@ -25,7 +25,7 @@ const presets = {
   gravity: {
     repulsive: 0.55,
     pulling: 0,
-    friction: 0.99,
+    friction: 0.9,
   }
 }`,
 
@@ -66,6 +66,7 @@ const presets = {
   },
   gravity: {
     repulsive: 3,
+    friction: 0.8,
   },
 }`,
 

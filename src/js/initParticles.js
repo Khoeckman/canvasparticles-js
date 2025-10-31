@@ -93,13 +93,13 @@ showcase['pushing-gravity'] = new CanvasParticles('#showcase-pushing-gravity', {
   background: '#423',
   particles: {
     color: '#f45c',
-    ppm: 200,
-    max: 100,
+    ppm: 150,
+    max: 150,
     connectDistance: 175,
   },
   gravity: {
     repulsive: 3,
-    fricion: 0.995,
+    fricion: 0.99,
   },
 })
 
@@ -111,7 +111,7 @@ showcase['pulling-gravity'] = new CanvasParticles('#showcase-pulling-gravity', {
   },
   particles: {
     color: '#f45c',
-    ppm: 200,
+    ppm: 150,
     max: 120,
     relSpeed: 0,
     rotationSpeed: 0,

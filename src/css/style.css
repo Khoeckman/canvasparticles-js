@@ -143,10 +143,6 @@ input[type='color'] {
   height: 3rem;
 }
 
-pre {
-  user-select: none;
-}
-
 ::-moz-color-swatch {
   border: 0;
 }

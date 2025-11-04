@@ -71,7 +71,7 @@
 #title .shape {
   backdrop-filter: invert(0.1) saturate(32) hue-rotate(32deg);
   border-radius: 24rem;
-  box-shadow: 0 0 5rem var(--bg);
+  box-shadow: 0 0 5rem #000;
   position: absolute;
   top: -50rem;
   left: 50%;

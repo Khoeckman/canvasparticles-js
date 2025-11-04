@@ -114,6 +114,14 @@ runButtons.forEach((button) => {
 
 const choiceLists = [...document.querySelectorAll('main .choice')]
 
+const updateActiveList = (buttons, activeButton) => {
+  buttons.forEach((button) => {
+    if (button === activeButton) return
+    button.removeAttribute('class')
+  })
+  activeButton.classList.add('active')
+}
+
 choiceLists.forEach((list) => {
   const handler = (() => {
     const buttons = list.querySelectorAll('button')
@@ -122,9 +130,7 @@ choiceLists.forEach((list) => {
       case 'installation-choice':
         return (e) => {
           const button = e.target.closest('button')
-
-          buttons.forEach((button) => button.removeAttribute('class'))
-          button.classList.add('active')
+          updateActiveList(buttons, button)
 
           const content = document.querySelectorAll('#installation-choice + ul.content li')
           const choice = +button.getAttribute('data-choice')
@@ -136,9 +142,7 @@ choiceLists.forEach((list) => {
       case 'showcase-interact-choice':
         return (e) => {
           const button = e.target.closest('button')
-
-          buttons.forEach((button) => button.removeAttribute('class'))
-          button.classList.add('active')
+          updateActiveList(buttons, button)
 
           const type = button.getAttribute('data-type')
           const interactionType = Math.min(type, 2)
@@ -158,13 +162,12 @@ choiceLists.forEach((list) => {
         return (e) => {
           const button = e.target.closest('button')
 
-          // Clear own list then (next) sibling
-          buttons.forEach((button) => button.removeAttribute('class'))
+          // Clear (next) sibling list then self
           document
             .getElementById('sandbox-workspace-choice')
             .querySelectorAll('button')
             .forEach((button) => button.removeAttribute('class'))
-          button.classList.add('active')
+          updateActiveList(buttons, button)
 
           loadPreset(button.getAttribute('name'))
         }
@@ -172,13 +175,12 @@ choiceLists.forEach((list) => {
         return (e) => {
           const button = e.target.closest('button')
 
-          // Clear own list then (previous) sibling
-          buttons.forEach((button) => button.removeAttribute('class'))
+          // Clear (previous) sibling list then self
           document
             .getElementById('sandbox-preset-choice')
             .querySelectorAll('button')
             .forEach((button) => button.removeAttribute('class'))
-          button.classList.add('active')
+          updateActiveList(buttons, button)
 
           loadWorkspace(button.getAttribute('name'))
         }

@@ -52,6 +52,7 @@ main .choice {
   flex-flow: row wrap;
   background-color: var(--bg);
   border-radius: var(--rs);
+  box-shadow: 0 0 0.5rem var(--black);
   margin: 1.5rem 0;
 }
 
@@ -69,7 +70,9 @@ main .choice li button {
   padding: 1rem 1.5rem;
   width: 100%;
   height: 100%;
-  transition: background 150ms, color 150ms;
+  transition:
+    background 150ms,
+    color 150ms;
 }
 
 main .choice li button:is(:hover, :focus-visible) {

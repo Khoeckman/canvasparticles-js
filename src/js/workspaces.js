@@ -36,6 +36,7 @@ const presets = {
   },
   mouse: {
     interactionType: 2,
+    distRatio: 0.9,
   },
   particles: {
     color: '#f45',

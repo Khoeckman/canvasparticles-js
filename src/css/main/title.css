@@ -33,7 +33,7 @@
   background: radial-gradient(circle at center left, var(--fg), var(--pri));
   background-clip: text !important;
   -webkit-background-clip: text !important;
-  text-shadow: 0.5rem 3rem 3rem var(--bg);
+  text-shadow: 0.06em 0.35em 0.35em var(--bg);
   color: transparent;
 }
 

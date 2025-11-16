@@ -1,106 +1,108 @@
 <!DOCTYPE html>
 <html lang="en">
-  <head>
-    <meta charset="UTF-8" />
-    <title>Canvas Particles</title>
-    <script src="../canvasParticles.js"></script>
 
-    <style>
-      body {
-        background-color: #000;
-      }
+<head>
+  <meta charset="UTF-8" />
+  <title>Canvas Particles</title>
+  <script src="../dist/index.umd.js"></script>
 
-      canvas {
-        position: absolute;
-        top: 0;
-        left: 0;
-        width: 100%;
-        height: 100%;
-        z-index: -1;
-      }
+  <style>
+    body {
+      background-color: #000;
+    }
 
-      #cp-1 {
-        width: 50%;
-      }
+    canvas {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      z-index: -1;
+    }
 
-      #cp-2 {
-        left: 50%;
-        width: 50%;
-      }
+    #cp-1 {
+      width: 50%;
+    }
 
-      #cp-3 {
-        top: 100%;
-        height: 150%;
-      }
-    </style>
-  </head>
+    #cp-2 {
+      left: 50%;
+      width: 50%;
+    }
 
-  <body>
-    <canvas id="cp-1"></canvas>
-    <canvas id="cp-2"></canvas>
-    <canvas id="cp-3"></canvas>
+    #cp-3 {
+      top: 100%;
+      height: 150%;
+    }
+  </style>
+</head>
 
-    <script>
-      'use strict'
+<body>
+  <canvas id="cp-1"></canvas>
+  <canvas id="cp-2"></canvas>
+  <canvas id="cp-3"></canvas>
 
-      const initParticles = () => {
-        //  Initialize first canvas
-        new CanvasParticles('#cp-1', {
-          background: 'linear-gradient(115deg, #354089, black)',
-          mouse: {
-            interactionType: 2,
-            connectDistMult: 0.8,
-            distRatio: 1,
-          },
-          particles: {
-            color: '#88c8ffa0',
-            max: 150,
-            maxWork: 10,
-            relSpeed: 0.8,
-            rotationSpeed: 1,
-          },
-          gravity: {
-            repulsive: 2,
-            friction: 0.8,
-          },
-        }).start()
+  <script>
+    'use strict'
 
-        // Initialize second canvas
-        new CanvasParticles('#cp-2', {
-          background: 'hsl(125, 42%, 35%)',
-          resetOnResize: true,
-          mouse: {
-            interactionType: 2,
-          },
-          particles: {
-            color: 'rgba(150, 255, 105, 0.95)',
-            max: 200,
-            maxWork: 10,
-          },
-        }).start()
+    const initParticles = () => {
+      //  Initialize first canvas
+      new CanvasParticles('#cp-1', {
+        background: 'linear-gradient(115deg, #354089, black)',
+        mouse: {
+          interactionType: 2,
+          connectDistMult: 0.8,
+          distRatio: 1,
+        },
+        particles: {
+          color: '#88c8ffa0',
+          max: 150,
+          maxWork: 15,
+          relSpeed: 0.8,
+          rotationSpeed: 1,
+        },
+        gravity: {
+          repulsive: 2,
+          friction: 0.8,
+        },
+      }).start()
 
-        // Initialize third canvas
-        new CanvasParticles('#cp-3', {
-          background: '#423',
-          mouse: {
-            connectDistMult: 0.5,
-            distRatio: 0.75,
-          },
-          particles: {
-            color: '#f45c',
-            ppm: 120,
-            max: 120,
-            connectDistance: 350,
-            rotationSpeed: 5,
-          },
-          gravity: {
-            repulsive: 16,
-            pulling: 6,
-            friction: 0.8,
-          },
-        }).start()
-      }
-      window.addEventListener('DOMContentLoaded', initParticles)
-    </script>
-  </body>
+      // Initialize second canvas
+      new CanvasParticles('#cp-2', {
+        background: 'hsl(125, 42%, 35%)',
+        resetOnResize: true,
+        mouse: {
+          interactionType: 2,
+        },
+        particles: {
+          color: 'rgba(150, 255, 105, 0.95)',
+          max: 200,
+          maxWork: 10,
+        },
+      }).start()
+
+      // Initialize third canvas
+      new CanvasParticles('#cp-3', {
+        background: '#423',
+        mouse: {
+          connectDistMult: 0.5,
+          distRatio: 0.75,
+        },
+        particles: {
+          color: '#f45c',
+          ppm: 120,
+          max: 120,
+          connectDistance: 350,
+          rotationSpeed: 5,
+        },
+        gravity: {
+          repulsive: 16,
+          pulling: 6,
+          friction: 0.9,
+        },
+      }).start()
+    }
+    window.addEventListener('DOMContentLoaded', initParticles)
+  </script>
+</body>
+
 </html>

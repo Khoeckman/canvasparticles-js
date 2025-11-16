@@ -1,4 +1,4 @@
-import CanvasParticles from '../canvasParticles.mjs'
+import CanvasParticles from '../dist/index.mjs'
 
 //  Initialize first canvas
 new CanvasParticles('#cp-1', {
@@ -11,7 +11,7 @@ new CanvasParticles('#cp-1', {
   particles: {
     color: '#88c8ffa0',
     max: 150,
-    maxWork: 10,
+    maxWork: 15,
     relSpeed: 0.8,
     rotationSpeed: 1,
   },
@@ -52,6 +52,6 @@ new CanvasParticles('#cp-3', {
   gravity: {
     repulsive: 16,
     pulling: 6,
-    friction: 0.8,
+    friction: 0.9,
   },
 }).start()

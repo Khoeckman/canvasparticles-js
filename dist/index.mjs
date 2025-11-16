@@ -1,5 +1,5 @@
 class CanvasParticles {
-  static version = '4.0.3'
+  static version = '4.0.4'
   static interactionType = Object.freeze({
     NONE: 0,
     SHIFT: 1,

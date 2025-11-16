@@ -30,10 +30,14 @@ Particles will be drawn onto a `<canvas>` element.
 ```
 
 <details open>
-  <summary><h3>Import with npm</h3></summary>
+  <summary><h3 style="display: inline;">Import with npm</h3></summary>
 
-```batch
+```bash
 npm install canvasparticles-js
+# or
+pnpm add canvasparticles-js
+# or
+yarn add canvasparticles-js
 ```
 
 Add a `<script>` element in the `<head>` to import _initParticles.js_.
@@ -57,20 +61,20 @@ new CanvasParticles(selector, options).start()
 </details>
 
 <details>
-  <summary><h3>Import with jsDelivr (click to expand)</h3></summary>
+  <summary><h3 style="display: inline;">Import with jsDelivr (click to expand)</h3></summary>
 
 Add a `<script>` element in the `<head>` to import `CanvasParticles`.
 
 ```html
 <head>
-  <script src="https://cdn.jsdelivr.net/npm/canvasparticles-js/canvasParticles.min.js" defer></script>
+  <script src="https://cdn.jsdelivr.net/npm/canvasparticles-js/dist/index.umd.js" defer></script>
 </head>
 ```
 
 </details>
 
 <details>
-  <summary><h3>Import raw file as ES module (click to expand)</h3></summary>
+  <summary><h3 style="display: inline;">Import raw file as ES module (click to expand)</h3></summary>
 
 Be aware that using ES modules is only possible when running the application on a (local) server.<br>
 [Same Origin Policy](https://developer.mozilla.org/en-US/docs/Web/Security/Same-origin_policy)
@@ -86,7 +90,7 @@ Add a `<script>` element in the `<head>` to import _initParticles.js_.
 Inside _initParticles.js_:
 
 ```js
-import CanvasParticles from './canvasParticles.mjs'
+import CanvasParticles from './dist/index.mjs'
 
 const selector = '#my-canvas' // Query Selector for the canvas
 const options = { ... } // See #options
@@ -96,12 +100,12 @@ new CanvasParticles(selector, options).start()
 </details>
 
 <details>
-  <summary><h3>Import raw file globally (click to expand)</h3></summary>
+  <summary><h3 style="display: inline;">Import raw file globally (click to expand)</h3></summary>
   
-  Add a `<script>` element in the `<head>` to import the *canvasParticles.js* file.<br>
+  Add a `<script>` element in the `<head>` to import the [dist/index.umd.js](https://github.com/Khoeckman/canvasparticles-js/blob/main/dist/index.umd.js) file.<br>
   ```html
   <head>
-    <script src="./canvasParticles.js" defer></script>
+    <script src="./index.umd.js" defer></script>
   </head>
   ```
 
@@ -215,7 +219,7 @@ Configuration options for the particles and their behavior.<br>
 Play around with these values: [Sandbox](https://khoeckman.github.io/canvasparticles-js/#sandbox)
 
 <details>
-  <summary><h3>Options structure (click to expand)</h3></summary>
+  <summary><h3 style="display: inline;">Options structure (click to expand)</h3></summary>
 
 The default value will be used when an option is assigned an invalid value.<br>
 Your screen resolution and refresh rate will directly impact perfomance!
@@ -417,7 +421,7 @@ instance.options = options
   <body>
     <canvas id="canvas-particles"></canvas>
 
-    <script src="https://cdn.jsdelivr.net/npm/canvasparticles-js/canvasParticles.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/canvasparticles-js/dist/index.umd.js"></script>
     <script>
       const selector = '#canvas-particles'
       const options = {

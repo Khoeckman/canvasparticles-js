@@ -21,6 +21,8 @@ Creating a fun and interactive background. Colors, interaction and gravity can b
 If you dont like reading documentation this website is for you:<br>
 [https://khoeckman.github.io/canvasparticles-js/](https://khoeckman.github.io/canvasparticles-js/)
 
+![Banner with particles and title: Canvas Particles](./demo/banner.webp)
+
 ## Implementation
 
 Particles will be drawn onto a `<canvas>` element.

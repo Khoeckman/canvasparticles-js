@@ -9,6 +9,22 @@ const canvasContainer = document.getElementById('canvas-container')
 const startAnimationButton = document.getElementById('start-animation')
 const stopAnimationButton = document.getElementById('stop-animation')
 
+const generateRandomCanvasOptions = (ppm) => {
+  return {
+    background: `hsl(${~~(Math.random() * 360)}, ${~~(Math.random() * 80)}%, ${~~(Math.random() * 100)}%)`,
+    animation: {},
+    mouse: {
+      interactionType: 2,
+    },
+    particles: {
+      color: `hsl(${~~(Math.random() * 360)}, ${80 + ~~(Math.random() * 20)}%, ${40 + ~~(Math.random() * 20)}%)`,
+      ppm,
+      max: Infinity,
+      maxWork: 99,
+    },
+  }
+}
+
 let canvasElements = []
 
 const populateCanvasContainer = () => {
@@ -26,30 +42,19 @@ const populateCanvasContainer = () => {
     canvasElements = []
   }
 
-  canvasContainer.innerHTML = ''
+  const fragment = document.createDocumentFragment()
 
   for (let i = 0; i < count; i++) {
     const canvas = document.createElement('canvas')
-    canvas.id = '#benchmark-' + i
+    canvas.id = 'benchmark-' + i
 
-    canvasContainer.appendChild(canvas)
+    fragment.appendChild(canvas)
 
-    canvasElements.push(
-      new CanvasParticles(canvas, {
-        background: `hsl(${~~(Math.random() * 360)}, ${~~(Math.random() * 80)}%, ${~~(Math.random() * 100)}%)`,
-        animation: {},
-        mouse: {
-          interactionType: 2,
-        },
-        particles: {
-          color: `hsl(${~~(Math.random() * 360)}, ${80 + ~~(Math.random() * 20)}%, ${40 + ~~(Math.random() * 20)}%)`,
-          ppm,
-          max: Infinity,
-          maxWork: 99,
-        },
-      }).canvas
-    )
+    canvasElements.push(new CanvasParticles(canvas, generateRandomCanvasOptions(ppm)).canvas)
   }
+
+  canvasContainer.innerHTML = ''
+  canvasContainer.appendChild(fragment)
 
   startAnimationButton.disabled = null
   stopAnimationButton.disabled = null

@@ -1,5 +1,5 @@
 class CanvasParticles {
-  static version = '4.0.6'
+  static version = '4.0.7'
   static interactionType = Object.freeze({
     NONE: 0,
     SHIFT: 1,
@@ -110,7 +110,7 @@ class CanvasParticles {
   }
   createParticle(posX, posY, dir, speed, size) {
     posX = typeof posX === 'number' ? posX - this.offX : Math.random() * this.width
-    posY = typeof posY === 'number' ? posY - this.offX : Math.random() * this.width
+    posY = typeof posY === 'number' ? posY - this.offY : Math.random() * this.height
     const particle = {
       posX: posX,
       posY: posY,

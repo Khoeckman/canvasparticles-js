@@ -157,7 +157,7 @@ export default class CanvasParticles {
   /** @public Create a new particle with optional parameters */
   createParticle(posX?: number, posY?: number, dir?: number, speed?: number, size?: number) {
     posX = typeof posX === 'number' ? posX - this.offX : Math.random() * this.width
-    posY = typeof posY === 'number' ? posY - this.offX : Math.random() * this.width
+    posY = typeof posY === 'number' ? posY - this.offY : Math.random() * this.height
 
     const particle: Omit<Particle, 'bounds'> = {
       posX, // Logical position in pixels

@@ -436,7 +436,8 @@ export default class CanvasParticles {
   }
 
   /** @private Main animation loop that updates and renders the particles */
-  #animation() {
+  #animation({ reflow = false }: { reflow?: boolean } = {}) {
+    if (reflow) this.resizeCanvas()
     if (!this.animating) return
 
     requestAnimationFrame(() => this.#animation())
@@ -450,11 +451,11 @@ export default class CanvasParticles {
   }
 
   /** @public Start the particle animation if it was not running before */
-  start({ auto = false }: { auto?: boolean } = {}): CanvasParticles {
+  start({ auto = false, reflow = false }: { auto?: boolean; reflow?: boolean } = {}): CanvasParticles {
     if (!this.animating && (!auto || this.enableAnimating)) {
       this.enableAnimating = true
       this.animating = true
-      requestAnimationFrame(() => this.#animation())
+      requestAnimationFrame(() => this.#animation({ reflow }))
     }
 
     // Stop animating because it will start automatically once the canvas enters the viewbox

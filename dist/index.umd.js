@@ -8,7 +8,7 @@
 })(this, function () {
   'use strict'
   class CanvasParticles {
-    static version = '4.0.5'
+    static version = '4.0.6'
     static interactionType = Object.freeze({
       NONE: 0,
       SHIFT: 1,
@@ -309,7 +309,8 @@
       this.#renderParticles()
       this.#renderConnections()
     }
-    #animation() {
+    #animation({ reflow: reflow = false } = {}) {
+      if (reflow) this.resizeCanvas()
       if (!this.animating) return
       requestAnimationFrame(() => this.#animation())
       if (++this.updateCount >= this.option.framesPerUpdate) {
@@ -319,11 +320,15 @@
         this.#render()
       }
     }
-    start({ auto: auto = false } = {}) {
+    start({ auto: auto = false, reflow: reflow = false } = {}) {
       if (!this.animating && (!auto || this.enableAnimating)) {
         this.enableAnimating = true
         this.animating = true
-        requestAnimationFrame(() => this.#animation())
+        requestAnimationFrame(() =>
+          this.#animation({
+            reflow: reflow,
+          })
+        )
       }
       if (!this.canvas.inViewbox && this.option.animation.startOnEnter) this.animating = false
       return this

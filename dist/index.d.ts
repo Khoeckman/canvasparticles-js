@@ -45,7 +45,7 @@ export default class CanvasParticles {
   /** @public Create a new particle with optional parameters */
   createParticle(posX?: number, posY?: number, dir?: number, speed?: number, size?: number): void
   /** @public Start the particle animation if it was not running before */
-  start({ auto }?: { auto?: boolean }): CanvasParticles
+  start({ auto, reflow }?: { auto?: boolean; reflow?: boolean }): CanvasParticles
   /** @public Stops the particle animation and optionally clears the canvas */
   stop({ auto, clear }?: { auto?: boolean; clear?: boolean }): boolean
   /** @public Gracefully destroy the instance and remove the canvas element */

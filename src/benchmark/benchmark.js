@@ -32,7 +32,7 @@ const generateRandomCanvasOptions = () => {
       color: `hsl(${~~(Math.random() * 360)}, ${80 + ~~(Math.random() * 20)}%, ${40 + ~~(Math.random() * 20)}%)`,
       ppm: 0,
       max: Infinity,
-      maxWork: 99,
+      maxWork: 50,
     },
   }
 }

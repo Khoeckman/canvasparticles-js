@@ -9,7 +9,19 @@ const canvasContainer = document.getElementById('canvas-container')
 const startAnimationButton = document.getElementById('start-animation')
 const stopAnimationButton = document.getElementById('stop-animation')
 
-const generateRandomCanvasOptions = (ppm) => {
+const benchmarkStatus = document.getElementById('benchmark-status')
+
+// Prevent the UI from lagging while executing a large number of operations
+const singlethread = async (data, batch, callback) => {
+  for (let i = 0; i < data.length; i++) {
+    callback(data[i], i)
+
+    // Allow one frame to render every `batch` operations
+    if (i % batch == 0) await new Promise(requestAnimationFrame)
+  }
+}
+
+const generateRandomCanvasOptions = () => {
   return {
     background: `hsl(${~~(Math.random() * 360)}, ${~~(Math.random() * 80)}%, ${~~(Math.random() * 100)}%)`,
     animation: {},
@@ -18,16 +30,23 @@ const generateRandomCanvasOptions = (ppm) => {
     },
     particles: {
       color: `hsl(${~~(Math.random() * 360)}, ${80 + ~~(Math.random() * 20)}%, ${40 + ~~(Math.random() * 20)}%)`,
-      ppm,
+      ppm: 0,
       max: Infinity,
       maxWork: 99,
     },
   }
 }
 
-let canvasElements = []
+let instances = []
 
-const populateCanvasContainer = () => {
+const populateCanvasContainer = async () => {
+  startAnimationButton.title = 'Creating canvas elements'
+  stopAnimationButton.title = 'Creating canvas elements'
+  startAnimationButton.disabled = true
+  stopAnimationButton.disabled = true
+
+  benchmarkStatus.innerText = 'Creating canvas elements'
+
   const count = +document.getElementById('canvas-count-number').value
   const ppm = +document.getElementById('ppm-number').value
   const width = +document.getElementById('canvas-width').value
@@ -37,9 +56,9 @@ const populateCanvasContainer = () => {
   root.style.setProperty('--benchmark-height', height + 'px')
 
   // Gracefully destroy existing elements
-  if (canvasElements.length) {
-    canvasElements.forEach((canvas) => canvas.instance.destroy())
-    canvasElements = []
+  if (instances.length) {
+    instances.forEach((instance) => instance.destroy())
+    instances = []
   }
 
   const fragment = document.createDocumentFragment()
@@ -48,14 +67,31 @@ const populateCanvasContainer = () => {
     const canvas = document.createElement('canvas')
     canvas.id = 'benchmark-' + i
 
-    fragment.appendChild(canvas)
+    const instance = new CanvasParticles(canvas, generateRandomCanvasOptions())
+    instances.push(instance)
 
-    canvasElements.push(new CanvasParticles(canvas, generateRandomCanvasOptions(ppm)).canvas)
+    fragment.appendChild(instance.canvas)
   }
 
   canvasContainer.innerHTML = ''
   canvasContainer.appendChild(fragment)
+  void canvasContainer.offsetHeight // Force reflow
 
+  await singlethread(instances, 7, (instance, i) => {
+    instance.resizeCanvas()
+    benchmarkStatus.innerText = 'Resizing canvases ' + (i + 1) + '/' + instances.length
+  })
+
+  await singlethread(instances, 107, (instance, i) => {
+    instance.option.particles.ppm = ppm
+    instance.newParticles()
+    benchmarkStatus.innerText = 'Filling canvases with particles ' + (i + 1) + '/' + instances.length
+  })
+
+  benchmarkStatus.innerText = 'Created canvas elements'
+
+  startAnimationButton.removeAttribute('title')
+  stopAnimationButton.removeAttribute('title')
   startAnimationButton.disabled = null
   stopAnimationButton.disabled = null
 }
@@ -91,7 +127,11 @@ ppmNumberInput.addEventListener('change', function () {
 // Form actions
 settingsForm.addEventListener('submit', populateCanvasContainer)
 
-startAnimationButton.addEventListener('click', () => canvasElements.forEach((canvas) => canvas.instance.start()))
-stopAnimationButton.addEventListener('click', () =>
-  canvasElements.forEach((canvas) => canvas.instance.stop({ clear: false }))
-)
+startAnimationButton.addEventListener('click', () => {
+  instances.forEach((instance) => instance.start())
+  benchmarkStatus.innerText = 'Animating'
+})
+stopAnimationButton.addEventListener('click', () => {
+  instances.forEach((instance) => instance.stop({ clear: false }))
+  benchmarkStatus.innerText = 'Stopped'
+})

@@ -42,8 +42,13 @@ main section:first-child {
 #benchmark form input[type='range'] {
   margin-top: 0.5rem;
   padding: 0;
+  min-width: 8rem;
   width: 100%;
   color: red;
+}
+
+#benchmark form :is(input:not([type='range']), select, textarea):is(:hover, :focus-visible) {
+  border-color: var(--g7);
 }
 
 #benchmark form .grow {
@@ -76,9 +81,27 @@ main section:first-child {
   gap: 1.5rem;
 }
 
+#benchmark #benchmark-status {
+  align-self: center;
+  color: var(--g2);
+}
+
 @media only screen and (width < 30em) {
   #benchmark form {
     padding: 1.5rem 1rem;
+  }
+
+  #benchmark form .actions {
+    flex-flow: column nowrap;
+    align-items: flex-start;
+  }
+
+  #benchmark form .actions .button {
+    height: unset;
+  }
+
+  #benchmark #benchmark-status {
+    align-self: flex-start;
   }
 }
 

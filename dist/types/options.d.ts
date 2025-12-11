@@ -14,7 +14,6 @@ export interface CanvasParticlesOptions {
   particles: {
     regenerateOnResize: boolean
     color: string | CanvasGradient | CanvasPattern
-    colorWithAlpha: string
     ppm: number
     max: number
     maxWork: number
@@ -23,7 +22,6 @@ export interface CanvasParticlesOptions {
     relSpeed: number
     relSize: number
     rotationSpeed: number
-    opacity: number
   }
   gravity: {
     repulsive: number

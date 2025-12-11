@@ -1,7 +1,7 @@
 // Copyright (c) 2022–2025 Kyle Hoeckman, MIT License
 // https://github.com/Khoeckman/canvasparticles-js/blob/main/LICENSE
 
-import type { CanvasParticlesCanvas, Particle, ParticleGridPos } from './types'
+import type { CanvasParticlesCanvas, Particle, ParticleGridPos, Color } from './types'
 import type { CanvasParticlesOptions, CanvasParticlesOptionsInput } from './types/options'
 
 declare const __VERSION__: string
@@ -46,10 +46,10 @@ export default class CanvasParticles {
   offY!: number
   updateCount!: number
   particleCount!: number
-  strokeStyleTable!: Record<string, string>
   clientX!: number
   clientY!: number
   option!: CanvasParticlesOptions
+  color: Color = { hex: '000000', alpha: 0.0 } // Overwritten on initialization
 
   /**
    * Initialize a CanvasParticles instance
@@ -335,27 +335,6 @@ export default class CanvasParticles {
     )
   }
 
-  /**
-   * @private Generates a lookup table of colors for all alpha values (0–255) based on a base color.
-   *
-   * This optimizes rendering by avoiding repeated string calculations for every particle connection.
-   *
-   * @example
-   * const strokeTable = this.#generateHexAlphaTable("#abcdef");
-   * strokeTable[128] -> "#abcdef80"
-   * strokeTable[255] -> "#abcdefff"
-   */
-  #generateHexAlphaTable(color: string | CanvasGradient | CanvasPattern): Record<string, string> {
-    const table: Record<string, string> = {}
-
-    // Precompute stroke styles for alpha values 0–255
-    for (let alpha = 0; alpha < 256; alpha++) {
-      // Convert to 2-character hex and combine base color with alpha
-      table[alpha] = color + alpha.toString(16).padStart(2, '0')
-    }
-    return table
-  }
-
   /** @private Draw the particles on the canvas */
   #renderParticles() {
     for (let particle of this.particles) {
@@ -407,13 +386,12 @@ export default class CanvasParticles {
         if (dist > this.option.particles.connectDist) continue
 
         // Calculate the transparency of the line and lookup the stroke style
-        // Note: This is the heaviest task of the entire animation process
         if (dist > this.option.particles.connectDist / 2) {
-          const alpha = (Math.min(this.option.particles.connectDist / dist - 1, 1) * this.option.particles.opacity) | 0
-          this.ctx.strokeStyle = this.strokeStyleTable[alpha]
+          this.ctx.globalAlpha = this.color.alpha * (this.option.particles.connectDist / dist - 1)
         } else {
-          this.ctx.strokeStyle = this.option.particles.colorWithAlpha
+          this.ctx.globalAlpha = this.color.alpha
         }
+        this.ctx.strokeStyle = this.color.hex
 
         // Draw the line
         this.ctx.beginPath()
@@ -430,7 +408,8 @@ export default class CanvasParticles {
   /** @private Clear the canvas and render the particles and their connections onto the canvas */
   #render() {
     this.canvas.width = this.canvas.width
-    this.ctx.fillStyle = this.option.particles.colorWithAlpha
+    this.ctx.globalAlpha = this.color.alpha
+    this.ctx.fillStyle = this.color.hex
     this.ctx.lineWidth = 1
 
     this.#renderParticles()
@@ -520,7 +499,6 @@ export default class CanvasParticles {
       particles: {
         regenerateOnResize: !!options.particles?.regenerateOnResize,
         color: options.particles?.color ?? 'black',
-        colorWithAlpha: '#00000000' /* post processed */,
         ppm: parseNumericOption(options.particles?.ppm, 100),
         max: parseNumericOption(options.particles?.max, 500),
         maxWork: parseNumericOption(options.particles?.maxWork, Infinity, { min: 0 }),
@@ -528,7 +506,6 @@ export default class CanvasParticles {
         relSpeed: parseNumericOption(options.particles?.relSpeed, 1, { min: 0 }),
         relSize: parseNumericOption(options.particles?.relSize, 1, { min: 1 }),
         rotationSpeed: parseNumericOption(options.particles?.rotationSpeed, 2, { min: 0 }) / 100,
-        opacity: 0 /* post processed */,
       },
       gravity: {
         repulsive: parseNumericOption(options.gravity?.repulsive, 0),
@@ -564,21 +541,20 @@ export default class CanvasParticles {
     this.ctx.fillStyle = color
 
     // Check if `ctx.fillStyle` is in hex format ("#RRGGBB")
-    if (String(this.ctx.fillStyle)[0] === '#') this.option.particles.opacity = 255
-    else {
+    if (String(this.ctx.fillStyle)[0] === '#') {
+      this.color.hex = String(this.ctx.fillStyle).slice(1)
+      this.color.alpha = 1.0
+    } else {
       // JavaScript's `ctx.fillStyle` causes the color to otherwise end up in in rgba format ("rgba(136, 244, 255, 0.25)")
 
-      // Extract the alpha value (0.25) from the rgba string and scale it from 0x00 to 0xff
-      this.option.particles.opacity =
-        (parseFloat(String(this.ctx.fillStyle).split(',').at(-1)?.slice(1, -1) ?? '1') * 255) | 0
+      // Extract the alpha value from the rgba string
+      let alpha = String(this.ctx.fillStyle).split(',').at(-1) // ' 0.25)'
+      alpha = alpha?.slice(1, -1) ?? '1' // '0.25'
+      this.color.alpha = isNaN(+alpha) ? 1 : +alpha // 0.25 or 1
 
       // Extracts e.g. 136, 244 and 255 from rgba(136, 244, 255, 0.25) and converts it to '#rrggbb'
       this.ctx.fillStyle = String(this.ctx.fillStyle).split(',').slice(0, -1).join(',') + ', 1)'
+      this.color.hex = this.ctx.fillStyle
     }
-    this.option.particles.color = this.ctx.fillStyle
-    this.option.particles.colorWithAlpha = this.option.particles.color + this.option.particles.opacity.toString(16)
-
-    // Recalculate the stroke style lookup table
-    this.strokeStyleTable = this.#generateHexAlphaTable(this.option.particles.color)
   }
 }

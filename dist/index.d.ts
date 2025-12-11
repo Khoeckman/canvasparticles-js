@@ -1,4 +1,4 @@
-import type { CanvasParticlesCanvas, Particle } from './types'
+import type { CanvasParticlesCanvas, Particle, Color } from './types'
 import type { CanvasParticlesOptions, CanvasParticlesOptionsInput } from './types/options'
 export default class CanvasParticles {
   #private
@@ -24,10 +24,10 @@ export default class CanvasParticles {
   offY: number
   updateCount: number
   particleCount: number
-  strokeStyleTable: Record<string, string>
   clientX: number
   clientY: number
   option: CanvasParticlesOptions
+  color: Color
   /**
    * Initialize a CanvasParticles instance
    * @param selector - Canvas element or CSS selector

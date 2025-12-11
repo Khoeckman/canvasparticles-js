@@ -31,3 +31,7 @@ export interface ParticleGridPos {
   x: 0 | 1 | 2
   y: 0 | 1 | 2
 }
+export interface Color {
+  hex: string
+  alpha: number
+}

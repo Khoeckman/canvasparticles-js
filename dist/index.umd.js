@@ -45,10 +45,13 @@
     offY
     updateCount
     particleCount
-    strokeStyleTable
     clientX
     clientY
     option
+    color = {
+      hex: '000000',
+      alpha: 0,
+    }
     constructor(selector, options = {}) {
       let canvas
       if (selector instanceof HTMLCanvasElement) canvas = selector
@@ -247,13 +250,6 @@
         (particleA.gridPos.y === particleB.gridPos.y && particleA.gridPos.y !== 1)
       )
     }
-    #generateHexAlphaTable(color) {
-      const table = {}
-      for (let alpha = 0; alpha < 256; alpha++) {
-        table[alpha] = color + alpha.toString(16).padStart(2, '0')
-      }
-      return table
-    }
     #renderParticles() {
       for (let particle of this.particles) {
         if (particle.isVisible) {
@@ -288,12 +284,11 @@
           const dist = Math.sqrt(distX * distX + distY * distY)
           if (dist > this.option.particles.connectDist) continue
           if (dist > this.option.particles.connectDist / 2) {
-            const alpha =
-              (Math.min(this.option.particles.connectDist / dist - 1, 1) * this.option.particles.opacity) | 0
-            this.ctx.strokeStyle = this.strokeStyleTable[alpha]
+            this.ctx.globalAlpha = this.color.alpha * (this.option.particles.connectDist / dist - 1)
           } else {
-            this.ctx.strokeStyle = this.option.particles.colorWithAlpha
+            this.ctx.globalAlpha = this.color.alpha
           }
+          this.ctx.strokeStyle = this.color.hex
           this.ctx.beginPath()
           this.ctx.moveTo(particleA.x, particleA.y)
           this.ctx.lineTo(particleB.x, particleB.y)
@@ -304,7 +299,8 @@
     }
     #render() {
       this.canvas.width = this.canvas.width
-      this.ctx.fillStyle = this.option.particles.colorWithAlpha
+      this.ctx.globalAlpha = this.color.alpha
+      this.ctx.fillStyle = this.color.hex
       this.ctx.lineWidth = 1
       this.#renderParticles()
       this.#renderConnections()
@@ -372,7 +368,6 @@
         particles: {
           regenerateOnResize: !!options.particles?.regenerateOnResize,
           color: options.particles?.color ?? 'black',
-          colorWithAlpha: '#00000000',
           ppm: parseNumericOption(options.particles?.ppm, 100),
           max: parseNumericOption(options.particles?.max, 500),
           maxWork: parseNumericOption(options.particles?.maxWork, Infinity, {
@@ -391,7 +386,6 @@
             parseNumericOption(options.particles?.rotationSpeed, 2, {
               min: 0,
             }) / 100,
-          opacity: 0,
         },
         gravity: {
           repulsive: parseNumericOption(options.gravity?.repulsive, 0),
@@ -420,15 +414,16 @@
     }
     setParticleColor(color) {
       this.ctx.fillStyle = color
-      if (String(this.ctx.fillStyle)[0] === '#') this.option.particles.opacity = 255
-      else {
-        this.option.particles.opacity =
-          (parseFloat(String(this.ctx.fillStyle).split(',').at(-1)?.slice(1, -1) ?? '1') * 255) | 0
+      if (String(this.ctx.fillStyle)[0] === '#') {
+        this.color.hex = String(this.ctx.fillStyle).slice(1)
+        this.color.alpha = 1
+      } else {
+        let alpha = String(this.ctx.fillStyle).split(',').at(-1)
+        alpha = alpha?.slice(1, -1) ?? '1'
+        this.color.alpha = isNaN(+alpha) ? 1 : +alpha
         this.ctx.fillStyle = String(this.ctx.fillStyle).split(',').slice(0, -1).join(',') + ', 1)'
+        this.color.hex = this.ctx.fillStyle
       }
-      this.option.particles.color = this.ctx.fillStyle
-      this.option.particles.colorWithAlpha = this.option.particles.color + this.option.particles.opacity.toString(16)
-      this.strokeStyleTable = this.#generateHexAlphaTable(this.option.particles.color)
     }
   }
   return CanvasParticles

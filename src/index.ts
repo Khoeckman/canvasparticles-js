@@ -33,10 +33,10 @@ export default class CanvasParticles {
   canvas: CanvasParticlesCanvas
   ctx: CanvasRenderingContext2D
 
-  enableAnimating: boolean
-  animating: boolean
+  enableAnimating: boolean = false
+  animating: boolean = false
 
-  particles: Particle[]
+  particles: Particle[] = []
 
   mouseX!: number
   mouseY!: number
@@ -77,10 +77,7 @@ export default class CanvasParticles {
     if (!ctx) throw new Error('failed to get 2D context from canvas')
     this.ctx = ctx
 
-    this.enableAnimating = false
-    this.animating = false
-    this.particles = []
-    this.options = options
+    this.options = options // Uses setter
 
     CanvasParticles.canvasIntersectionObserver.observe(this.canvas)
 
@@ -96,9 +93,12 @@ export default class CanvasParticles {
   }
 
   /** @public Resize the canvas and update particles accordingly */
-  resizeCanvas() {
-    this.canvas.width = this.canvas.offsetWidth
-    this.canvas.height = this.canvas.offsetHeight
+  resizeCanvas(rect: { width: number; height: number } | null | Event = null) {
+    // When passed as an event handler the first argument is a Event object
+    if (rect instanceof Event) rect = null
+
+    this.canvas.width = rect?.width ?? this.canvas.offsetWidth
+    this.canvas.height = rect?.height ?? this.canvas.offsetHeight
 
     // Prevent the mouse acting like it's at { x: 0, y: 0 } before the first MouseEvent
     this.mouseX = Infinity

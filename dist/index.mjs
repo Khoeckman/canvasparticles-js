@@ -5,12 +5,12 @@ class CanvasParticles {
     SHIFT: 1,
     MOVE: 2,
   })
-  static canvasIntersectionObserver = new IntersectionObserver((entry) => {
-    entry.forEach((change) => {
-      const canvas = change.target
+  static canvasIntersectionObserver = new IntersectionObserver((entries) => {
+    for (const entry of entries) {
+      const canvas = entry.target
       const instance = canvas.instance
       if (!instance.options?.animation) return
-      if ((canvas.inViewbox = change.isIntersecting))
+      if ((canvas.inViewbox = entry.isIntersecting))
         instance.options.animation?.startOnEnter &&
           instance.start({
             auto: true,
@@ -21,7 +21,17 @@ class CanvasParticles {
             auto: true,
             clear: false,
           })
-    })
+    }
+  })
+  static canvasResizeObserver = new ResizeObserver((entries) => {
+    for (const entry of entries) {
+      const canvas = entry.target
+      const { width: width, height: height } = entry.contentRect
+      canvas.instance.resizeCanvas({
+        width: width,
+        height: height,
+      })
+    }
   })
   canvas
   ctx
@@ -60,10 +70,9 @@ class CanvasParticles {
     this.ctx = ctx
     this.options = options
     CanvasParticles.canvasIntersectionObserver.observe(this.canvas)
+    CanvasParticles.canvasResizeObserver.observe(this.canvas)
     this.resizeCanvas = this.resizeCanvas.bind(this)
     this.updateMousePos = this.updateMousePos.bind(this)
-    window.addEventListener('resize', this.resizeCanvas)
-    this.resizeCanvas()
     window.addEventListener('mousemove', this.updateMousePos)
     window.addEventListener('scroll', this.updateMousePos)
   }
@@ -83,6 +92,7 @@ class CanvasParticles {
       this.matchParticleCount({
         updateBounds: true,
       })
+    if (this.animating) this.#render()
   }
   updateMousePos(event) {
     if (!this.enableAnimating) return
@@ -294,8 +304,7 @@ class CanvasParticles {
     this.#renderParticles()
     this.#renderConnections()
   }
-  #animation({ reflow: reflow = false } = {}) {
-    if (reflow) this.resizeCanvas()
+  #animation() {
     if (!this.animating) return
     requestAnimationFrame(() => this.#animation())
     if (++this.updateCount >= this.option.framesPerUpdate) {
@@ -305,15 +314,11 @@ class CanvasParticles {
       this.#render()
     }
   }
-  start({ auto: auto = false, reflow: reflow = false } = {}) {
+  start({ auto: auto = false } = {}) {
     if (!this.animating && (!auto || this.enableAnimating)) {
       this.enableAnimating = true
       this.animating = true
-      requestAnimationFrame(() =>
-        this.#animation({
-          reflow: reflow,
-        })
-      )
+      requestAnimationFrame(() => this.#animation())
     }
     if (!this.canvas.inViewbox && this.option.animation.startOnEnter) this.animating = false
     return this
@@ -327,6 +332,7 @@ class CanvasParticles {
   destroy() {
     this.stop()
     CanvasParticles.canvasIntersectionObserver.unobserve(this.canvas)
+    CanvasParticles.canvasResizeObserver.unobserve(this.canvas)
     window.removeEventListener('resize', this.resizeCanvas)
     window.removeEventListener('mousemove', this.updateMousePos)
     window.removeEventListener('scroll', this.updateMousePos)

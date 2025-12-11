@@ -17,17 +17,25 @@ export default class CanvasParticles {
   })
 
   /** Observes canvas elements entering or leaving the viewport to start/stop animation */
-  static canvasIntersectionObserver = new IntersectionObserver((entry) => {
-    entry.forEach((change) => {
-      const canvas = change.target as CanvasParticlesCanvas
+  static canvasIntersectionObserver = new IntersectionObserver((entries) => {
+    for (const entry of entries) {
+      const canvas = entry.target as CanvasParticlesCanvas
       const instance = canvas.instance // The CanvasParticles class instance bound to this canvas
 
       if (!instance.options?.animation) return
 
-      if ((canvas.inViewbox = change.isIntersecting))
+      if ((canvas.inViewbox = entry.isIntersecting))
         instance.options.animation?.startOnEnter && instance.start({ auto: true })
       else instance.options.animation?.stopOnLeave && instance.stop({ auto: true, clear: false })
-    })
+    }
+  })
+
+  static canvasResizeObserver = new ResizeObserver((entries) => {
+    for (const entry of entries) {
+      const canvas = entry.target as CanvasParticlesCanvas
+      const { width, height } = entry.contentRect
+      canvas.instance.resizeCanvas({ width, height })
+    }
   })
 
   canvas: CanvasParticlesCanvas
@@ -80,13 +88,14 @@ export default class CanvasParticles {
     this.options = options // Uses setter
 
     CanvasParticles.canvasIntersectionObserver.observe(this.canvas)
+    CanvasParticles.canvasResizeObserver.observe(this.canvas)
 
     // Setup event handlers
     this.resizeCanvas = this.resizeCanvas.bind(this)
     this.updateMousePos = this.updateMousePos.bind(this)
 
-    window.addEventListener('resize', this.resizeCanvas)
-    this.resizeCanvas()
+    // window.addEventListener('resize', this.resizeCanvas)
+    // this.resizeCanvas()
 
     window.addEventListener('mousemove', this.updateMousePos)
     window.addEventListener('scroll', this.updateMousePos)
@@ -112,6 +121,8 @@ export default class CanvasParticles {
 
     if (this.option.particles.regenerateOnResize || this.particles.length === 0) this.newParticles()
     else this.matchParticleCount({ updateBounds: true })
+
+    if (this.animating) this.#render()
   }
 
   /** @public Update mouse coordinates relative to the canvas */
@@ -417,8 +428,7 @@ export default class CanvasParticles {
   }
 
   /** @private Main animation loop that updates and renders the particles */
-  #animation({ reflow = false }: { reflow?: boolean } = {}) {
-    if (reflow) this.resizeCanvas()
+  #animation() {
     if (!this.animating) return
 
     requestAnimationFrame(() => this.#animation())
@@ -432,11 +442,11 @@ export default class CanvasParticles {
   }
 
   /** @public Start the particle animation if it was not running before */
-  start({ auto = false, reflow = false }: { auto?: boolean; reflow?: boolean } = {}): CanvasParticles {
+  start({ auto = false }: { auto?: boolean } = {}): CanvasParticles {
     if (!this.animating && (!auto || this.enableAnimating)) {
       this.enableAnimating = true
       this.animating = true
-      requestAnimationFrame(() => this.#animation({ reflow }))
+      requestAnimationFrame(() => this.#animation())
     }
 
     // Stop animating because it will start automatically once the canvas enters the viewbox
@@ -459,6 +469,7 @@ export default class CanvasParticles {
     this.stop()
 
     CanvasParticles.canvasIntersectionObserver.unobserve(this.canvas)
+    CanvasParticles.canvasResizeObserver.unobserve(this.canvas)
 
     window.removeEventListener('resize', this.resizeCanvas)
     window.removeEventListener('mousemove', this.updateMousePos)

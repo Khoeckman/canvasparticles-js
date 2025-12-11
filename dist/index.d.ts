@@ -11,6 +11,7 @@ export default class CanvasParticles {
   }>
   /** Observes canvas elements entering or leaving the viewport to start/stop animation */
   static canvasIntersectionObserver: IntersectionObserver
+  static canvasResizeObserver: ResizeObserver
   canvas: CanvasParticlesCanvas
   ctx: CanvasRenderingContext2D
   enableAnimating: boolean
@@ -53,7 +54,7 @@ export default class CanvasParticles {
   /** @public Create a new particle with optional parameters */
   createParticle(posX?: number, posY?: number, dir?: number, speed?: number, size?: number): void
   /** @public Start the particle animation if it was not running before */
-  start({ auto, reflow }?: { auto?: boolean; reflow?: boolean }): CanvasParticles
+  start({ auto }?: { auto?: boolean }): CanvasParticles
   /** @public Stops the particle animation and optionally clears the canvas */
   stop({ auto, clear }?: { auto?: boolean; clear?: boolean }): boolean
   /** @public Gracefully destroy the instance and remove the canvas element */

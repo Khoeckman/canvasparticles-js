@@ -1,7 +1,7 @@
 'use strict'
 
 class CanvasParticles {
-  static version = '4.0.7'
+  static version = '4.1.0'
   static interactionType = Object.freeze({
     NONE: 0,
     SHIFT: 1,
@@ -27,9 +27,9 @@ class CanvasParticles {
   })
   canvas
   ctx
-  enableAnimating
-  animating
-  particles
+  enableAnimating = false
+  animating = false
+  particles = []
   mouseX
   mouseY
   width
@@ -54,10 +54,9 @@ class CanvasParticles {
     this.canvas = canvas
     this.canvas.instance = this
     this.canvas.inViewbox = true
-    this.ctx = this.canvas.getContext('2d')
-    this.enableAnimating = false
-    this.animating = false
-    this.particles = []
+    const ctx = this.canvas.getContext('2d')
+    if (!ctx) throw new Error('failed to get 2D context from canvas')
+    this.ctx = ctx
     this.options = options
     CanvasParticles.canvasIntersectionObserver.observe(this.canvas)
     this.resizeCanvas = this.resizeCanvas.bind(this)
@@ -67,9 +66,10 @@ class CanvasParticles {
     window.addEventListener('mousemove', this.updateMousePos)
     window.addEventListener('scroll', this.updateMousePos)
   }
-  resizeCanvas() {
-    this.canvas.width = this.canvas.offsetWidth
-    this.canvas.height = this.canvas.offsetHeight
+  resizeCanvas(rect = null) {
+    if (rect instanceof Event) rect = null
+    this.canvas.width = rect?.width ?? this.canvas.offsetWidth
+    this.canvas.height = rect?.height ?? this.canvas.offsetHeight
     this.mouseX = Infinity
     this.mouseY = Infinity
     this.updateCount = Infinity

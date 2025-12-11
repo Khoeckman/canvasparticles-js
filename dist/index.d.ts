@@ -35,7 +35,15 @@ export default class CanvasParticles {
    */
   constructor(selector: string | HTMLCanvasElement, options?: CanvasParticlesOptionsInput)
   /** @public Resize the canvas and update particles accordingly */
-  resizeCanvas(): void
+  resizeCanvas(
+    rect?:
+      | {
+          width: number
+          height: number
+        }
+      | null
+      | Event
+  ): void
   /** @public Update mouse coordinates relative to the canvas */
   updateMousePos(event: Event): void
   /** @public Remove existing particles and generate new ones */

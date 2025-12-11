@@ -73,7 +73,9 @@ export default class CanvasParticles {
     this.canvas.inViewbox = true
 
     // Get 2d drawing methods
-    this.ctx = this.canvas.getContext('2d')!
+    const ctx = this.canvas.getContext('2d')
+    if (!ctx) throw new Error('failed to get 2D context from canvas')
+    this.ctx = ctx
 
     this.enableAnimating = false
     this.animating = false

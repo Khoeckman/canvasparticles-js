@@ -9,7 +9,7 @@ new CanvasParticles('#cp-1', {
     distRatio: 1,
   },
   particles: {
-    color: '#88c8ffa0',
+    color: '#88c8ff40',
     max: 150,
     maxWork: 15,
     relSpeed: 0.8,

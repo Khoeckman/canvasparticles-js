@@ -1,4 +1,4 @@
-import type { CanvasParticlesCanvas, Particle, Color } from './types'
+import type { CanvasParticlesCanvas, Particle, ContextColor } from './types'
 import type { CanvasParticlesOptions, CanvasParticlesOptionsInput } from './types/options'
 export default class CanvasParticles {
   #private
@@ -15,8 +15,10 @@ export default class CanvasParticles {
   canvas: CanvasParticlesCanvas
   ctx: CanvasRenderingContext2D
   enableAnimating: boolean
-  animating: boolean
+  isAnimating: boolean
   particles: Particle[]
+  clientX: number
+  clientY: number
   mouseX: number
   mouseY: number
   width: number
@@ -25,28 +27,20 @@ export default class CanvasParticles {
   offY: number
   updateCount: number
   particleCount: number
-  clientX: number
-  clientY: number
   option: CanvasParticlesOptions
-  color: Color
+  color: ContextColor
   /**
    * Initialize a CanvasParticles instance
    * @param selector - Canvas element or CSS selector
    * @param options - Configuration object for particles (https://github.com/Khoeckman/canvasParticles?tab=readme-ov-file#options)
    */
   constructor(selector: string | HTMLCanvasElement, options?: CanvasParticlesOptionsInput)
+  /** @public Update mouse coordinates */
+  updateMousePos(event: MouseEvent): void
+  updateScroll(): void
   /** @public Resize the canvas and update particles accordingly */
-  resizeCanvas(
-    rect?:
-      | {
-          width: number
-          height: number
-        }
-      | null
-      | Event
-  ): void
-  /** @public Update mouse coordinates relative to the canvas */
-  updateMousePos(event: Event): void
+  resizeCanvas(): void
+  updateCanvasRect(): void
   /** @public Remove existing particles and generate new ones */
   newParticles(): void
   /** @public Adjust particle array length to match `options.particles.ppm` */

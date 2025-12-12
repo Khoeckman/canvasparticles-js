@@ -1,7 +1,7 @@
 // Copyright (c) 2022–2025 Kyle Hoeckman, MIT License
 // https://github.com/Khoeckman/canvasparticles-js/blob/main/LICENSE
 
-import type { CanvasParticlesCanvas, Particle, ParticleGridPos, Color } from './types'
+import type { CanvasParticlesCanvas, Particle, ParticleGridPos, ContextColor } from './types'
 import type { CanvasParticlesOptions, CanvasParticlesOptionsInput } from './types/options'
 
 declare const __VERSION__: string
@@ -33,8 +33,7 @@ export default class CanvasParticles {
   static canvasResizeObserver = new ResizeObserver((entries) => {
     for (const entry of entries) {
       const canvas = entry.target as CanvasParticlesCanvas
-      const { width, height } = entry.contentRect
-      canvas.instance.resizeCanvas({ width, height })
+      canvas.instance.resizeCanvas()
     }
   })
 
@@ -42,22 +41,22 @@ export default class CanvasParticles {
   ctx: CanvasRenderingContext2D
 
   enableAnimating: boolean = false
-  animating: boolean = false
+  isAnimating: boolean = false
 
   particles: Particle[] = []
 
-  mouseX!: number
-  mouseY!: number
+  clientX: number = Infinity
+  clientY: number = Infinity
+  mouseX: number = Infinity
+  mouseY: number = Infinity
   width!: number
   height!: number
   offX!: number
   offY!: number
   updateCount!: number
   particleCount!: number
-  clientX!: number
-  clientY!: number
   option!: CanvasParticlesOptions
-  color: Color = { hex: '000000', alpha: 0.0 } // Overwritten on initialization
+  color: ContextColor = { hex: '000000', alpha: 0.0 } // Overwritten on initialization
 
   /**
    * Initialize a CanvasParticles instance
@@ -93,51 +92,63 @@ export default class CanvasParticles {
     // Setup event handlers
     this.resizeCanvas = this.resizeCanvas.bind(this)
     this.updateMousePos = this.updateMousePos.bind(this)
-
-    // window.addEventListener('resize', this.resizeCanvas)
-    // this.resizeCanvas()
+    this.updateCanvasRect = this.updateCanvasRect.bind(this)
 
     window.addEventListener('mousemove', this.updateMousePos)
-    window.addEventListener('scroll', this.updateMousePos)
+    window.addEventListener('scroll', this.updateScroll)
+  }
+
+  /** @public Update mouse coordinates */
+  updateMousePos(event: MouseEvent) {
+    if (!this.enableAnimating) return
+
+    this.clientX = event.clientX
+    this.clientY = event.clientY
+
+    const { top, left } = this.canvas.rect
+
+    // Update mouse position relative to the canvas rect
+    this.mouseX = this.clientX - left
+    this.mouseY = this.clientY - top
+  }
+
+  updateScroll() {
+    if (!this.enableAnimating) return
+
+    this.updateCanvasRect()
+    const { top, left } = this.canvas.rect
+
+    // Update mouse position relative to the new canvas rect
+    this.mouseX = this.clientX - left
+    this.mouseY = this.clientY - top
   }
 
   /** @public Resize the canvas and update particles accordingly */
-  resizeCanvas(rect: { width: number; height: number } | null | Event = null) {
-    // When passed as an event handler the first argument is a Event object
-    if (rect instanceof Event) rect = null
+  resizeCanvas() {
+    this.updateCanvasRect()
+    const width = (this.canvas.width = this.canvas.rect.width)
+    const height = (this.canvas.height = this.canvas.rect.height)
 
-    this.canvas.width = rect?.width ?? this.canvas.offsetWidth
-    this.canvas.height = rect?.height ?? this.canvas.offsetHeight
-
-    // Prevent the mouse acting like it's at { x: 0, y: 0 } before the first MouseEvent
+    // Hide the mouse when resizing because it must be outside the viewport to do so
     this.mouseX = Infinity
     this.mouseY = Infinity
 
     this.updateCount = Infinity
-    this.width = Math.max(this.canvas.width + this.option.particles.connectDist * 2, 1)
-    this.height = Math.max(this.canvas.height + this.option.particles.connectDist * 2, 1)
-    this.offX = (this.canvas.width - this.width) / 2
-    this.offY = (this.canvas.height - this.height) / 2
+    this.width = Math.max(width + this.option.particles.connectDist * 2, 1)
+    this.height = Math.max(height + this.option.particles.connectDist * 2, 1)
+    this.offX = (width - this.width) / 2
+    this.offY = (height - this.height) / 2
 
     if (this.option.particles.regenerateOnResize || this.particles.length === 0) this.newParticles()
     else this.matchParticleCount({ updateBounds: true })
 
-    if (this.animating) this.#render()
+    if (this.isAnimating) this.#render()
   }
 
-  /** @public Update mouse coordinates relative to the canvas */
-  updateMousePos(event: Event) {
-    if (!this.enableAnimating) return
-
-    if (event instanceof MouseEvent) {
-      this.clientX = event.clientX
-      this.clientY = event.clientY
-    }
-
-    // Take the position of the canvas relative to the viewport into account
-    const { left, top } = this.canvas.getBoundingClientRect()
-    this.mouseX = this.clientX - left
-    this.mouseY = this.clientY - top
+  /* @public Update the canvas bounding rectangle and mouse position relative to it */
+  updateCanvasRect() {
+    const { top, left, width, height } = this.canvas.getBoundingClientRect()
+    this.canvas.rect = { top, left, width, height }
   }
 
   /** @private Update the target number of particles based on the current canvas size and `options.particles.ppm`, capped at `options.particles.max`. */
@@ -429,7 +440,7 @@ export default class CanvasParticles {
 
   /** @private Main animation loop that updates and renders the particles */
   #animation() {
-    if (!this.animating) return
+    if (!this.isAnimating) return
 
     requestAnimationFrame(() => this.#animation())
 
@@ -443,14 +454,14 @@ export default class CanvasParticles {
 
   /** @public Start the particle animation if it was not running before */
   start({ auto = false }: { auto?: boolean } = {}): CanvasParticles {
-    if (!this.animating && (!auto || this.enableAnimating)) {
+    if (!this.isAnimating && (!auto || this.enableAnimating)) {
       this.enableAnimating = true
-      this.animating = true
+      this.isAnimating = true
       requestAnimationFrame(() => this.#animation())
     }
 
     // Stop animating because it will start automatically once the canvas enters the viewbox
-    if (!this.canvas.inViewbox && this.option.animation.startOnEnter) this.animating = false
+    if (!this.canvas.inViewbox && this.option.animation.startOnEnter) this.isAnimating = false
 
     return this
   }
@@ -458,7 +469,7 @@ export default class CanvasParticles {
   /** @public Stops the particle animation and optionally clears the canvas */
   stop({ auto = false, clear = true }: { auto?: boolean; clear?: boolean } = {}): boolean {
     if (!auto) this.enableAnimating = false
-    this.animating = false
+    this.isAnimating = false
     if (clear !== false) this.canvas.width = this.canvas.width
 
     return true
@@ -471,9 +482,8 @@ export default class CanvasParticles {
     CanvasParticles.canvasIntersectionObserver.unobserve(this.canvas)
     CanvasParticles.canvasResizeObserver.unobserve(this.canvas)
 
-    window.removeEventListener('resize', this.resizeCanvas)
     window.removeEventListener('mousemove', this.updateMousePos)
-    window.removeEventListener('scroll', this.updateMousePos)
+    window.removeEventListener('scroll', this.updateScroll)
 
     this.canvas?.remove()
 

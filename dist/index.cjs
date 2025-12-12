@@ -28,28 +28,24 @@ class CanvasParticles {
   static canvasResizeObserver = new ResizeObserver((entries) => {
     for (const entry of entries) {
       const canvas = entry.target
-      const { width: width, height: height } = entry.contentRect
-      canvas.instance.resizeCanvas({
-        width: width,
-        height: height,
-      })
+      canvas.instance.resizeCanvas()
     }
   })
   canvas
   ctx
   enableAnimating = false
-  animating = false
+  isAnimating = false
   particles = []
-  mouseX
-  mouseY
+  clientX = Infinity
+  clientY = Infinity
+  mouseX = Infinity
+  mouseY = Infinity
   width
   height
   offX
   offY
   updateCount
   particleCount
-  clientX
-  clientY
   option
   color = {
     hex: '000000',
@@ -75,36 +71,51 @@ class CanvasParticles {
     CanvasParticles.canvasResizeObserver.observe(this.canvas)
     this.resizeCanvas = this.resizeCanvas.bind(this)
     this.updateMousePos = this.updateMousePos.bind(this)
+    this.updateCanvasRect = this.updateCanvasRect.bind(this)
     window.addEventListener('mousemove', this.updateMousePos)
-    window.addEventListener('scroll', this.updateMousePos)
+    window.addEventListener('scroll', this.updateScroll)
   }
-  resizeCanvas(rect = null) {
-    if (rect instanceof Event) rect = null
-    this.canvas.width = rect?.width ?? this.canvas.offsetWidth
-    this.canvas.height = rect?.height ?? this.canvas.offsetHeight
+  updateMousePos(event) {
+    if (!this.enableAnimating) return
+    this.clientX = event.clientX
+    this.clientY = event.clientY
+    const { top: top, left: left } = this.canvas.rect
+    this.mouseX = this.clientX - left
+    this.mouseY = this.clientY - top
+  }
+  updateScroll() {
+    if (!this.enableAnimating) return
+    this.updateCanvasRect()
+    const { top: top, left: left } = this.canvas.rect
+    this.mouseX = this.clientX - left
+    this.mouseY = this.clientY - top
+  }
+  resizeCanvas() {
+    this.updateCanvasRect()
+    const width = (this.canvas.width = this.canvas.rect.width)
+    const height = (this.canvas.height = this.canvas.rect.height)
     this.mouseX = Infinity
     this.mouseY = Infinity
     this.updateCount = Infinity
-    this.width = Math.max(this.canvas.width + this.option.particles.connectDist * 2, 1)
-    this.height = Math.max(this.canvas.height + this.option.particles.connectDist * 2, 1)
-    this.offX = (this.canvas.width - this.width) / 2
-    this.offY = (this.canvas.height - this.height) / 2
+    this.width = Math.max(width + this.option.particles.connectDist * 2, 1)
+    this.height = Math.max(height + this.option.particles.connectDist * 2, 1)
+    this.offX = (width - this.width) / 2
+    this.offY = (height - this.height) / 2
     if (this.option.particles.regenerateOnResize || this.particles.length === 0) this.newParticles()
     else
       this.matchParticleCount({
         updateBounds: true,
       })
-    if (this.animating) this.#render()
+    if (this.isAnimating) this.#render()
   }
-  updateMousePos(event) {
-    if (!this.enableAnimating) return
-    if (event instanceof MouseEvent) {
-      this.clientX = event.clientX
-      this.clientY = event.clientY
+  updateCanvasRect() {
+    const { top: top, left: left, width: width, height: height } = this.canvas.getBoundingClientRect()
+    this.canvas.rect = {
+      top: top,
+      left: left,
+      width: width,
+      height: height,
     }
-    const { left: left, top: top } = this.canvas.getBoundingClientRect()
-    this.mouseX = this.clientX - left
-    this.mouseY = this.clientY - top
   }
   #updateParticleCount() {
     const particleCount = ((this.option.particles.ppm * this.width * this.height) / 1e6) | 0
@@ -307,7 +318,7 @@ class CanvasParticles {
     this.#renderConnections()
   }
   #animation() {
-    if (!this.animating) return
+    if (!this.isAnimating) return
     requestAnimationFrame(() => this.#animation())
     if (++this.updateCount >= this.option.framesPerUpdate) {
       this.updateCount = 0
@@ -317,17 +328,17 @@ class CanvasParticles {
     }
   }
   start({ auto: auto = false } = {}) {
-    if (!this.animating && (!auto || this.enableAnimating)) {
+    if (!this.isAnimating && (!auto || this.enableAnimating)) {
       this.enableAnimating = true
-      this.animating = true
+      this.isAnimating = true
       requestAnimationFrame(() => this.#animation())
     }
-    if (!this.canvas.inViewbox && this.option.animation.startOnEnter) this.animating = false
+    if (!this.canvas.inViewbox && this.option.animation.startOnEnter) this.isAnimating = false
     return this
   }
   stop({ auto: auto = false, clear: clear = true } = {}) {
     if (!auto) this.enableAnimating = false
-    this.animating = false
+    this.isAnimating = false
     if (clear !== false) this.canvas.width = this.canvas.width
     return true
   }
@@ -335,9 +346,8 @@ class CanvasParticles {
     this.stop()
     CanvasParticles.canvasIntersectionObserver.unobserve(this.canvas)
     CanvasParticles.canvasResizeObserver.unobserve(this.canvas)
-    window.removeEventListener('resize', this.resizeCanvas)
     window.removeEventListener('mousemove', this.updateMousePos)
-    window.removeEventListener('scroll', this.updateMousePos)
+    window.removeEventListener('scroll', this.updateScroll)
     this.canvas?.remove()
     Object.keys(this).forEach((key) => delete this[key])
   }

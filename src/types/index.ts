@@ -3,8 +3,16 @@ import { CanvasParticlesOptions } from './options'
 
 export interface CanvasParticlesCanvas extends HTMLCanvasElement {
   instance: CanvasParticles
+  rect: CanvasRect
   inViewbox: boolean
   options: CanvasParticlesOptions
+}
+
+interface CanvasRect {
+  top: number
+  left: number
+  width: number
+  height: number
 }
 
 export interface Particle {
@@ -36,7 +44,7 @@ export interface ParticleGridPos {
   y: 0 | 1 | 2
 }
 
-export interface Color {
+export interface ContextColor {
   hex: string
   alpha: number
 }

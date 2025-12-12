@@ -91,36 +91,34 @@ export default class CanvasParticles {
 
     // Setup event handlers
     this.resizeCanvas = this.resizeCanvas.bind(this)
-    this.updateMousePos = this.updateMousePos.bind(this)
-    this.updateCanvasRect = this.updateCanvasRect.bind(this)
+    this.handleMouseMove = this.handleMouseMove.bind(this)
+    this.handleScroll = this.handleScroll.bind(this)
 
     this.resizeCanvas()
 
-    window.addEventListener('mousemove', this.updateMousePos)
-    window.addEventListener('scroll', this.updateScroll)
+    window.addEventListener('mousemove', this.handleMouseMove)
+    window.addEventListener('scroll', this.handleScroll)
   }
 
-  /** @public Update mouse coordinates */
-  updateMousePos(event: MouseEvent) {
+  handleMouseMove(event: MouseEvent) {
     if (!this.enableAnimating) return
 
     this.clientX = event.clientX
     this.clientY = event.clientY
 
-    const { top, left } = this.canvas.rect
-
-    // Update mouse position relative to the canvas rect
-    this.mouseX = this.clientX - left
-    this.mouseY = this.clientY - top
+    this.updateMousePos()
   }
 
-  updateScroll() {
+  handleScroll() {
     if (!this.enableAnimating) return
 
     this.updateCanvasRect()
-    const { top, left } = this.canvas.rect
+    this.updateMousePos()
+  }
 
-    // Update mouse position relative to the new canvas rect
+  /** @public Update mouse coordinates */
+  updateMousePos() {
+    const { top, left } = this.canvas.rect
     this.mouseX = this.clientX - left
     this.mouseY = this.clientY - top
   }
@@ -483,8 +481,8 @@ export default class CanvasParticles {
     CanvasParticles.canvasIntersectionObserver.unobserve(this.canvas)
     CanvasParticles.canvasResizeObserver.unobserve(this.canvas)
 
-    window.removeEventListener('mousemove', this.updateMousePos)
-    window.removeEventListener('scroll', this.updateScroll)
+    window.removeEventListener('mousemove', this.handleMouseMove)
+    window.removeEventListener('scroll', this.handleScroll)
 
     this.canvas?.remove()
 

@@ -22,12 +22,10 @@
   ],
   "scripts": {
     "test": "exit 0",
-    "build": "rollup -c && prettier --write \"dist/**/*.{js,mjs,cjs,d.ts}\"",
+    "build": "rollup -c",
     "prepack": "npm update && npm run build"
   },
   "devDependencies": {
-    "@rollup/plugin-commonjs": "^29.0.0",
-    "@rollup/plugin-node-resolve": "^16.0.3",
     "@rollup/plugin-replace": "^6.0.3",
     "@rollup/plugin-terser": "^0.4.4",
     "@rollup/plugin-typescript": "^12.3.0",

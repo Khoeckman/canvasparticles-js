@@ -94,6 +94,8 @@ export default class CanvasParticles {
     this.updateMousePos = this.updateMousePos.bind(this)
     this.updateCanvasRect = this.updateCanvasRect.bind(this)
 
+    this.resizeCanvas()
+
     window.addEventListener('mousemove', this.updateMousePos)
     window.addEventListener('scroll', this.updateScroll)
   }
@@ -273,8 +275,6 @@ export default class CanvasParticles {
 
   /** @private Update positions, directions, and visibility of all particles once every `options.framesPerUpdate` frames */
   #updateParticles() {
-    if (this.width <= 0 || this.height <= 0) this.resizeCanvas()
-
     for (let particle of this.particles) {
       // Randomly perturb direction
       particle.dir =
@@ -430,6 +430,7 @@ export default class CanvasParticles {
   /** @private Clear the canvas and render the particles and their connections onto the canvas */
   #render() {
     this.canvas.width = this.canvas.width
+
     this.ctx.globalAlpha = this.color.alpha
     this.ctx.fillStyle = this.color.hex
     this.ctx.lineWidth = 1

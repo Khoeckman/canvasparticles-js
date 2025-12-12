@@ -70,6 +70,7 @@ class CanvasParticles {
     this.resizeCanvas = this.resizeCanvas.bind(this)
     this.updateMousePos = this.updateMousePos.bind(this)
     this.updateCanvasRect = this.updateCanvasRect.bind(this)
+    this.resizeCanvas()
     window.addEventListener('mousemove', this.updateMousePos)
     window.addEventListener('scroll', this.updateScroll)
   }
@@ -210,7 +211,6 @@ class CanvasParticles {
     }
   }
   #updateParticles() {
-    if (this.width <= 0 || this.height <= 0) this.resizeCanvas()
     for (let particle of this.particles) {
       particle.dir =
         (particle.dir + Math.random() * this.option.particles.rotationSpeed * 2 - this.option.particles.rotationSpeed) %

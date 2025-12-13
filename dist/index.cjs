@@ -24,6 +24,13 @@ class CanvasParticles {
         }
     });
     static canvasResizeObserver = new ResizeObserver((entries) => {
+        // Seperate for loops is very important to prevent huge forced reflow overhead
+        // First read all canvas rects at once
+        for (const entry of entries) {
+            const canvas = entry.target;
+            canvas.instance.updateCanvasRect();
+        }
+        // Then resize all canvases at once
         for (const entry of entries) {
             const canvas = entry.target;
             canvas.instance.resizeCanvas();

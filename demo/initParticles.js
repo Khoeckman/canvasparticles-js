@@ -29,7 +29,7 @@ new CanvasParticles('#cp-2', {
     interactionType: 2,
   },
   particles: {
-    color: 'rgba(150, 255, 105, 0.95)',
+    color: '#96ff69',
     max: 200,
     maxWork: 10,
   },

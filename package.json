@@ -23,7 +23,7 @@
   "scripts": {
     "test": "exit 0",
     "build": "rollup -c",
-    "prepack": "npm update && npm run build"
+    "prepack": "npm run build"
   },
   "devDependencies": {
     "@rollup/plugin-replace": "^6.0.3",

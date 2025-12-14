@@ -571,7 +571,7 @@ export default class CanvasParticles {
 
     // Check if `ctx.fillStyle` is in hex format ("#RRGGBB")
     if (String(this.ctx.fillStyle)[0] === '#') {
-      this.color.hex = String(this.ctx.fillStyle).slice(1)
+      this.color.hex = String(this.ctx.fillStyle)
       this.color.alpha = 1.0
     } else {
       // JavaScript's `ctx.fillStyle` causes the color to otherwise end up in in rgba format ("rgba(136, 244, 255, 0.25)")

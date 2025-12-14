@@ -486,7 +486,7 @@ class CanvasParticles {
         this.ctx.fillStyle = color;
         // Check if `ctx.fillStyle` is in hex format ("#RRGGBB")
         if (String(this.ctx.fillStyle)[0] === '#') {
-            this.color.hex = String(this.ctx.fillStyle).slice(1);
+            this.color.hex = String(this.ctx.fillStyle);
             this.color.alpha = 1.0;
         }
         else {

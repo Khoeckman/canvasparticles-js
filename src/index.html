@@ -82,7 +82,7 @@ https://github.com/Khoeckman/canvasparticles-js/blob/main/LICENSE
           <span class="text-gradient">Canvas Particles</span>
           <span class="invert">JS</span>
         </h1>
-        <h2>A smooth yet efficient particle renderer. All in an HTML canvas.</h2>
+        <h2>A smooth, highly efficient customizeable particle renderer</h2>
       </div>
       <a href="#installation" aria-label="installation">
         <svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" fill="var(--g2)"
@@ -688,23 +688,62 @@ new CanvasParticles('#showcase-multiple-colors-2', {
 
           <h3>Performance optimizations</h3>
           <p>
-            Canvas Particles JS is a highly optimized particle renderer (ignoring the fact that it's coded in JS). A lot
-            of time has gone
-            into profiling the code and improving efficiency on expensive tasks.
+            Canvas Particles JS is a highly optimized particle renderer (ignoring the fact that it's coded in
+            JavaScript 😭). A lot of time has gone into profiling the code and improving efficiency on expensive tasks.
           </p>
-          <p>
-            An <span class="highlight">IntersectionObserver</span> is used to pause and resume the animation when the
-            canvas enters or
-            leaves the viewbox.
+          <ul>
+            <li>
+              <p>The heaviest task of the animation loop is processing and assigning a new color to
+                <span class="highlight">ctx.fillStyle</span> for every single line being drawn, every frame, but the
+                only
+                difference between these colors is the opacity. Profiling shows that keeping
+                <span class="highlight">ctx.fillStyle</span> the same and only changing
+                <span class="highlight">ctx.globalAlpha</span> is about 25x faster.
+              </p>
+            </li>
+            <li>
+              <p>
+                An <span class="highlight">IntersectionObserver</span> is used to pause and resume the animation when
+                the canvas enters or leaves the viewbox.
+              </p>
+            </li>
+            <li>
+              <p>
+                A <span class="highlight">ResizeObserver</span> is used to handle canvas as it's more efficient than
+                using events and it removes most forced reflow overhead. This makes resizing roughly 18x faster based on
+                benchmarks.
+              </p>
+            </li>
+            <li>
+              <p>Particles smaller than one pixel are drawn as squares instead of circles which is ±183% faster.</p>
+            </li>
+          </ul>
+
+          <h3>Benchmark limits</h3>
+
+          <p>After many improvements the <a href="./benchmark/" class="fancy">benchmark</a> is now able to handle up to
+            (device dependent):
           </p>
-          <p>Particles smaller than one pixel are drawn as squares instead of circles which is ±183% faster.</p>
-          <p>
-            Dynamically generating the <span class="highlight">fillStyle</span> combinations for each connection in
-            every frame is the
-            most expensive task. It's about 5x faster to precomputing all 256 particle colors, accounting only for
-            varying opacity levels,
-            and storing them in a lookup table.
-          </p>
+          <dl>
+            <dt>Particles at once</dt>
+            <dd aria-label="11 million">
+              <script>document.currentScript.parentElement.textContent = new Intl.NumberFormat(navigator.language).format(11e6)</script>
+              <noscript>11000000</noscript> <!-- as if this website is usefull without script access... -->
+            </dd>
+            <dt>Pixels</dt>
+            <dd aria-label="25 billion">
+              <script>document.currentScript.parentElement.textContent = new Intl.NumberFormat(navigator.language).format(2559744e4)</script>
+              <noscript>25597440000</noscript>
+            </dd>
+            <dt>Canvas elements</dt>
+            <dd aria-label="Over 10 thousand">
+              Over
+              <span>
+                <script>document.currentScript.parentElement.textContent = new Intl.NumberFormat(navigator.language).format(9999)</script>
+                <noscript>9999</noscript>
+              </span>
+            </dd>
+          </dl>
 
           <h3 class="contact">Contact me</h3>
           <p>

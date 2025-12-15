@@ -6,7 +6,7 @@
   "main": "src/index.html",
   "type": "module",
   "dependencies": {
-    "canvasparticles-js": "latest"
+    "canvasparticles-js": "file:canvasparticles-js-4.1.0.tgz"
   },
   "devDependencies": {
     "prettier": "^3.6.2"

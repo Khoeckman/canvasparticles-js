@@ -47,6 +47,16 @@ main p span.highlight.red {
   color: var(--white);
 }
 
+main dt {
+  font-weight: 500;
+  margin-bottom: 0.25em;
+}
+
+main dd {
+  margin: 0;
+  margin-bottom: 0.5em;
+}
+
 main .choice {
   display: flex;
   flex-flow: row wrap;

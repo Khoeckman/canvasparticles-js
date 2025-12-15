@@ -11,17 +11,39 @@ const stopAnimationButton = document.getElementById('stop-animation')
 
 const benchmarkStatus = document.getElementById('benchmark-status')
 
-// Prevent the UI from lagging while executing a large number of operations
-const singlethread = async (data, batch, callback) => {
-  for (let i = 0; i < data.length; i++) {
-    callback(data[i], i)
+// Prevent the UI from lagging while processing large amounts of data
+const scheduleDataProcessing = (data, processCallback, chunkCallback = () => {}) => {
+  return new Promise((resolve) => {
+    const len = data.length
 
-    // Allow one frame to render every `batch` operations
-    if (i % batch == 0) await new Promise(requestAnimationFrame)
-  }
+    if (!data || len === 0) {
+      resolve()
+      return
+    }
+
+    async function runChunk() {
+      const start = performance.now()
+
+      // Yield at least every 4ms
+      while (i < len && performance.now() - start < 4) {
+        processCallback(data[i], i++)
+      }
+      chunkCallback(len, Math.min(i, len))
+
+      // Schedule the next chunk if more work remains
+      if (i < len) {
+        scheduler.postTask(runChunk, { priority: 'background' })
+      } else {
+        return resolve()
+      }
+    }
+
+    let i = 0
+    scheduler.postTask(runChunk, { priority: 'background' })
+  })
 }
 
-const generateRandomCanvasOptions = () => {
+const generateRandomCanvasOptions = (ppm) => {
   return {
     background: `hsl(${~~(Math.random() * 360)}, ${~~(Math.random() * 80)}%, ${~~(Math.random() * 100)}%)`,
     animation: {},
@@ -30,63 +52,111 @@ const generateRandomCanvasOptions = () => {
     },
     particles: {
       color: `hsl(${~~(Math.random() * 360)}, ${80 + ~~(Math.random() * 20)}%, ${40 + ~~(Math.random() * 20)}%)`,
-      ppm: 0,
+      ppm: 0 /* Particles are created later */,
       max: Infinity,
-      maxWork: 50,
+      maxWork: ~~(30 + (ppm / 999) * 20),
+      connectDist: 100,
     },
   }
 }
 
+let mutex = false
 let instances = []
 
 const populateCanvasContainer = async () => {
+  if (mutex) return
+  mutex = true
+
   startAnimationButton.title = 'Creating canvas elements'
   stopAnimationButton.title = 'Creating canvas elements'
   startAnimationButton.disabled = true
   stopAnimationButton.disabled = true
 
-  benchmarkStatus.innerText = 'Creating canvas elements'
+  benchmarkStatus.innerText = 'Preparing…'
+
+  // Allow the text to update before lagging the UI
+  await new Promise(requestAnimationFrame)
+  await new Promise(requestAnimationFrame)
 
   const count = +document.getElementById('canvas-count-number').value
   const ppm = +document.getElementById('ppm-number').value
   const width = +document.getElementById('canvas-width').value
   const height = +document.getElementById('canvas-height').value
 
+  // Ultra fast destruction
+  canvasContainer.innerHTML = ''
+
   root.style.setProperty('--benchmark-width', width + 'px')
   root.style.setProperty('--benchmark-height', height + 'px')
 
   // Gracefully destroy existing elements
-  if (instances.length) {
-    instances.forEach((instance) => instance.destroy())
-    instances = []
-  }
+  await scheduleDataProcessing(
+    instances,
+    (instance, i) => {
+      instance.destroy()
+    },
+    (len, i) => {
+      benchmarkStatus.innerText = 'Destroying old canvases ' + i + '/' + len
+    }
+  )
+  instances = []
 
   const fragment = document.createDocumentFragment()
 
-  for (let i = 0; i < count; i++) {
-    const canvas = document.createElement('canvas')
-    canvas.id = 'benchmark-' + i
+  await scheduleDataProcessing(
+    Array(count),
+    (instance, i) => {
+      const canvas = document.createElement('canvas')
+      canvas.id = 'benchmark-' + i
 
-    const instance = new CanvasParticles(canvas, generateRandomCanvasOptions())
-    instances.push(instance)
+      instance = new CanvasParticles(canvas, generateRandomCanvasOptions(ppm))
+      instances.push(instance)
 
-    fragment.appendChild(instance.canvas)
-  }
+      fragment.appendChild(instance.canvas)
+    },
+    (len, i) => {
+      benchmarkStatus.innerText = 'Creating canvas elements ' + i + '/' + len
+    }
+  )
 
-  canvasContainer.innerHTML = ''
+  benchmarkStatus.innerText = 'Adding canvases to the DOM…'
+
+  // Allow the text to update before lagging the UI
+  await new Promise(requestAnimationFrame)
+  await new Promise(requestAnimationFrame)
+
   canvasContainer.appendChild(fragment)
-  void canvasContainer.offsetHeight // Force reflow
 
-  await singlethread(instances, 7, (instance, i) => {
-    instance.resizeCanvas()
-    benchmarkStatus.innerText = 'Resizing canvases ' + (i + 1) + '/' + instances.length
-  })
+  await scheduleDataProcessing(
+    instances,
+    (instance, i) => {
+      instance.updateCanvasRect()
+    },
+    (len, i) => {
+      benchmarkStatus.innerText = 'Getting positions of canvases ' + i + '/' + len
+    }
+  )
 
-  await singlethread(instances, 107, (instance, i) => {
-    instance.option.particles.ppm = ppm
-    instance.newParticles()
-    benchmarkStatus.innerText = 'Filling canvases with particles ' + (i + 1) + '/' + instances.length
-  })
+  await scheduleDataProcessing(
+    instances,
+    (instance, i) => {
+      instance.resizeCanvas()
+    },
+    (len, i) => {
+      benchmarkStatus.innerText = 'Resizing canvases ' + i + '/' + len
+    }
+  )
+
+  await scheduleDataProcessing(
+    instances,
+    (instance, i) => {
+      instance.option.particles.ppm = ppm
+      instance.newParticles()
+    },
+    (len, i) => {
+      benchmarkStatus.innerText = 'Filling canvases with particles ' + i + '/' + len
+    }
+  )
 
   benchmarkStatus.innerText = 'Created canvas elements'
 
@@ -94,6 +164,8 @@ const populateCanvasContainer = async () => {
   stopAnimationButton.removeAttribute('title')
   startAnimationButton.disabled = null
   stopAnimationButton.disabled = null
+
+  mutex = false
 }
 
 // Handle settings form
@@ -117,11 +189,22 @@ ppmRangeInput.addEventListener('input', (e) => (ppmNumberInput.value = e.target.
 
 // Enforce min and max limits
 canvasCountNumberInput.addEventListener('change', function () {
-  this.value = Math.max(1, Math.min(999, this.value))
+  this.value = Math.max(1, Math.min(8000, this.value))
 })
 
 ppmNumberInput.addEventListener('change', function () {
   this.value = Math.max(1, Math.min(999, this.value))
+})
+
+const canvasWidthInput = document.getElementById('canvas-width')
+const canvasHeightInput = document.getElementById('canvas-height')
+
+canvasWidthInput.addEventListener('change', function () {
+  this.value = Math.max(1, Math.min(3200, this.value))
+})
+
+canvasHeightInput.addEventListener('change', function () {
+  this.value = Math.max(1, Math.min(3200, this.value))
 })
 
 // Form actions

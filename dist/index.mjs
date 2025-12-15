@@ -93,10 +93,12 @@ class CanvasParticles {
             return;
         this.clientX = event.clientX;
         this.clientY = event.clientY;
+        if (!this.isAnimating)
+            return;
         this.updateMousePos();
     }
     handleScroll() {
-        if (!this.enableAnimating)
+        if (!this.enableAnimating || !this.canvas.inViewbox)
             return;
         this.updateCanvasRect();
         this.updateMousePos();

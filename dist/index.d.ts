@@ -1,4 +1,4 @@
-import type { CanvasParticlesCanvas, Particle, ContextColor } from './types';
+import type { CanvasParticlesCanvas, Particle } from './types';
 import type { CanvasParticlesOptions, CanvasParticlesOptionsInput } from './types/options';
 export default class CanvasParticles {
     #private;
@@ -13,22 +13,22 @@ export default class CanvasParticles {
     static canvasIntersectionObserver: IntersectionObserver;
     static canvasResizeObserver: ResizeObserver;
     canvas: CanvasParticlesCanvas;
-    ctx: CanvasRenderingContext2D;
+    private ctx;
     enableAnimating: boolean;
     isAnimating: boolean;
     particles: Particle[];
-    clientX: number;
-    clientY: number;
+    private clientX;
+    private clientY;
     mouseX: number;
     mouseY: number;
     width: number;
     height: number;
-    offX: number;
-    offY: number;
-    updateCount: number;
+    private offX;
+    private offY;
+    private updateCount;
     particleCount: number;
     option: CanvasParticlesOptions;
-    color: ContextColor;
+    private color;
     /**
      * Initialize a CanvasParticles instance
      * @param selector - Canvas element or CSS selector

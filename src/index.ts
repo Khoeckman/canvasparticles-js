@@ -47,25 +47,25 @@ export default class CanvasParticles {
   })
 
   canvas: CanvasParticlesCanvas
-  ctx: CanvasRenderingContext2D
+  private ctx: CanvasRenderingContext2D
 
   enableAnimating: boolean = false
   isAnimating: boolean = false
 
   particles: Particle[] = []
 
-  clientX: number = Infinity
-  clientY: number = Infinity
+  private clientX: number = Infinity
+  private clientY: number = Infinity
   mouseX: number = Infinity
   mouseY: number = Infinity
   width!: number
   height!: number
-  offX!: number
-  offY!: number
-  updateCount!: number
+  private offX!: number
+  private offY!: number
+  private updateCount!: number
   particleCount!: number
   option!: CanvasParticlesOptions
-  color: ContextColor = { hex: '000000', alpha: 0.0 } // Overwritten on initialization
+  private color: ContextColor = { hex: '000000', alpha: 0.0 } // Overwritten on initialization
 
   /**
    * Initialize a CanvasParticles instance

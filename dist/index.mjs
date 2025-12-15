@@ -83,6 +83,7 @@ class CanvasParticles {
         this.resizeCanvas = this.resizeCanvas.bind(this);
         this.handleMouseMove = this.handleMouseMove.bind(this);
         this.handleScroll = this.handleScroll.bind(this);
+        this.updateCanvasRect();
         this.resizeCanvas();
         window.addEventListener('mousemove', this.handleMouseMove);
         window.addEventListener('scroll', this.handleScroll);
@@ -108,7 +109,6 @@ class CanvasParticles {
     }
     /** @public Resize the canvas and update particles accordingly */
     resizeCanvas() {
-        this.updateCanvasRect();
         const width = (this.canvas.width = this.canvas.rect.width);
         const height = (this.canvas.height = this.canvas.rect.height);
         // Hide the mouse when resizing because it must be outside the viewport to do so

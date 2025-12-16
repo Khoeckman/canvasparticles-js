@@ -110,21 +110,26 @@ export default class CanvasParticles {
     window.addEventListener('scroll', this.handleScroll)
   }
 
+  /* @public Update the canvas bounding rectangle and mouse position relative to it */
+  updateCanvasRect() {
+    const { top, left, width, height } = this.canvas.getBoundingClientRect()
+    this.canvas.rect = { top, left, width, height }
+  }
+
   handleMouseMove(event: MouseEvent) {
     if (!this.enableAnimating) return
 
     this.clientX = event.clientX
     this.clientY = event.clientY
-
     if (!this.isAnimating) return
-
     this.updateMousePos()
   }
 
   handleScroll() {
-    if (!this.enableAnimating || !this.canvas.inViewbox) return
+    if (!this.enableAnimating) return
 
     this.updateCanvasRect()
+    if (!this.isAnimating) return
     this.updateMousePos()
   }
 
@@ -154,12 +159,6 @@ export default class CanvasParticles {
     else this.matchParticleCount({ updateBounds: true })
 
     if (this.isAnimating) this.#render()
-  }
-
-  /* @public Update the canvas bounding rectangle and mouse position relative to it */
-  updateCanvasRect() {
-    const { top, left, width, height } = this.canvas.getBoundingClientRect()
-    this.canvas.rect = { top, left, width, height }
   }
 
   /** @private Update the target number of particles based on the current canvas size and `options.particles.ppm`, capped at `options.particles.max`. */

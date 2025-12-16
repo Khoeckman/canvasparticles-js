@@ -1,7 +1,7 @@
 // Copyright (c) 2022–2025 Kyle Hoeckman, MIT License
 // https://github.com/Khoeckman/canvasparticles-js/blob/main/LICENSE
 class CanvasParticles {
-    static version = "4.1.0";
+    static version = "4.1.1";
     /** Defines mouse interaction types with the particles */
     static interactionType = Object.freeze({
         NONE: 0, // No mouse interaction
@@ -88,6 +88,11 @@ class CanvasParticles {
         window.addEventListener('mousemove', this.handleMouseMove);
         window.addEventListener('scroll', this.handleScroll);
     }
+    /* @public Update the canvas bounding rectangle and mouse position relative to it */
+    updateCanvasRect() {
+        const { top, left, width, height } = this.canvas.getBoundingClientRect();
+        this.canvas.rect = { top, left, width, height };
+    }
     handleMouseMove(event) {
         if (!this.enableAnimating)
             return;
@@ -98,9 +103,11 @@ class CanvasParticles {
         this.updateMousePos();
     }
     handleScroll() {
-        if (!this.enableAnimating || !this.canvas.inViewbox)
+        if (!this.enableAnimating)
             return;
         this.updateCanvasRect();
+        if (!this.isAnimating)
+            return;
         this.updateMousePos();
     }
     /** @public Update mouse coordinates */
@@ -127,11 +134,6 @@ class CanvasParticles {
             this.matchParticleCount({ updateBounds: true });
         if (this.isAnimating)
             this.#render();
-    }
-    /* @public Update the canvas bounding rectangle and mouse position relative to it */
-    updateCanvasRect() {
-        const { top, left, width, height } = this.canvas.getBoundingClientRect();
-        this.canvas.rect = { top, left, width, height };
     }
     /** @private Update the target number of particles based on the current canvas size and `options.particles.ppm`, capped at `options.particles.max`. */
     #updateParticleCount() {

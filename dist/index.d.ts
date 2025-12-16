@@ -35,13 +35,13 @@ export default class CanvasParticles {
      * @param options - Configuration object for particles (https://github.com/Khoeckman/canvasParticles?tab=readme-ov-file#options)
      */
     constructor(selector: string | HTMLCanvasElement, options?: CanvasParticlesOptionsInput);
+    updateCanvasRect(): void;
     handleMouseMove(event: MouseEvent): void;
     handleScroll(): void;
     /** @public Update mouse coordinates */
     updateMousePos(): void;
     /** @public Resize the canvas and update particles accordingly */
     resizeCanvas(): void;
-    updateCanvasRect(): void;
     /** @public Remove existing particles and generate new ones */
     newParticles(): void;
     /** @public Adjust particle array length to match `options.particles.ppm` */

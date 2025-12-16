@@ -84,6 +84,7 @@ main section:first-child {
 #benchmark #benchmark-status {
   align-self: center;
   color: var(--g2);
+  min-width: 100%;
 }
 
 @media only screen and (width < 30em) {

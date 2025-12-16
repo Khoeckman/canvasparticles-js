@@ -38,7 +38,7 @@ class CanvasParticles {
     });
     canvas;
     ctx;
-    enableAnimating = true;
+    enableAnimating = false;
     isAnimating = false;
     particles = [];
     clientX = Infinity;
@@ -401,6 +401,7 @@ class CanvasParticles {
         if (!this.isAnimating && (!auto || this.enableAnimating)) {
             this.enableAnimating = true;
             this.isAnimating = true;
+            this.updateCanvasRect();
             requestAnimationFrame(() => this.#animation());
         }
         // Stop animating because it will start automatically once the canvas enters the viewbox

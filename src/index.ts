@@ -49,7 +49,7 @@ export default class CanvasParticles {
   canvas: CanvasParticlesCanvas
   private ctx: CanvasRenderingContext2D
 
-  enableAnimating: boolean = true
+  enableAnimating: boolean = false
   isAnimating: boolean = false
 
   particles: Particle[] = []
@@ -466,6 +466,7 @@ export default class CanvasParticles {
     if (!this.isAnimating && (!auto || this.enableAnimating)) {
       this.enableAnimating = true
       this.isAnimating = true
+      this.updateCanvasRect()
       requestAnimationFrame(() => this.#animation())
     }
 

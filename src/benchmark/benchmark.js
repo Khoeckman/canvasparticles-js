@@ -189,7 +189,7 @@ ppmRangeInput.addEventListener('input', (e) => (ppmNumberInput.value = e.target.
 
 // Enforce min and max limits
 canvasCountNumberInput.addEventListener('change', function () {
-  this.value = Math.max(1, Math.min(8000, this.value))
+  this.value = Math.max(1, Math.min(9999, this.value))
 })
 
 ppmNumberInput.addEventListener('change', function () {

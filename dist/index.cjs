@@ -38,7 +38,7 @@ class CanvasParticles {
     });
     canvas;
     ctx;
-    enableAnimating = false;
+    enableAnimating = true;
     isAnimating = false;
     particles = [];
     clientX = Infinity;

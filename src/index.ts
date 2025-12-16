@@ -49,7 +49,7 @@ export default class CanvasParticles {
   canvas: CanvasParticlesCanvas
   private ctx: CanvasRenderingContext2D
 
-  enableAnimating: boolean = false
+  enableAnimating: boolean = true
   isAnimating: boolean = false
 
   particles: Particle[] = []

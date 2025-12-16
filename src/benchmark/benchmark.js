@@ -12,7 +12,7 @@ const stopAnimationButton = document.getElementById('stop-animation')
 const benchmarkStatus = document.getElementById('benchmark-status')
 
 // Prevent the UI from lagging while processing large amounts of data
-const scheduleDataProcessing = (data, processCallback, chunkCallback = () => {}) => {
+const scheduleDataProcessing = (data, processCallback, chunkCallback = () => {}, priority = 'user-visible') => {
   return new Promise((resolve) => {
     const len = data.length
 
@@ -32,14 +32,14 @@ const scheduleDataProcessing = (data, processCallback, chunkCallback = () => {})
 
       // Schedule the next chunk if more work remains
       if (i < len) {
-        scheduler.postTask(runChunk, { priority: 'background' })
+        scheduler.postTask(runChunk, { priority })
       } else {
         return resolve()
       }
     }
 
     let i = 0
-    scheduler.postTask(runChunk, { priority: 'background' })
+    scheduler.postTask(runChunk, { priority })
   })
 }
 

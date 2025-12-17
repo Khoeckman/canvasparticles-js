@@ -106,8 +106,8 @@ export default class CanvasParticles {
     this.updateCanvasRect()
     this.resizeCanvas()
 
-    window.addEventListener('mousemove', this.handleMouseMove)
-    window.addEventListener('scroll', this.handleScroll)
+    window.addEventListener('mousemove', this.handleMouseMove, { passive: true })
+    window.addEventListener('scroll', this.handleScroll, { passive: true })
   }
 
   /* @public Update the canvas bounding rectangle and mouse position relative to it */

@@ -721,19 +721,19 @@ new CanvasParticles('#showcase-multiple-colors-2', {
 
           <h3>Benchmark limits</h3>
 
-          <p>After many improvements the <a href="./benchmark/" class="fancy">benchmark</a> is now able to handle up to
-            (device dependent):
+          <p>After many improvements, the <a href="./benchmark/" class="fancy">benchmark</a> is able to handle
+            ridiculously large numbers in seconds (device dependent):
           </p>
           <dl>
-            <dt>Particles at once</dt>
-            <dd aria-label="11 million">
-              <script>document.currentScript.parentElement.textContent = new Intl.NumberFormat(navigator.language).format(11e6)</script>
-              <noscript>11000000</noscript> <!-- as if this website is usefull without script access... -->
+            <dt>Particles at once (depends on memory limit)</dt>
+            <dd aria-label="12 million">
+              <script>document.currentScript.parentElement.textContent = new Intl.NumberFormat(navigator.language).format(12e6)</script>
+              <noscript>12000000</noscript> <!-- as if this website is usefull without script access... -->
             </dd>
-            <dt>Pixels</dt>
-            <dd aria-label="25 billion">
-              <script>document.currentScript.parentElement.textContent = new Intl.NumberFormat(navigator.language).format(2559744e4)</script>
-              <noscript>25597440000</noscript>
+            <dt>Total canvas area in pixels</dt>
+            <dd aria-label="102 billion">
+              <script>document.currentScript.parentElement.textContent = new Intl.NumberFormat(navigator.language).format(1024e8)</script>
+              <noscript>102400000000</noscript>
             </dd>
             <dt>Canvas elements</dt>
             <dd aria-label="Over 10 thousand">

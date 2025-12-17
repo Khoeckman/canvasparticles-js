@@ -2,14 +2,15 @@ const title = new CanvasParticles('#cp-title', {
   background: 'var(--bg)',
   mouse: {
     interactionType: 1,
-    connectDistMult: 1,
+    connectDistMult: 1.1,
     distRatio: 1,
   },
   particles: {
+    regenerateOnResize: true,
     color: '#848888',
-    ppm: 40,
-    max: 200,
-    connectDistance: 200,
+    ppm: 50,
+    max: 999,
+    connectDistance: 175,
   },
 })
 title.start()

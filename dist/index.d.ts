@@ -10,15 +10,19 @@ export default class CanvasParticles {
         MOVE: 2;
     }>;
     /** Observes canvas elements entering or leaving the viewport to start/stop animation */
-    static canvasIntersectionObserver: IntersectionObserver;
-    static canvasResizeObserver: ResizeObserver;
+    private static canvasIntersectionObserver;
+    /** Observes when canvas elements change size */
+    private static canvasResizeObserver;
+    private static clientState;
+    private static client;
+    private static eventHandlerInitialized;
+    private static mouseMoveHandler;
+    private static scrollHandler;
     canvas: CanvasParticlesCanvas;
     private ctx;
     enableAnimating: boolean;
     isAnimating: boolean;
     particles: Particle[];
-    private clientX;
-    private clientY;
     mouseX: number;
     mouseY: number;
     width: number;
@@ -36,10 +40,6 @@ export default class CanvasParticles {
      */
     constructor(selector: string | HTMLCanvasElement, options?: CanvasParticlesOptionsInput);
     updateCanvasRect(): void;
-    handleMouseMove(event: MouseEvent): void;
-    handleScroll(): void;
-    /** @public Update mouse coordinates */
-    updateMousePos(): void;
     /** @public Resize the canvas and update particles accordingly */
     resizeCanvas(): void;
     /** @public Remove existing particles and generate new ones */

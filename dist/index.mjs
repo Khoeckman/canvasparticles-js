@@ -21,6 +21,7 @@ class CanvasParticles {
                 instance.options.animation?.stopOnLeave && instance.stop({ auto: true, clear: false });
         }
     });
+    /** Observes when canvas elements change size */
     static canvasResizeObserver = new ResizeObserver((entries) => {
         // Seperate for loops is very important to prevent huge forced reflow overhead
         // First read all canvas rects at once
@@ -34,23 +35,42 @@ class CanvasParticles {
             canvas.instance.resizeCanvas();
         }
     });
+    /* Event handling */
+    static clientState = Object.freeze({
+        IDLE: 0, // Synced, won't do anything until DESYNCED
+        SYNCED: 1, // Synced, will go to IDLE next frame
+        DESYNCED: 2, // Not synced, will sync next frame and go to SYNCED
+    });
+    static client = {
+        x: Infinity,
+        y: Infinity,
+        state: CanvasParticles.clientState.IDLE,
+    };
+    static eventHandlerInitialized = false;
+    static mouseMoveHandler = (event) => {
+        CanvasParticles.client.x = event.clientX;
+        CanvasParticles.client.y = event.clientY;
+        CanvasParticles.client.state = CanvasParticles.clientState.DESYNCED;
+    };
+    static scrollHandler = () => {
+        CanvasParticles.client.state = CanvasParticles.clientState.DESYNCED;
+    };
+    /* Members */
     canvas;
     ctx;
     enableAnimating = false;
     isAnimating = false;
     particles = [];
-    clientX = Infinity;
-    clientY = Infinity;
-    mouseX = Infinity;
-    mouseY = Infinity;
+    mouseX = CanvasParticles.client.x;
+    mouseY = CanvasParticles.client.y;
     width;
     height;
     offX;
     offY;
-    updateCount;
+    updateCount; /* Todo: Remove in future version. Replace with smart FPS tracking. */
     particleCount;
     option;
-    color;
+    color = { hex: '000000', alpha: 0.0 }; // Overwritten on initialization
     /**
      * Initialize a CanvasParticles instance
      * @param selector - Canvas element or CSS selector
@@ -77,44 +97,38 @@ class CanvasParticles {
             throw new Error('failed to get 2D context from canvas');
         this.ctx = ctx;
         this.options = options; // Uses setter
+        this.updateCanvasRect();
+        this.resizeCanvas();
         CanvasParticles.canvasIntersectionObserver.observe(this.canvas);
         CanvasParticles.canvasResizeObserver.observe(this.canvas);
         // Setup event handlers
         this.resizeCanvas = this.resizeCanvas.bind(this);
-        this.handleMouseMove = this.handleMouseMove.bind(this);
-        this.handleScroll = this.handleScroll.bind(this);
-        this.updateCanvasRect();
-        this.resizeCanvas();
-        window.addEventListener('mousemove', this.handleMouseMove, { passive: true });
-        window.addEventListener('scroll', this.handleScroll, { passive: true });
+        // Singleton
+        if (!CanvasParticles.eventHandlerInitialized) {
+            window.addEventListener('mousemove', CanvasParticles.mouseMoveHandler, { passive: true });
+            window.addEventListener('scroll', CanvasParticles.scrollHandler, { passive: true });
+            CanvasParticles.eventHandlerInitialized = true;
+        }
     }
     /* @public Update the canvas bounding rectangle and mouse position relative to it */
     updateCanvasRect() {
         const { top, left, width, height } = this.canvas.getBoundingClientRect();
         this.canvas.rect = { top, left, width, height };
     }
-    handleMouseMove(event) {
-        if (!this.enableAnimating)
-            return;
-        this.clientX = event.clientX;
-        this.clientY = event.clientY;
-        if (!this.isAnimating)
-            return;
-        this.updateMousePos();
-    }
-    handleScroll() {
-        if (!this.enableAnimating)
+    /** @public Update mouse coordinates relative to the canvas bounding rectangle */
+    #updateMousePos() {
+        if (CanvasParticles.client.state == CanvasParticles.clientState.IDLE ||
+            CanvasParticles.client.state == CanvasParticles.clientState.SYNCED)
             return;
         this.updateCanvasRect();
-        if (!this.isAnimating)
-            return;
-        this.updateMousePos();
-    }
-    /** @public Update mouse coordinates */
-    updateMousePos() {
         const { top, left } = this.canvas.rect;
-        this.mouseX = this.clientX - left;
-        this.mouseY = this.clientY - top;
+        this.mouseX = CanvasParticles.client.x - left;
+        this.mouseY = CanvasParticles.client.y - top;
+        CanvasParticles.client.state = CanvasParticles.clientState.SYNCED;
+        requestAnimationFrame(() => {
+            if (CanvasParticles.clientState.SYNCED)
+                CanvasParticles.client.state = CanvasParticles.clientState.IDLE;
+        });
     }
     /** @public Resize the canvas and update particles accordingly */
     resizeCanvas() {
@@ -393,6 +407,7 @@ class CanvasParticles {
         requestAnimationFrame(() => this.#animation());
         if (++this.updateCount >= this.option.framesPerUpdate) {
             this.updateCount = 0;
+            this.#updateMousePos();
             this.#updateGravity();
             this.#updateParticles();
             this.#render();
@@ -417,7 +432,7 @@ class CanvasParticles {
             this.enableAnimating = false;
         this.isAnimating = false;
         if (clear !== false)
-            this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
+            this.canvas.width = this.canvas.width;
         return true;
     }
     /** @public Gracefully destroy the instance and remove the canvas element */
@@ -425,8 +440,6 @@ class CanvasParticles {
         this.stop();
         CanvasParticles.canvasIntersectionObserver.unobserve(this.canvas);
         CanvasParticles.canvasResizeObserver.unobserve(this.canvas);
-        window.removeEventListener('mousemove', this.handleMouseMove);
-        window.removeEventListener('scroll', this.handleScroll);
         this.canvas?.remove();
         Object.keys(this).forEach((key) => delete this[key]); // Remove references to help GC
     }
@@ -493,22 +506,18 @@ class CanvasParticles {
         this.ctx.fillStyle = color;
         // Check if `ctx.fillStyle` is in hex format ("#RRGGBB")
         if (String(this.ctx.fillStyle)[0] === '#') {
-            this.color = {
-                hex: String(this.ctx.fillStyle),
-                alpha: 1.0,
-            };
+            this.color.hex = String(this.ctx.fillStyle);
+            this.color.alpha = 1.0;
         }
         else {
             // JavaScript's `ctx.fillStyle` causes the color to otherwise end up in in rgba format ("rgba(136, 244, 255, 0.25)")
             // Extract the alpha value from the rgba string
             let alpha = String(this.ctx.fillStyle).split(',').at(-1); // ' 0.25)'
             alpha = alpha?.slice(1, -1) ?? '1'; // '0.25'
+            this.color.alpha = isNaN(+alpha) ? 1 : +alpha; // 0.25 or 1
             // Extracts e.g. 136, 244 and 255 from rgba(136, 244, 255, 0.25) and converts it to '#rrggbb'
             this.ctx.fillStyle = String(this.ctx.fillStyle).split(',').slice(0, -1).join(',') + ', 1)';
-            this.color = {
-                hex: String(this.ctx.fillStyle),
-                alpha: isNaN(+alpha) ? 1 : +alpha,
-            }; // 0.25 or 1
+            this.color.hex = this.ctx.fillStyle;
         }
     }
 }

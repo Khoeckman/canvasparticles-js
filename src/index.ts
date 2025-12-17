@@ -17,7 +17,7 @@ export default class CanvasParticles {
   })
 
   /** Observes canvas elements entering or leaving the viewport to start/stop animation */
-  static canvasIntersectionObserver = new IntersectionObserver((entries) => {
+  private static canvasIntersectionObserver = new IntersectionObserver((entries) => {
     for (const entry of entries) {
       const canvas = entry.target as CanvasParticlesCanvas
       const instance = canvas.instance // The CanvasParticles class instance bound to this canvas
@@ -30,7 +30,8 @@ export default class CanvasParticles {
     }
   })
 
-  static canvasResizeObserver = new ResizeObserver((entries) => {
+  /** Observes when canvas elements change size */
+  private static canvasResizeObserver = new ResizeObserver((entries) => {
     // Seperate for loops is very important to prevent huge forced reflow overhead
 
     // First read all canvas rects at once
@@ -46,6 +47,31 @@ export default class CanvasParticles {
     }
   })
 
+  /* Event handling */
+  private static clientState = Object.freeze({
+    IDLE: 0, // Synced, won't do anything until DESYNCED
+    SYNCED: 1, // Synced, will go to IDLE next frame
+    DESYNCED: 2, // Not synced, will sync next frame and go to SYNCED
+  })
+
+  private static client: { x: number; y: number; state: 0 | 1 | 2 } = {
+    x: Infinity,
+    y: Infinity,
+    state: CanvasParticles.clientState.IDLE,
+  }
+  private static eventHandlerInitialized = false
+
+  private static mouseMoveHandler = (event: MouseEvent) => {
+    CanvasParticles.client.x = event.clientX
+    CanvasParticles.client.y = event.clientY
+    CanvasParticles.client.state = CanvasParticles.clientState.DESYNCED
+  }
+
+  private static scrollHandler = () => {
+    CanvasParticles.client.state = CanvasParticles.clientState.DESYNCED
+  }
+
+  /* Members */
   canvas: CanvasParticlesCanvas
   private ctx: CanvasRenderingContext2D
 
@@ -54,15 +80,13 @@ export default class CanvasParticles {
 
   particles: Particle[] = []
 
-  private clientX: number = Infinity
-  private clientY: number = Infinity
-  mouseX: number = Infinity
-  mouseY: number = Infinity
+  mouseX: number = CanvasParticles.client.x
+  mouseY: number = CanvasParticles.client.y
   width!: number
   height!: number
   private offX!: number
   private offY!: number
-  private updateCount!: number
+  private updateCount!: number /* Todo: Remove in future version. Replace with smart FPS tracking. */
   particleCount!: number
   option!: CanvasParticlesOptions
   private color!: ContextColor
@@ -95,19 +119,21 @@ export default class CanvasParticles {
 
     this.options = options // Uses setter
 
+    this.updateCanvasRect()
+    this.resizeCanvas()
+
     CanvasParticles.canvasIntersectionObserver.observe(this.canvas)
     CanvasParticles.canvasResizeObserver.observe(this.canvas)
 
     // Setup event handlers
     this.resizeCanvas = this.resizeCanvas.bind(this)
-    this.handleMouseMove = this.handleMouseMove.bind(this)
-    this.handleScroll = this.handleScroll.bind(this)
 
-    this.updateCanvasRect()
-    this.resizeCanvas()
-
-    window.addEventListener('mousemove', this.handleMouseMove, { passive: true })
-    window.addEventListener('scroll', this.handleScroll, { passive: true })
+    // Singleton
+    if (!CanvasParticles.eventHandlerInitialized) {
+      window.addEventListener('mousemove', CanvasParticles.mouseMoveHandler, { passive: true })
+      window.addEventListener('scroll', CanvasParticles.scrollHandler, { passive: true })
+      CanvasParticles.eventHandlerInitialized = true
+    }
   }
 
   /* @public Update the canvas bounding rectangle and mouse position relative to it */
@@ -116,28 +142,25 @@ export default class CanvasParticles {
     this.canvas.rect = { top, left, width, height }
   }
 
-  handleMouseMove(event: MouseEvent) {
-    if (!this.enableAnimating) return
-
-    this.clientX = event.clientX
-    this.clientY = event.clientY
-    if (!this.isAnimating) return
-    this.updateMousePos()
-  }
-
-  handleScroll() {
-    if (!this.enableAnimating) return
+  /** @public Update mouse coordinates relative to the canvas bounding rectangle */
+  #updateMousePos() {
+    if (
+      CanvasParticles.client.state == CanvasParticles.clientState.IDLE ||
+      CanvasParticles.client.state == CanvasParticles.clientState.SYNCED
+    )
+      return
 
     this.updateCanvasRect()
-    if (!this.isAnimating) return
-    this.updateMousePos()
-  }
 
-  /** @public Update mouse coordinates */
-  updateMousePos() {
     const { top, left } = this.canvas.rect
-    this.mouseX = this.clientX - left
-    this.mouseY = this.clientY - top
+    this.mouseX = CanvasParticles.client.x - left
+    this.mouseY = CanvasParticles.client.y - top
+
+    CanvasParticles.client.state = CanvasParticles.clientState.SYNCED
+
+    requestAnimationFrame(() => {
+      if (CanvasParticles.clientState.SYNCED) CanvasParticles.client.state = CanvasParticles.clientState.IDLE
+    })
   }
 
   /** @public Resize the canvas and update particles accordingly */
@@ -453,6 +476,7 @@ export default class CanvasParticles {
 
     if (++this.updateCount >= this.option.framesPerUpdate) {
       this.updateCount = 0
+      this.#updateMousePos()
       this.#updateGravity()
       this.#updateParticles()
       this.#render()
@@ -488,9 +512,6 @@ export default class CanvasParticles {
 
     CanvasParticles.canvasIntersectionObserver.unobserve(this.canvas)
     CanvasParticles.canvasResizeObserver.unobserve(this.canvas)
-
-    window.removeEventListener('mousemove', this.handleMouseMove)
-    window.removeEventListener('scroll', this.handleScroll)
 
     this.canvas?.remove()
 

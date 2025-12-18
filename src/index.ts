@@ -65,7 +65,7 @@ export default class CanvasParticles {
   private updateCount!: number
   particleCount!: number
   option!: CanvasParticlesOptions
-  private color: ContextColor = { hex: '000000', alpha: 0.0 } // Overwritten on initialization
+  private color!: ContextColor
 
   /**
    * Initialize a CanvasParticles instance
@@ -478,8 +478,7 @@ export default class CanvasParticles {
   stop({ auto = false, clear = true }: { auto?: boolean; clear?: boolean } = {}): boolean {
     if (!auto) this.enableAnimating = false
     this.isAnimating = false
-    if (clear !== false) this.canvas.width = this.canvas.width
-
+    if (clear !== false) this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height)
     return true
   }
 
@@ -571,19 +570,24 @@ export default class CanvasParticles {
 
     // Check if `ctx.fillStyle` is in hex format ("#RRGGBB")
     if (String(this.ctx.fillStyle)[0] === '#') {
-      this.color.hex = String(this.ctx.fillStyle)
-      this.color.alpha = 1.0
+      this.color = {
+        hex: String(this.ctx.fillStyle),
+        alpha: 1.0,
+      }
     } else {
       // JavaScript's `ctx.fillStyle` causes the color to otherwise end up in in rgba format ("rgba(136, 244, 255, 0.25)")
 
       // Extract the alpha value from the rgba string
       let alpha = String(this.ctx.fillStyle).split(',').at(-1) // ' 0.25)'
       alpha = alpha?.slice(1, -1) ?? '1' // '0.25'
-      this.color.alpha = isNaN(+alpha) ? 1 : +alpha // 0.25 or 1
 
       // Extracts e.g. 136, 244 and 255 from rgba(136, 244, 255, 0.25) and converts it to '#rrggbb'
       this.ctx.fillStyle = String(this.ctx.fillStyle).split(',').slice(0, -1).join(',') + ', 1)'
-      this.color.hex = this.ctx.fillStyle
+
+      this.color = {
+        hex: String(this.ctx.fillStyle),
+        alpha: isNaN(+alpha) ? 1 : +alpha,
+      } // 0.25 or 1
     }
   }
 }

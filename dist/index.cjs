@@ -3,7 +3,7 @@
 // Copyright (c) 2022–2025 Kyle Hoeckman, MIT License
 // https://github.com/Khoeckman/canvasparticles-js/blob/main/LICENSE
 class CanvasParticles {
-    static version = "4.1.2";
+    static version = "4.1.3";
     /** Defines mouse interaction types with the particles */
     static interactionType = Object.freeze({
         NONE: 0, // No mouse interaction
@@ -52,7 +52,7 @@ class CanvasParticles {
     updateCount;
     particleCount;
     option;
-    color = { hex: '000000', alpha: 0.0 }; // Overwritten on initialization
+    color;
     /**
      * Initialize a CanvasParticles instance
      * @param selector - Canvas element or CSS selector
@@ -87,8 +87,8 @@ class CanvasParticles {
         this.handleScroll = this.handleScroll.bind(this);
         this.updateCanvasRect();
         this.resizeCanvas();
-        window.addEventListener('mousemove', this.handleMouseMove);
-        window.addEventListener('scroll', this.handleScroll);
+        window.addEventListener('mousemove', this.handleMouseMove, { passive: true });
+        window.addEventListener('scroll', this.handleScroll, { passive: true });
     }
     /* @public Update the canvas bounding rectangle and mouse position relative to it */
     updateCanvasRect() {
@@ -419,7 +419,7 @@ class CanvasParticles {
             this.enableAnimating = false;
         this.isAnimating = false;
         if (clear !== false)
-            this.canvas.width = this.canvas.width;
+            this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
         return true;
     }
     /** @public Gracefully destroy the instance and remove the canvas element */
@@ -495,18 +495,22 @@ class CanvasParticles {
         this.ctx.fillStyle = color;
         // Check if `ctx.fillStyle` is in hex format ("#RRGGBB")
         if (String(this.ctx.fillStyle)[0] === '#') {
-            this.color.hex = String(this.ctx.fillStyle);
-            this.color.alpha = 1.0;
+            this.color = {
+                hex: String(this.ctx.fillStyle),
+                alpha: 1.0,
+            };
         }
         else {
             // JavaScript's `ctx.fillStyle` causes the color to otherwise end up in in rgba format ("rgba(136, 244, 255, 0.25)")
             // Extract the alpha value from the rgba string
             let alpha = String(this.ctx.fillStyle).split(',').at(-1); // ' 0.25)'
             alpha = alpha?.slice(1, -1) ?? '1'; // '0.25'
-            this.color.alpha = isNaN(+alpha) ? 1 : +alpha; // 0.25 or 1
             // Extracts e.g. 136, 244 and 255 from rgba(136, 244, 255, 0.25) and converts it to '#rrggbb'
             this.ctx.fillStyle = String(this.ctx.fillStyle).split(',').slice(0, -1).join(',') + ', 1)';
-            this.color.hex = this.ctx.fillStyle;
+            this.color = {
+                hex: String(this.ctx.fillStyle),
+                alpha: isNaN(+alpha) ? 1 : +alpha,
+            }; // 0.25 or 1
         }
     }
 }

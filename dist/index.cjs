@@ -3,7 +3,7 @@
 // Copyright (c) 2022–2025 Kyle Hoeckman, MIT License
 // https://github.com/Khoeckman/canvasparticles-js/blob/main/LICENSE
 class CanvasParticles {
-    static version = "4.1.3";
+    static version = "4.1.4";
     /** Defines mouse interaction types with the particles */
     static interactionType = Object.freeze({
         NONE: 0, // No mouse interaction

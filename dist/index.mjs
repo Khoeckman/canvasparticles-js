@@ -1,13 +1,6 @@
 // Copyright (c) 2022–2025 Kyle Hoeckman, MIT License
 // https://github.com/Khoeckman/canvasparticles-js/blob/main/LICENSE
-// Pre-computed constant for performance
 const TWO_PI = 2 * Math.PI;
-// Helper functions for options parsing (moved outside class to avoid recreation)
-const defaultIfNaN = (value, defaultValue) => (isNaN(+value) ? defaultValue : +value);
-const parseNumericOption = (value, defaultValue, clamp) => {
-    const { min = -Infinity, max = Infinity } = clamp ?? {};
-    return defaultIfNaN(Math.min(Math.max(value ?? defaultValue, min), max), defaultValue);
-};
 class CanvasParticles {
     static version = "4.1.3";
     /** Defines mouse interaction types with the particles */
@@ -42,6 +35,12 @@ class CanvasParticles {
             canvas.instance.resizeCanvas();
         }
     });
+    /** Helper functions for options parsing */
+    static defaultIfNaN = (value, defaultValue) => (isNaN(+value) ? defaultValue : +value);
+    static parseNumericOption = (value, defaultValue, clamp) => {
+        const { min = -Infinity, max = Infinity } = clamp ?? {};
+        return CanvasParticles.defaultIfNaN(Math.min(Math.max(value ?? defaultValue, min), max), defaultValue);
+    };
     canvas;
     ctx;
     enableAnimating = false;
@@ -283,8 +282,8 @@ class CanvasParticles {
             const sinDir = Math.sin(particle.dir);
             const cosDir = Math.cos(particle.dir);
             // Update position with velocity and direction (removed redundant inner modulo)
-            particle.posX = ((particle.posX + particle.velX + sinDir * particle.speed) % width + width) % width;
-            particle.posY = ((particle.posY + particle.velY + cosDir * particle.speed) % height + height) % height;
+            particle.posX = (((particle.posX + particle.velX + sinDir * particle.speed) % width) + width) % width;
+            particle.posY = (((particle.posY + particle.velY + cosDir * particle.speed) % height) + height) % height;
             const distX = particle.posX + offX - mouseX;
             const distY = particle.posY + offY - mouseY;
             // Mouse interaction
@@ -376,12 +375,10 @@ class CanvasParticles {
             const p = particles[i];
             const key = ((p.x / cellSize) | 0) + ((p.y / cellSize) | 0) * 10000;
             const cell = grid.get(key);
-            if (cell) {
+            if (cell)
                 cell.push(i);
-            }
-            else {
+            else
                 grid.set(key, [i]);
-            }
         }
     }
     /** @private Draw lines between particles if they are close enough */
@@ -404,8 +401,11 @@ class CanvasParticles {
         const cellSize = this.gridCellSize;
         // Track which pairs we've already processed to avoid duplicates
         const processed = new Set();
-        // Alpha buckets for batched rendering (10 buckets)
-        const buckets = [[], [], [], [], [], [], [], [], [], []];
+        // Alpha buckets for batched rendering (`bucketCount` buckets)
+        const bucketCount = 32;
+        const buckets = Array(bucketCount)
+            .fill(0)
+            .map(() => []);
         for (let i = 0; i < len; i++) {
             const particleA = particles[i];
             let particleWork = 0;
@@ -415,7 +415,7 @@ class CanvasParticles {
             // Check neighboring cells (3x3 grid around current cell)
             for (let dx = -1; dx <= 1; dx++) {
                 for (let dy = -1; dy <= 1; dy++) {
-                    const neighborKey = (cellX + dx) + (cellY + dy) * 10000;
+                    const neighborKey = cellX + dx + (cellY + dy) * 10000;
                     const neighborCell = grid.get(neighborKey);
                     if (!neighborCell)
                         continue;
@@ -448,9 +448,9 @@ class CanvasParticles {
                         else {
                             lineAlpha = alpha;
                         }
-                        // Add to appropriate alpha bucket (0-9)
-                        const bucketIdx = Math.min(9, (lineAlpha / alpha * 10) | 0);
-                        buckets[bucketIdx].push([particleA.x, particleA.y, particleB.x, particleB.y]);
+                        // Add to closest alpha bucket
+                        const b = Math.min(bucketCount - 1, ((lineAlpha / alpha) * bucketCount) | 0);
+                        buckets[b].push([particleA.x, particleA.y, particleB.x, particleB.y]);
                         // Stop drawing lines from this particle if it has exceeded what's allowed
                         if ((particleWork += dist) >= maxWorkPerParticle)
                             break;
@@ -463,14 +463,13 @@ class CanvasParticles {
             }
         }
         // Render all buckets with batched state changes
-        for (let b = 0; b < 10; b++) {
+        for (let b = 0; b < bucketCount; b++) {
             const bucket = buckets[b];
-            if (bucket.length === 0)
+            if (!bucket.length)
                 continue;
-            ctx.globalAlpha = ((b + 0.5) / 10) * alpha;
+            ctx.globalAlpha = ((b + 0.5) / bucketCount) * alpha;
             ctx.beginPath();
-            for (let l = 0; l < bucket.length; l++) {
-                const line = bucket[l];
+            for (let line of bucket) {
                 ctx.moveTo(line[0], line[1]);
                 ctx.lineTo(line[2], line[3]);
             }
@@ -533,35 +532,36 @@ class CanvasParticles {
     }
     /** Set and validate options (https://github.com/Khoeckman/canvasParticles?tab=readme-ov-file#options) */
     set options(options) {
+        const pno = CanvasParticles.parseNumericOption;
         // Format and parse all options
         this.option = {
             background: options.background ?? false,
-            framesPerUpdate: parseNumericOption(options.framesPerUpdate, 1, { min: 1 }),
+            framesPerUpdate: pno(options.framesPerUpdate, 1, { min: 1 }),
             animation: {
                 startOnEnter: !!(options.animation?.startOnEnter ?? true),
                 stopOnLeave: !!(options.animation?.stopOnLeave ?? true),
             },
             mouse: {
-                interactionType: parseNumericOption(options.mouse?.interactionType, 1),
-                connectDistMult: parseNumericOption(options.mouse?.connectDistMult, 2 / 3),
+                interactionType: pno(options.mouse?.interactionType, 1),
+                connectDistMult: pno(options.mouse?.connectDistMult, 2 / 3),
                 connectDist: 1 /* post processed */,
-                distRatio: parseNumericOption(options.mouse?.distRatio, 2 / 3),
+                distRatio: pno(options.mouse?.distRatio, 2 / 3),
             },
             particles: {
                 regenerateOnResize: !!options.particles?.regenerateOnResize,
                 color: options.particles?.color ?? 'black',
-                ppm: parseNumericOption(options.particles?.ppm, 100),
-                max: parseNumericOption(options.particles?.max, 500),
-                maxWork: parseNumericOption(options.particles?.maxWork, Infinity, { min: 0 }),
-                connectDist: parseNumericOption(options.particles?.connectDistance, 150, { min: 1 }),
-                relSpeed: parseNumericOption(options.particles?.relSpeed, 1, { min: 0 }),
-                relSize: parseNumericOption(options.particles?.relSize, 1, { min: 1 }),
-                rotationSpeed: parseNumericOption(options.particles?.rotationSpeed, 2, { min: 0 }) / 100,
+                ppm: pno(options.particles?.ppm, 100),
+                max: pno(options.particles?.max, Infinity),
+                maxWork: pno(options.particles?.maxWork, Infinity, { min: 0 }),
+                connectDist: pno(options.particles?.connectDistance, 150, { min: 1 }),
+                relSpeed: pno(options.particles?.relSpeed, 1, { min: 0 }),
+                relSize: pno(options.particles?.relSize, 1, { min: 1 }),
+                rotationSpeed: pno(options.particles?.rotationSpeed, 2, { min: 0 }) / 100,
             },
             gravity: {
-                repulsive: parseNumericOption(options.gravity?.repulsive, 0),
-                pulling: parseNumericOption(options.gravity?.pulling, 0),
-                friction: parseNumericOption(options.gravity?.friction, 0.8, { min: 0, max: 1 }),
+                repulsive: pno(options.gravity?.repulsive, 0),
+                pulling: pno(options.gravity?.pulling, 0),
+                friction: pno(options.gravity?.friction, 0.8, { min: 0, max: 1 }),
             },
         };
         this.setBackground(this.option.background);

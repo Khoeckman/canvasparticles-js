@@ -6,20 +6,7 @@ import type { CanvasParticlesOptions, CanvasParticlesOptionsInput } from './type
 
 declare const __VERSION__: string
 
-// Pre-computed constant for performance
 const TWO_PI = 2 * Math.PI
-
-// Helper functions for options parsing (moved outside class to avoid recreation)
-const defaultIfNaN = (value: number, defaultValue: number): number => (isNaN(+value) ? defaultValue : +value)
-
-const parseNumericOption = (
-  value: number | undefined,
-  defaultValue: number,
-  clamp?: { min?: number; max?: number }
-): number => {
-  const { min = -Infinity, max = Infinity } = clamp ?? {}
-  return defaultIfNaN(Math.min(Math.max(value ?? defaultValue, min), max), defaultValue)
-}
 
 export default class CanvasParticles {
   static version = __VERSION__
@@ -250,17 +237,16 @@ export default class CanvasParticles {
     if (!isRepulsiveEnabled && !isPullingEnabled) return
 
     const particles = this.particles
-    const len = this.particleCount
     const gravRepulsiveMult = this.option.particles.connectDist * this.option.gravity.repulsive
     const gravPullingMult = this.option.particles.connectDist * this.option.gravity.pulling
     const maxRepulsiveDist = this.option.particles.connectDist / 2
     const maxRepulsiveDistSq = maxRepulsiveDist * maxRepulsiveDist
     const maxGrav = this.option.particles.connectDist * 0.1
 
-    for (let i = 0; i < len; i++) {
+    for (let i = 0; i < this.particleCount; i++) {
       const particleA = particles[i]
 
-      for (let j = i + 1; j < len; j++) {
+      for (let j = i + 1; j < this.particleCount; j++) {
         // Note: Code in this scope runs { particleCount ** 2 / 2 } times per update!
         const particleB = particles[j]
 
@@ -305,7 +291,6 @@ export default class CanvasParticles {
   /** @private Update positions, directions, and visibility of all particles once every `options.framesPerUpdate` frames */
   #updateParticles() {
     const particles = this.particles
-    const len = this.particleCount
     const width = this.width
     const height = this.height
     const offX = this.offX
@@ -313,39 +298,33 @@ export default class CanvasParticles {
     const mouseX = this.mouseX
     const mouseY = this.mouseY
     const rotationSpeed = this.option.particles.rotationSpeed
-    const friction = this.option.gravity.friction
-    const mouseInteractionType = this.option.mouse.interactionType
-    const mouseConnectDist = this.option.mouse.connectDist
-    const mouseDistRatio = this.option.mouse.distRatio
-    const interactionNone = CanvasParticles.interactionType.NONE
-    const interactionMove = CanvasParticles.interactionType.MOVE
+    const isInteractionTypeNone = this.option.mouse.interactionType !== CanvasParticles.interactionType.NONE
+    const isInteractionTypeMove = this.option.mouse.interactionType === CanvasParticles.interactionType.MOVE
 
-    for (let i = 0; i < len; i++) {
+    for (let i = 0; i < this.particleCount; i++) {
       const particle = particles[i]
 
       // Randomly perturb direction
       particle.dir = (particle.dir + Math.random() * rotationSpeed * 2 - rotationSpeed) % TWO_PI
 
       // Apply friction to velocity
-      particle.velX *= friction
-      particle.velY *= friction
-
-      // Cache sin/cos values (computed once instead of separately)
-      const sinDir = Math.sin(particle.dir)
-      const cosDir = Math.cos(particle.dir)
+      particle.velX *= this.option.gravity.friction
+      particle.velY *= this.option.gravity.friction
 
       // Update position with velocity and direction (removed redundant inner modulo)
-      particle.posX = ((particle.posX + particle.velX + sinDir * particle.speed) % width + width) % width
-      particle.posY = ((particle.posY + particle.velY + cosDir * particle.speed) % height + height) % height
+      particle.posX =
+        (((particle.posX + particle.velX + Math.sin(particle.dir) * particle.speed) % width) + width) % width
+      particle.posY =
+        (((particle.posY + particle.velY + Math.cos(particle.dir) * particle.speed) % height) + height) % height
 
       const distX = particle.posX + offX - mouseX
       const distY = particle.posY + offY - mouseY
 
       // Mouse interaction
-      if (mouseInteractionType !== interactionNone) {
-        const distRatio = mouseConnectDist / Math.hypot(distX, distY)
+      if (isInteractionTypeNone) {
+        const distRatio = this.option.mouse.connectDist / Math.hypot(distX, distY)
 
-        if (mouseDistRatio < distRatio) {
+        if (this.option.mouse.distRatio < distRatio) {
           particle.offX += (distRatio * distX - distX - particle.offX) / 4
           particle.offY += (distRatio * distY - distY - particle.offY) / 4
         } else {
@@ -359,7 +338,7 @@ export default class CanvasParticles {
       particle.y = particle.posY + particle.offY
 
       // Move the particles
-      if (mouseInteractionType === interactionMove) {
+      if (isInteractionTypeMove) {
         particle.posX = particle.x
         particle.posY = particle.y
       }
@@ -414,7 +393,7 @@ export default class CanvasParticles {
       const particle = particles[i]
       if (!particle.isVisible) continue
 
-      // Draw very small particles (<1px) as squares for performance, otherwise draw a circle
+      // Draw particles smaller than 1 pixel as squares for performance, otherwise draw a circle
       if (particle.size > 1) {
         // Draw circle
         ctx.beginPath()
@@ -429,30 +408,26 @@ export default class CanvasParticles {
   }
 
   /** @private Build spatial hash grid for efficient neighbor lookup */
-  #buildSpatialGrid(): void {
+  #buildSpatialGrid(cellSize: number): void {
     const grid = this.spatialGrid
     const particles = this.particles
-    const len = this.particleCount
-    const cellSize = this.gridCellSize
 
     grid.clear()
 
-    for (let i = 0; i < len; i++) {
+    for (let i = 0; i < this.particleCount; i++) {
       const p = particles[i]
       const key = ((p.x / cellSize) | 0) + ((p.y / cellSize) | 0) * 10000
+
       const cell = grid.get(key)
-      if (cell) {
-        cell.push(i)
-      } else {
-        grid.set(key, [i])
-      }
+      if (cell) cell.push(i)
+      else grid.set(key, [i])
     }
   }
 
   /** @private Draw lines between particles if they are close enough */
   #renderConnections() {
     const particles = this.particles
-    const len = this.particleCount
+    const particleCount = this.particleCount
     const ctx = this.ctx
     const maxDist = this.option.particles.connectDist
     const maxDistSq = maxDist * maxDist
@@ -462,33 +437,30 @@ export default class CanvasParticles {
     const alphaFactor = this.color.alpha * maxDist
     const drawAll = maxDist >= Math.min(this.canvas.width, this.canvas.height)
 
-    // Update grid cell size to match connect distance for optimal spatial hashing
-    this.gridCellSize = maxDist
-
-    // Build spatial hash grid - O(n)
-    this.#buildSpatialGrid()
-
+    const cellSize = maxDist
+    this.#buildSpatialGrid(cellSize) // Build spatial hash grid - O(n)
     const grid = this.spatialGrid
-    const cellSize = this.gridCellSize
 
     // Track which pairs we've already processed to avoid duplicates
     const processed = new Set<number>()
 
-    // Alpha buckets for batched rendering (10 buckets)
-    const buckets: [number, number, number, number][][] = [[], [], [], [], [], [], [], [], [], []]
+    // Alpha buckets for batched rendering (`bucketCount` buckets)
+    const bucketCount = 32
+    const buckets: [number, number, number, number][][] = Array(bucketCount)
+      .fill(0)
+      .map(() => [])
 
-    for (let i = 0; i < len; i++) {
+    for (let i = 0; i < particleCount; i++) {
       const particleA = particles[i]
       let particleWork = 0
 
-      // Get the cell coordinates for this particle
       const cellX = (particleA.x / cellSize) | 0
       const cellY = (particleA.y / cellSize) | 0
 
       // Check neighboring cells (3x3 grid around current cell)
       for (let dx = -1; dx <= 1; dx++) {
         for (let dy = -1; dy <= 1; dy++) {
-          const neighborKey = (cellX + dx) + (cellY + dy) * 10000
+          const neighborKey = cellX + dx + (cellY + dy) * 10000
           const neighborCell = grid.get(neighborKey)
           if (!neighborCell) continue
 
@@ -499,7 +471,7 @@ export default class CanvasParticles {
             if (j <= i) continue
 
             // Create unique pair ID to avoid duplicates
-            const pairId = i * len + j
+            const pairId = i * particleCount + j
             if (processed.has(pairId)) continue
             processed.add(pairId)
 
@@ -525,9 +497,9 @@ export default class CanvasParticles {
               lineAlpha = alpha
             }
 
-            // Add to appropriate alpha bucket (0-9)
-            const bucketIdx = Math.min(9, (lineAlpha / alpha * 10) | 0)
-            buckets[bucketIdx].push([particleA.x, particleA.y, particleB.x, particleB.y])
+            // Add to closest alpha bucket
+            const b = Math.min(bucketCount - 1, ((lineAlpha / alpha) * bucketCount) | 0)
+            buckets[b].push([particleA.x, particleA.y, particleB.x, particleB.y])
 
             // Stop drawing lines from this particle if it has exceeded what's allowed
             if ((particleWork += dist) >= maxWorkPerParticle) break
@@ -540,15 +512,14 @@ export default class CanvasParticles {
     }
 
     // Render all buckets with batched state changes
-    for (let b = 0; b < 10; b++) {
+    for (let b = 0; b < bucketCount; b++) {
       const bucket = buckets[b]
-      if (bucket.length === 0) continue
+      if (!bucket.length) continue
 
-      ctx.globalAlpha = ((b + 0.5) / 10) * alpha
+      ctx.globalAlpha = ((b + 0.5) / bucketCount) * alpha
       ctx.beginPath()
 
-      for (let l = 0; l < bucket.length; l++) {
-        const line = bucket[l]
+      for (let line of bucket) {
         ctx.moveTo(line[0], line[1])
         ctx.lineTo(line[2], line[3])
       }

@@ -29,6 +29,8 @@ export default class CanvasParticles {
     particleCount: number;
     option: CanvasParticlesOptions;
     private color;
+    private spatialGrid;
+    private gridCellSize;
     /**
      * Initialize a CanvasParticles instance
      * @param selector - Canvas element or CSS selector

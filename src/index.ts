@@ -6,6 +6,21 @@ import type { CanvasParticlesOptions, CanvasParticlesOptionsInput } from './type
 
 declare const __VERSION__: string
 
+// Pre-computed constant for performance
+const TWO_PI = 2 * Math.PI
+
+// Helper functions for options parsing (moved outside class to avoid recreation)
+const defaultIfNaN = (value: number, defaultValue: number): number => (isNaN(+value) ? defaultValue : +value)
+
+const parseNumericOption = (
+  value: number | undefined,
+  defaultValue: number,
+  clamp?: { min?: number; max?: number }
+): number => {
+  const { min = -Infinity, max = Infinity } = clamp ?? {}
+  return defaultIfNaN(Math.min(Math.max(value ?? defaultValue, min), max), defaultValue)
+}
+
 export default class CanvasParticles {
   static version = __VERSION__
 
@@ -66,6 +81,10 @@ export default class CanvasParticles {
   particleCount!: number
   option!: CanvasParticlesOptions
   private color!: ContextColor
+
+  // Spatial hashing for O(n) connection rendering instead of O(n²)
+  private spatialGrid: Map<number, number[]> = new Map()
+  private gridCellSize: number = 150
 
   /**
    * Initialize a CanvasParticles instance
@@ -202,7 +221,7 @@ export default class CanvasParticles {
       velY: 0, // Vertical speed in pixels per update
       offX: 0, // Horizontal distance from drawn to logical position in pixels
       offY: 0, // Vertical distance from drawn to logical position in pixels
-      dir: dir || Math.random() * 2 * Math.PI, // Direction in radians
+      dir: dir || Math.random() * TWO_PI, // Direction in radians
       speed: speed || (0.5 + Math.random() * 0.5) * this.option.particles.relSpeed, // Velocity in pixels per update
       size: size || (0.5 + Math.random() ** 5 * 2) * this.option.particles.relSize, // Ray in pixels of the particle
       gridPos: { x: 1, y: 1 },
@@ -230,33 +249,36 @@ export default class CanvasParticles {
 
     if (!isRepulsiveEnabled && !isPullingEnabled) return
 
+    const particles = this.particles
     const len = this.particleCount
     const gravRepulsiveMult = this.option.particles.connectDist * this.option.gravity.repulsive
     const gravPullingMult = this.option.particles.connectDist * this.option.gravity.pulling
     const maxRepulsiveDist = this.option.particles.connectDist / 2
+    const maxRepulsiveDistSq = maxRepulsiveDist * maxRepulsiveDist
     const maxGrav = this.option.particles.connectDist * 0.1
 
     for (let i = 0; i < len; i++) {
+      const particleA = particles[i]
+
       for (let j = i + 1; j < len; j++) {
         // Note: Code in this scope runs { particleCount ** 2 / 2 } times per update!
-        const particleA = this.particles[i]
-        const particleB = this.particles[j]
+        const particleB = particles[j]
 
         const distX = particleA.posX - particleB.posX
         const distY = particleA.posY - particleB.posY
+        const distSq = distX * distX + distY * distY
 
-        const dist = Math.sqrt(distX * distX + distY * distY)
-
-        let angle
-        let grav = 1
-
-        if (dist < maxRepulsiveDist) {
-          // Apply repulsive forces on all particles closer than { dist / 2 }
-          angle = Math.atan2(particleB.posY - particleA.posY, particleB.posX - particleA.posX)
-          grav = (1 / dist) ** 1.8
+        // Use squared distance for comparison to avoid sqrt when not needed
+        if (isRepulsiveEnabled && distSq < maxRepulsiveDistSq) {
+          // Apply repulsive forces on all particles closer than { connectDist / 2 }
+          const dist = Math.sqrt(distSq)
+          const invDist = 1 / dist
+          const grav = invDist ** 1.8
           const gravMult = Math.min(maxGrav, grav * gravRepulsiveMult)
-          const gravX = Math.cos(angle) * gravMult
-          const gravY = Math.sin(angle) * gravMult
+          // Use direct vector math instead of atan2 + cos/sin
+          // Unit vector from A to B is (-distX/dist, -distY/dist)
+          const gravX = -distX * invDist * gravMult
+          const gravY = -distY * invDist * gravMult
           particleA.velX -= gravX
           particleA.velY -= gravY
           particleB.velX += gravX
@@ -266,13 +288,12 @@ export default class CanvasParticles {
         if (!isPullingEnabled) continue
 
         // Apply pulling forces on all particles
-        if (angle === undefined) {
-          angle = Math.atan2(particleB.posY - particleA.posY, particleB.posX - particleA.posX)
-          grav = (1 / dist) ** 1.8
-        }
+        const dist = Math.sqrt(distSq)
+        const invDist = 1 / dist
+        const grav = invDist ** 1.8
         const gravMult = Math.min(maxGrav, grav * gravPullingMult)
-        const gravX = Math.cos(angle) * gravMult
-        const gravY = Math.sin(angle) * gravMult
+        const gravX = -distX * invDist * gravMult
+        const gravY = -distY * invDist * gravMult
         particleA.velX += gravX
         particleA.velY += gravY
         particleB.velX -= gravX
@@ -283,28 +304,48 @@ export default class CanvasParticles {
 
   /** @private Update positions, directions, and visibility of all particles once every `options.framesPerUpdate` frames */
   #updateParticles() {
-    for (let particle of this.particles) {
-      // Randomly perturb direction
-      particle.dir =
-        (particle.dir + Math.random() * this.option.particles.rotationSpeed * 2 - this.option.particles.rotationSpeed) %
-        (2 * Math.PI)
-      particle.velX *= this.option.gravity.friction
-      particle.velY *= this.option.gravity.friction
-      particle.posX =
-        (particle.posX + particle.velX + ((Math.sin(particle.dir) * particle.speed) % this.width) + this.width) %
-        this.width
-      particle.posY =
-        (particle.posY + particle.velY + ((Math.cos(particle.dir) * particle.speed) % this.height) + this.height) %
-        this.height
+    const particles = this.particles
+    const len = this.particleCount
+    const width = this.width
+    const height = this.height
+    const offX = this.offX
+    const offY = this.offY
+    const mouseX = this.mouseX
+    const mouseY = this.mouseY
+    const rotationSpeed = this.option.particles.rotationSpeed
+    const friction = this.option.gravity.friction
+    const mouseInteractionType = this.option.mouse.interactionType
+    const mouseConnectDist = this.option.mouse.connectDist
+    const mouseDistRatio = this.option.mouse.distRatio
+    const interactionNone = CanvasParticles.interactionType.NONE
+    const interactionMove = CanvasParticles.interactionType.MOVE
 
-      const distX = particle.posX + this.offX - this.mouseX
-      const distY = particle.posY + this.offY - this.mouseY
+    for (let i = 0; i < len; i++) {
+      const particle = particles[i]
+
+      // Randomly perturb direction
+      particle.dir = (particle.dir + Math.random() * rotationSpeed * 2 - rotationSpeed) % TWO_PI
+
+      // Apply friction to velocity
+      particle.velX *= friction
+      particle.velY *= friction
+
+      // Cache sin/cos values (computed once instead of separately)
+      const sinDir = Math.sin(particle.dir)
+      const cosDir = Math.cos(particle.dir)
+
+      // Update position with velocity and direction (removed redundant inner modulo)
+      particle.posX = ((particle.posX + particle.velX + sinDir * particle.speed) % width + width) % width
+      particle.posY = ((particle.posY + particle.velY + cosDir * particle.speed) % height + height) % height
+
+      const distX = particle.posX + offX - mouseX
+      const distY = particle.posY + offY - mouseY
 
       // Mouse interaction
-      if (this.option.mouse.interactionType !== CanvasParticles.interactionType.NONE) {
-        const distRatio = this.option.mouse.connectDist / Math.hypot(distX, distY)
+      if (mouseInteractionType !== interactionNone) {
+        const distRatio = mouseConnectDist / Math.hypot(distX, distY)
 
-        if (this.option.mouse.distRatio < distRatio) {
+        if (mouseDistRatio < distRatio) {
           particle.offX += (distRatio * distX - distX - particle.offX) / 4
           particle.offY += (distRatio * distY - distY - particle.offY) / 4
         } else {
@@ -318,14 +359,14 @@ export default class CanvasParticles {
       particle.y = particle.posY + particle.offY
 
       // Move the particles
-      if (this.option.mouse.interactionType === CanvasParticles.interactionType.MOVE) {
+      if (mouseInteractionType === interactionMove) {
         particle.posX = particle.x
         particle.posY = particle.y
       }
-      particle.x += this.offX
-      particle.y += this.offY
+      particle.x += offX
+      particle.y += offY
 
-      particle.gridPos = this.#gridPos(particle)
+      this.#updateGridPos(particle)
       particle.isVisible = particle.gridPos.x === 1 && particle.gridPos.y === 1
     }
   }
@@ -346,11 +387,9 @@ export default class CanvasParticles {
    * - { x: 1, y: 2 } = bottom
    * - { x: 2, y: 2 } = bottom-right
    */
-  #gridPos(particle: Particle): ParticleGridPos {
-    return {
-      x: (+(particle.x >= particle.bounds.left) + +(particle.x > particle.bounds.right)) as 0 | 1 | 2,
-      y: (+(particle.y >= particle.bounds.top) + +(particle.y > particle.bounds.bottom)) as 0 | 1 | 2,
-    }
+  #updateGridPos(particle: Particle): void {
+    particle.gridPos.x = (+(particle.x >= particle.bounds.left) + +(particle.x > particle.bounds.right)) as 0 | 1 | 2
+    particle.gridPos.y = (+(particle.y >= particle.bounds.top) + +(particle.y > particle.bounds.bottom)) as 0 | 1 | 2
   }
 
   /** @private Determines whether a line between 2 particles crosses through the visible center of the canvas */
@@ -367,68 +406,154 @@ export default class CanvasParticles {
 
   /** @private Draw the particles on the canvas */
   #renderParticles() {
-    for (let particle of this.particles) {
+    const particles = this.particles
+    const len = this.particleCount
+    const ctx = this.ctx
+
+    for (let i = 0; i < len; i++) {
+      const particle = particles[i]
       if (!particle.isVisible) continue
 
       // Draw very small particles (<1px) as squares for performance, otherwise draw a circle
       if (particle.size > 1) {
         // Draw circle
-        this.ctx.beginPath()
-        this.ctx.arc(particle.x, particle.y, particle.size, 0, 2 * Math.PI)
-        this.ctx.fill()
-        this.ctx.closePath()
+        ctx.beginPath()
+        ctx.arc(particle.x, particle.y, particle.size, 0, TWO_PI)
+        ctx.fill()
+        ctx.closePath()
       } else {
         // Draw square (±183% faster)
-        this.ctx.fillRect(particle.x - particle.size, particle.y - particle.size, particle.size * 2, particle.size * 2)
+        ctx.fillRect(particle.x - particle.size, particle.y - particle.size, particle.size * 2, particle.size * 2)
+      }
+    }
+  }
+
+  /** @private Build spatial hash grid for efficient neighbor lookup */
+  #buildSpatialGrid(): void {
+    const grid = this.spatialGrid
+    const particles = this.particles
+    const len = this.particleCount
+    const cellSize = this.gridCellSize
+
+    grid.clear()
+
+    for (let i = 0; i < len; i++) {
+      const p = particles[i]
+      const key = ((p.x / cellSize) | 0) + ((p.y / cellSize) | 0) * 10000
+      const cell = grid.get(key)
+      if (cell) {
+        cell.push(i)
+      } else {
+        grid.set(key, [i])
       }
     }
   }
 
   /** @private Draw lines between particles if they are close enough */
   #renderConnections() {
-    // Cache as much values as possible
+    const particles = this.particles
     const len = this.particleCount
+    const ctx = this.ctx
     const maxDist = this.option.particles.connectDist
-    const drawAll = maxDist >= Math.min(this.canvas.width, this.canvas.height)
+    const maxDistSq = maxDist * maxDist
+    const halfMaxDist = maxDist / 2
     const maxWorkPerParticle = maxDist * this.option.particles.maxWork
     const alpha = this.color.alpha
     const alphaFactor = this.color.alpha * maxDist
+    const drawAll = maxDist >= Math.min(this.canvas.width, this.canvas.height)
+
+    // Update grid cell size to match connect distance for optimal spatial hashing
+    this.gridCellSize = maxDist
+
+    // Build spatial hash grid - O(n)
+    this.#buildSpatialGrid()
+
+    const grid = this.spatialGrid
+    const cellSize = this.gridCellSize
+
+    // Track which pairs we've already processed to avoid duplicates
+    const processed = new Set<number>()
+
+    // Alpha buckets for batched rendering (10 buckets)
+    const buckets: [number, number, number, number][][] = [[], [], [], [], [], [], [], [], [], []]
 
     for (let i = 0; i < len; i++) {
+      const particleA = particles[i]
       let particleWork = 0
 
-      for (let j = i + 1; j < len; j++) {
-        // Note: Code in this scope runs { particleCount ** 2 / 2 } times per frame!
-        const particleA = this.particles[i]
-        const particleB = this.particles[j]
+      // Get the cell coordinates for this particle
+      const cellX = (particleA.x / cellSize) | 0
+      const cellY = (particleA.y / cellSize) | 0
 
-        // Don't draw the line if it wouldn't be visible
-        if (!(drawAll || this.#isLineVisible(particleA, particleB))) continue
+      // Check neighboring cells (3x3 grid around current cell)
+      for (let dx = -1; dx <= 1; dx++) {
+        for (let dy = -1; dy <= 1; dy++) {
+          const neighborKey = (cellX + dx) + (cellY + dy) * 10000
+          const neighborCell = grid.get(neighborKey)
+          if (!neighborCell) continue
 
-        const distX = particleA.x - particleB.x
-        const distY = particleA.y - particleB.y
+          for (let k = 0; k < neighborCell.length; k++) {
+            const j = neighborCell[k]
 
-        const dist = Math.sqrt(distX * distX + distY * distY)
+            // Skip self and already-processed pairs
+            if (j <= i) continue
 
-        // Don't draw the line if the particles are too far away
-        if (dist > maxDist) continue
+            // Create unique pair ID to avoid duplicates
+            const pairId = i * len + j
+            if (processed.has(pairId)) continue
+            processed.add(pairId)
 
-        // Calculate the transparency of the line and lookup the stroke style
-        if (dist > maxDist / 2) {
-          this.ctx.globalAlpha = alphaFactor / dist - alpha
-        } else {
-          this.ctx.globalAlpha = alpha
+            const particleB = particles[j]
+
+            // Don't draw the line if it wouldn't be visible
+            if (!(drawAll || this.#isLineVisible(particleA, particleB))) continue
+
+            const distX = particleA.x - particleB.x
+            const distY = particleA.y - particleB.y
+            const distSq = distX * distX + distY * distY
+
+            // Don't draw the line if the particles are too far away (squared distance comparison)
+            if (distSq > maxDistSq) continue
+
+            const dist = Math.sqrt(distSq)
+
+            // Calculate alpha and bucket index
+            let lineAlpha: number
+            if (dist > halfMaxDist) {
+              lineAlpha = alphaFactor / dist - alpha
+            } else {
+              lineAlpha = alpha
+            }
+
+            // Add to appropriate alpha bucket (0-9)
+            const bucketIdx = Math.min(9, (lineAlpha / alpha * 10) | 0)
+            buckets[bucketIdx].push([particleA.x, particleA.y, particleB.x, particleB.y])
+
+            // Stop drawing lines from this particle if it has exceeded what's allowed
+            if ((particleWork += dist) >= maxWorkPerParticle) break
+          }
+
+          if (particleWork >= maxWorkPerParticle) break
         }
-
-        // Draw the line
-        this.ctx.beginPath()
-        this.ctx.moveTo(particleA.x, particleA.y)
-        this.ctx.lineTo(particleB.x, particleB.y)
-        this.ctx.stroke()
-
-        // Stop drawing lines from this particle if it has exceeded what's allowed by configuration
-        if ((particleWork += dist) >= maxWorkPerParticle) break
+        if (particleWork >= maxWorkPerParticle) break
       }
+    }
+
+    // Render all buckets with batched state changes
+    for (let b = 0; b < 10; b++) {
+      const bucket = buckets[b]
+      if (bucket.length === 0) continue
+
+      ctx.globalAlpha = ((b + 0.5) / 10) * alpha
+      ctx.beginPath()
+
+      for (let l = 0; l < bucket.length; l++) {
+        const line = bucket[l]
+        ctx.moveTo(line[0], line[1])
+        ctx.lineTo(line[2], line[3])
+      }
+
+      ctx.stroke()
     }
   }
 
@@ -499,17 +624,6 @@ export default class CanvasParticles {
 
   /** Set and validate options (https://github.com/Khoeckman/canvasParticles?tab=readme-ov-file#options) */
   set options(options: CanvasParticlesOptionsInput) {
-    const defaultIfNaN = (value: number, defaultValue: number): number => (isNaN(+value) ? defaultValue : +value)
-
-    const parseNumericOption = (
-      value: number | undefined,
-      defaultValue: number,
-      clamp?: { min?: number; max?: number }
-    ): number => {
-      const { min = -Infinity, max = Infinity } = clamp ?? {}
-      return defaultIfNaN(Math.min(Math.max(value ?? defaultValue, min), max), defaultValue)
-    }
-
     // Format and parse all options
     this.option = {
       background: options.background ?? false,

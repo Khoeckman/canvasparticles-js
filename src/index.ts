@@ -62,7 +62,6 @@ export default class CanvasParticles {
   height!: number
   private offX!: number
   private offY!: number
-  private updateCount!: number
   particleCount!: number
   option!: CanvasParticlesOptions
   private color!: ContextColor
@@ -149,7 +148,6 @@ export default class CanvasParticles {
     this.mouseX = Infinity
     this.mouseY = Infinity
 
-    this.updateCount = Infinity
     this.width = Math.max(width + this.option.particles.connectDist * 2, 1)
     this.height = Math.max(height + this.option.particles.connectDist * 2, 1)
     this.offX = (width - this.width) / 2
@@ -223,7 +221,7 @@ export default class CanvasParticles {
     }
   }
 
-  /** @private Apply gravity forces between particles once every `options.framesPerUpdate` frames */
+  /** @private Apply gravity forces between particles */
   #updateGravity() {
     const isRepulsiveEnabled = this.option.gravity.repulsive !== 0
     const isPullingEnabled = this.option.gravity.pulling !== 0
@@ -281,7 +279,7 @@ export default class CanvasParticles {
     }
   }
 
-  /** @private Update positions, directions, and visibility of all particles once every `options.framesPerUpdate` frames */
+  /** @private Update positions, directions, and visibility of all particles */
   #updateParticles() {
     for (let particle of this.particles) {
       // Randomly perturb direction
@@ -451,12 +449,9 @@ export default class CanvasParticles {
 
     requestAnimationFrame(() => this.#animation())
 
-    if (++this.updateCount >= this.option.framesPerUpdate) {
-      this.updateCount = 0
-      this.#updateGravity()
-      this.#updateParticles()
-      this.#render()
-    }
+    this.#updateGravity()
+    this.#updateParticles()
+    this.#render()
   }
 
   /** @public Start the particle animation if it was not running before */
@@ -513,7 +508,6 @@ export default class CanvasParticles {
     // Format and parse all options
     this.option = {
       background: options.background ?? false,
-      framesPerUpdate: parseNumericOption(options.framesPerUpdate, 1, { min: 1 }),
       animation: {
         startOnEnter: !!(options.animation?.startOnEnter ?? true),
         stopOnLeave: !!(options.animation?.stopOnLeave ?? true),

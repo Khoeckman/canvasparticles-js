@@ -25,7 +25,6 @@ export default class CanvasParticles {
     height: number;
     private offX;
     private offY;
-    private updateCount;
     particleCount: number;
     option: CanvasParticlesOptions;
     private color;

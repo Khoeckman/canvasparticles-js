@@ -1,6 +1,5 @@
 export interface CanvasParticlesOptions {
   background: CSSStyleDeclaration['background'] | false
-  framesPerUpdate: number
 
   animation: {
     startOnEnter: boolean

@@ -31,6 +31,9 @@ declare const __VERSION__: string
 export default class CanvasParticles {
   static readonly version = __VERSION__
 
+  private static readonly MAX_DT = 1000 / 30 // milliseconds between updates @ 30 FPS
+  private static readonly BASE_DT = 1000 / 60 // milliseconds between updates @ 60 FPS
+
   /** Defines mouse interaction types with the particles */
   static readonly interactionType = Object.freeze({
     NONE: 0, // No mouse interaction
@@ -99,6 +102,7 @@ export default class CanvasParticles {
 
   enableAnimating: boolean = false
   isAnimating: boolean = false
+  private lastAnimationFrame: number = 0
 
   particles: Particle[] = []
   particleCount: number = 0
@@ -269,7 +273,7 @@ export default class CanvasParticles {
   }
 
   /** @private Apply gravity forces between particles */
-  #updateGravity() {
+  #updateGravity(step: number) {
     const isRepulsiveEnabled = this.option.gravity.repulsive > 0
     const isPullingEnabled = this.option.gravity.pulling > 0
 
@@ -329,7 +333,7 @@ export default class CanvasParticles {
   }
 
   /** @private Update positions, directions, and visibility of all particles */
-  #updateParticles() {
+  #updateParticles(step: number) {
     const len = this.particleCount
     const particles = this.particles
     const width = this.width
@@ -549,9 +553,21 @@ export default class CanvasParticles {
 
     requestAnimationFrame(() => this.#animation())
 
-    this.#updateGravity()
-    this.#updateParticles()
+    const now = performance.now()
+
+    // Elapsed time since last frame, clamped to avoid large simulation jumps
+    const dt = Math.min(now - this.lastAnimationFrame, CanvasParticles.MAX_DT)
+
+    // Normalized simulation step:
+    // - step = 1   → exactly one baseline update (dt === BASE_DT)
+    // - step > 1   → more time passed (lower FPS), advance further
+    // - step < 1   → less time passed (higher FPS), advance less
+    const step = CanvasParticles.BASE_DT / dt
+
+    this.#updateGravity(step)
+    this.#updateParticles(step)
     this.#render()
+    this.lastAnimationFrame = now
   }
 
   /** @public Start the particle animation if it was not running before */

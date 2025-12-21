@@ -48,3 +48,5 @@ export interface ContextColor {
   hex: string
   alpha: number
 }
+
+export type LineSegment = [ax: number, ay: number, bx: number, by: number]

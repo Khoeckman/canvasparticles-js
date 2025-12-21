@@ -233,12 +233,6 @@ const options = {
    */
   background: 'linear-gradient(115deg, #354089, black)',
 
-  /** @param {integer} [options.framesPerUpdate=1] - How many times the same frame will be shown before an update happens.
-   * @example 60 fps / 2 framesPerUpdate = 30 updates/s
-   * @example 144 fps / 3 framesPerUpdate = 48 updates/s
-   */
-  framesPerUpdate: 1, // recommended: 1 - 3
-
   /** @param {Object} [options.animation] - Animation settings. */
   animation: {
     /** @param {boolean} [options.animation.startOnEnter=true] - Whether to start the animation when the canvas enters the viewport. */

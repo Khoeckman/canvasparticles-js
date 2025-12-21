@@ -9,7 +9,7 @@ const TWO_PI = 2 * Math.PI
 declare const __VERSION__: string
 
 export default class CanvasParticles {
-  static version = __VERSION__
+  static readonly version = __VERSION__
 
   /** Defines mouse interaction types with the particles */
   static interactionType = Object.freeze({
@@ -19,7 +19,7 @@ export default class CanvasParticles {
   })
 
   /** Observes canvas elements entering or leaving the viewport to start/stop animation */
-  static canvasIntersectionObserver = new IntersectionObserver((entries) => {
+  static readonly canvasIntersectionObserver = new IntersectionObserver((entries) => {
     for (const entry of entries) {
       const canvas = entry.target as CanvasParticlesCanvas
       const instance = canvas.instance // The CanvasParticles class instance bound to this canvas
@@ -32,7 +32,7 @@ export default class CanvasParticles {
     }
   })
 
-  static canvasResizeObserver = new ResizeObserver((entries) => {
+  static readonly canvasResizeObserver = new ResizeObserver((entries) => {
     // Seperate for loops is very important to prevent huge forced reflow overhead
 
     // First read all canvas rects at once
@@ -50,11 +50,13 @@ export default class CanvasParticles {
 
   canvas: CanvasParticlesCanvas
   private ctx: CanvasRenderingContext2D
+  private lastAnimationFrame: number = 0
 
   enableAnimating: boolean = false
   isAnimating: boolean = false
 
   particles: Particle[] = []
+  particleCount: number = 0
 
   private clientX: number = Infinity
   private clientY: number = Infinity
@@ -64,9 +66,8 @@ export default class CanvasParticles {
   height!: number
   private offX!: number
   private offY!: number
-  particleCount!: number
   option!: CanvasParticlesOptions
-  private color!: ContextColor
+  color!: ContextColor
 
   /**
    * Initialize a CanvasParticles instance

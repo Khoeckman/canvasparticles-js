@@ -1,7 +1,6 @@
 const presets = {
   all: `sandbox.options = {
   background: '#151019',
-  framesPerUpdate: 1,
   animation: {
     startOnEnter: true,
     stopOnLeave: true,
@@ -60,10 +59,10 @@ const presets = {
     connectDistMult: 0.7,
   },
   particles: {
+    regenerateOnResize: true
     color: 'white',
     ppm: 125,
     connectDistance: 175,
-    regenerateOnResize: true
   },
   gravity: {
     repulsive: 3,

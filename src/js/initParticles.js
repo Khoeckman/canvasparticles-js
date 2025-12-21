@@ -48,14 +48,15 @@ showcase.interact = new CanvasParticles('#showcase-interact', {
 showcase.quantity = new CanvasParticles('#showcase-quantity', {
   background: 'hsl(125, 42%, 35%)',
   mouse: {
-    connectDistMult: 1,
+    connectDistMult: 1.5,
+    distRatio: 1.5,
   },
   particles: {
     color: 'rgb(150, 255, 105)',
     // Particles per million pixels the canvas covers
-    ppm: 250,
-    max: 300,
-    connectDistance: 125,
+    ppm: 2000,
+    max: 4000,
+    connectDistance: 50,
   },
 })
 
@@ -63,14 +64,12 @@ showcase['connect-distance'] = new CanvasParticles('#showcase-connect-distance',
   background: 'linear-gradient(100deg, #f80, #0f8 150%)',
   mouse: {
     interactionType: 2,
-    connectDistMult: 0.3,
-    distRatio: 1,
+    connectDistMult: 0.4,
   },
   particles: {
     color: '#0006',
-    ppm: 60,
+    ppm: 80,
     connectDistance: 400,
-    relSpeed: 2,
   },
 })
 

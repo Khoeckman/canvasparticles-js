@@ -406,12 +406,10 @@ new CanvasParticles(selector, options).start()</code></pre>
           <div class="codeblock">
             <span class="head">JavaScript</span>
             <pre><code class="language-js">new CanvasParticles('#showcase-quantity', {
-  mouse: {
-    connectDistMult: 1,
-  },
   particles: {
-    ppm: 250,
-    max: 300,
+    ppm: 2000,
+    max: 4000,
+    connectDistance: 50,
   },
 }).start()</code></pre>
           </div>
@@ -430,8 +428,7 @@ new CanvasParticles(selector, options).start()</code></pre>
   background: 'linear-gradient(100deg, #f80, #0f8 150%)',
   mouse: {
     interactionType: 2,
-    connectDistMult: 0.3,
-    distRatio: 1,
+    connectDistMult: 0.4,
   },
   particles: {
     connectDistance: 400,

@@ -6,6 +6,26 @@ import type { CanvasParticlesOptions, CanvasParticlesOptionsInput } from './type
 
 const TWO_PI = 2 * Math.PI
 
+/** Extremely fast, simple 32‑bit PRNG */
+function Mulberry32(seed: number) {
+  let state = seed >>> 0
+
+  return {
+    next() {
+      let t = (state + 0x6d2b79f5) | 0
+      state = t
+      t = Math.imul(t ^ (t >>> 15), t | 1)
+      t ^= t + Math.imul(t ^ (t >>> 7), t | 61)
+      return ((t ^ (t >>> 14)) >>> 0) / 4294967296
+    },
+  }
+}
+
+// Mulberry32 is ±388% faster than Math.random()
+// Benchmark: https://jsbm.dev/muLCWR9RJCbmy
+// Spectral test: /demo/mulberry32.html
+const prng = Mulberry32(Math.random() * 2 ** 32).next
+
 declare const __VERSION__: string
 
 export default class CanvasParticles {
@@ -191,8 +211,8 @@ export default class CanvasParticles {
 
   /** @public Create a new particle with optional parameters */
   createParticle(posX?: number, posY?: number, dir?: number, speed?: number, size?: number) {
-    posX = typeof posX === 'number' ? posX - this.offX : Math.random() * this.width
-    posY = typeof posY === 'number' ? posY - this.offY : Math.random() * this.height
+    posX = typeof posX === 'number' ? posX - this.offX : prng() * this.width
+    posY = typeof posY === 'number' ? posY - this.offY : prng() * this.height
 
     const particle: Omit<Particle, 'bounds'> = {
       posX, // Logical position in pixels
@@ -203,9 +223,9 @@ export default class CanvasParticles {
       velY: 0, // Vertical speed in pixels per update
       offX: 0, // Horizontal distance from drawn to logical position in pixels
       offY: 0, // Vertical distance from drawn to logical position in pixels
-      dir: dir || Math.random() * TWO_PI, // Direction in radians
-      speed: speed || (0.5 + Math.random() * 0.5) * this.option.particles.relSpeed, // Velocity in pixels per update
-      size: size || (0.5 + Math.random() ** 5 * 2) * this.option.particles.relSize, // Ray in pixels of the particle
+      dir: dir || prng() * TWO_PI, // Direction in radians
+      speed: speed || (0.5 + prng() * 0.5) * this.option.particles.relSpeed, // Velocity in pixels per update
+      size: size || (0.5 + prng() ** 5 * 2) * this.option.particles.relSize, // Ray in pixels of the particle
       gridPos: { x: 1, y: 1 },
       isVisible: false,
     }
@@ -287,8 +307,7 @@ export default class CanvasParticles {
     for (let particle of this.particles) {
       // Randomly perturb direction
       particle.dir =
-        (particle.dir + Math.random() * this.option.particles.rotationSpeed * 2 - this.option.particles.rotationSpeed) %
-        TWO_PI
+        (particle.dir + prng() * this.option.particles.rotationSpeed * 2 - this.option.particles.rotationSpeed) % TWO_PI
       particle.velX *= this.option.gravity.friction
       particle.velY *= this.option.gravity.friction
       particle.posX =

@@ -4,6 +4,8 @@
 import type { CanvasParticlesCanvas, Particle, ParticleGridPos, ContextColor } from './types'
 import type { CanvasParticlesOptions, CanvasParticlesOptionsInput } from './types/options'
 
+const TWO_PI = 2 * Math.PI
+
 declare const __VERSION__: string
 
 export default class CanvasParticles {
@@ -200,7 +202,7 @@ export default class CanvasParticles {
       velY: 0, // Vertical speed in pixels per update
       offX: 0, // Horizontal distance from drawn to logical position in pixels
       offY: 0, // Vertical distance from drawn to logical position in pixels
-      dir: dir || Math.random() * 2 * Math.PI, // Direction in radians
+      dir: dir || Math.random() * TWO_PI, // Direction in radians
       speed: speed || (0.5 + Math.random() * 0.5) * this.option.particles.relSpeed, // Velocity in pixels per update
       size: size || (0.5 + Math.random() ** 5 * 2) * this.option.particles.relSize, // Ray in pixels of the particle
       gridPos: { x: 1, y: 1 },
@@ -285,7 +287,7 @@ export default class CanvasParticles {
       // Randomly perturb direction
       particle.dir =
         (particle.dir + Math.random() * this.option.particles.rotationSpeed * 2 - this.option.particles.rotationSpeed) %
-        (2 * Math.PI)
+        TWO_PI
       particle.velX *= this.option.gravity.friction
       particle.velY *= this.option.gravity.friction
       particle.posX =
@@ -372,7 +374,7 @@ export default class CanvasParticles {
       if (particle.size > 1) {
         // Draw circle
         this.ctx.beginPath()
-        this.ctx.arc(particle.x, particle.y, particle.size, 0, 2 * Math.PI)
+        this.ctx.arc(particle.x, particle.y, particle.size, 0, TWO_PI)
         this.ctx.fill()
         this.ctx.closePath()
       } else {

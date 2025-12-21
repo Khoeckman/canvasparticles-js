@@ -71,6 +71,30 @@ export default class CanvasParticles {
     }
   })
 
+  /** Helper functions for options parsing */
+  private static defaultIfNaN = (value: number, defaultValue: number): number => (isNaN(+value) ? defaultValue : +value)
+
+  private static parseNumericOption = (
+    name: string,
+    value: number | undefined,
+    defaultValue: number,
+    clamp?: { min?: number; max?: number }
+  ): number => {
+    if (value == undefined) return defaultValue
+
+    const { min = -Infinity, max = Infinity } = clamp ?? {}
+
+    if (isFinite(min) && value < min) {
+      console.warn(new RangeError(`option.${name} was clamped to ${min} as ${value} is too low`))
+    }
+
+    if (isFinite(max) && value > max) {
+      console.warn(new RangeError(`option.${name} was clamped to ${max} as ${value} is too high`))
+    }
+
+    return CanvasParticles.defaultIfNaN(Math.min(Math.max(value ?? defaultValue, min), max), defaultValue)
+  }
+
   canvas: CanvasParticlesCanvas
   private ctx: CanvasRenderingContext2D
 
@@ -504,7 +528,6 @@ export default class CanvasParticles {
       ctx.moveTo(line[0], line[1])
       ctx.lineTo(line[2], line[3])
     }
-
     ctx.stroke()
   }
 
@@ -572,16 +595,7 @@ export default class CanvasParticles {
 
   /** Set and validate options (https://github.com/Khoeckman/canvasParticles?tab=readme-ov-file#options) */
   set options(options: CanvasParticlesOptionsInput) {
-    const defaultIfNaN = (value: number, defaultValue: number): number => (isNaN(+value) ? defaultValue : +value)
-
-    const parseNumericOption = (
-      value: number | undefined,
-      defaultValue: number,
-      clamp?: { min?: number; max?: number }
-    ): number => {
-      const { min = -Infinity, max = Infinity } = clamp ?? {}
-      return defaultIfNaN(Math.min(Math.max(value ?? defaultValue, min), max), defaultValue)
-    }
+    const pno = CanvasParticles.parseNumericOption
 
     // Format and parse all options
     this.option = {
@@ -591,26 +605,26 @@ export default class CanvasParticles {
         stopOnLeave: !!(options.animation?.stopOnLeave ?? true),
       },
       mouse: {
-        interactionType: parseNumericOption(options.mouse?.interactionType, 1),
-        connectDistMult: parseNumericOption(options.mouse?.connectDistMult, 2 / 3),
+        interactionType: pno('mouse.interactionType', options.mouse?.interactionType, 1),
+        connectDistMult: pno('mouse.connectDistMult', options.mouse?.connectDistMult, 2 / 3),
         connectDist: 1 /* post processed */,
-        distRatio: parseNumericOption(options.mouse?.distRatio, 2 / 3),
+        distRatio: pno('mouse.distRatio', options.mouse?.distRatio, 2 / 3),
       },
       particles: {
         regenerateOnResize: !!options.particles?.regenerateOnResize,
         color: options.particles?.color ?? 'black',
-        ppm: parseNumericOption(options.particles?.ppm, 100),
-        max: parseNumericOption(options.particles?.max, 500),
-        maxWork: parseNumericOption(options.particles?.maxWork, Infinity, { min: 0 }),
-        connectDist: parseNumericOption(options.particles?.connectDistance, 150, { min: 1 }),
-        relSpeed: parseNumericOption(options.particles?.relSpeed, 1, { min: 0 }),
-        relSize: parseNumericOption(options.particles?.relSize, 1, { min: 1 }),
-        rotationSpeed: parseNumericOption(options.particles?.rotationSpeed, 2, { min: 0 }) / 100,
+        ppm: pno('particles.ppm', options.particles?.ppm, 100),
+        max: pno('particles.max', options.particles?.max, Infinity),
+        maxWork: pno('particles.maxWork', options.particles?.maxWork, Infinity, { min: 0 }),
+        connectDist: pno('particles.connectDistance', options.particles?.connectDistance, 150, { min: 1 }),
+        relSpeed: pno('particles.relSpeed', options.particles?.relSpeed, 1, { min: 0 }),
+        relSize: pno('particles.relSize', options.particles?.relSize, 1, { min: 1 }),
+        rotationSpeed: pno('particles.rotationSpeed', options.particles?.rotationSpeed, 2, { min: 0 }) / 100,
       },
       gravity: {
-        repulsive: parseNumericOption(options.gravity?.repulsive, 0),
-        pulling: parseNumericOption(options.gravity?.pulling, 0),
-        friction: parseNumericOption(options.gravity?.friction, 0.8, { min: 0, max: 1 }),
+        repulsive: pno('gravity.repulsive', options.gravity?.repulsive, 0),
+        pulling: pno('gravity.pulling', options.gravity?.pulling, 0),
+        friction: pno('gravity.friction', options.gravity?.friction, 0.8, { min: 0, max: 1 }),
       },
     }
 

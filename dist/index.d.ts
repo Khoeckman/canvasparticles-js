@@ -12,9 +12,11 @@ export default class CanvasParticles {
     /** Observes canvas elements entering or leaving the viewport to start/stop animation */
     static readonly canvasIntersectionObserver: IntersectionObserver;
     static readonly canvasResizeObserver: ResizeObserver;
+    /** Helper functions for options parsing */
+    private static defaultIfNaN;
+    private static parseNumericOption;
     canvas: CanvasParticlesCanvas;
     private ctx;
-    private lastAnimationFrame;
     enableAnimating: boolean;
     isAnimating: boolean;
     particles: Particle[];

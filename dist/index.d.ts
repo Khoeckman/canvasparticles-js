@@ -1,8 +1,8 @@
-import type { CanvasParticlesCanvas, Particle } from './types';
+import type { CanvasParticlesCanvas, Particle, ContextColor } from './types';
 import type { CanvasParticlesOptions, CanvasParticlesOptionsInput } from './types/options';
 export default class CanvasParticles {
     #private;
-    static version: string;
+    static readonly version: string;
     /** Defines mouse interaction types with the particles */
     static interactionType: Readonly<{
         NONE: 0;
@@ -10,13 +10,15 @@ export default class CanvasParticles {
         MOVE: 2;
     }>;
     /** Observes canvas elements entering or leaving the viewport to start/stop animation */
-    static canvasIntersectionObserver: IntersectionObserver;
-    static canvasResizeObserver: ResizeObserver;
+    static readonly canvasIntersectionObserver: IntersectionObserver;
+    static readonly canvasResizeObserver: ResizeObserver;
     canvas: CanvasParticlesCanvas;
     private ctx;
+    private lastAnimationFrame;
     enableAnimating: boolean;
     isAnimating: boolean;
     particles: Particle[];
+    particleCount: number;
     private clientX;
     private clientY;
     mouseX: number;
@@ -25,9 +27,8 @@ export default class CanvasParticles {
     height: number;
     private offX;
     private offY;
-    particleCount: number;
     option: CanvasParticlesOptions;
-    private color;
+    color: ContextColor;
     /**
      * Initialize a CanvasParticles instance
      * @param selector - Canvas element or CSS selector

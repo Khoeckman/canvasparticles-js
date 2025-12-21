@@ -1,5 +1,23 @@
 // Copyright (c) 2022–2025 Kyle Hoeckman, MIT License
 // https://github.com/Khoeckman/canvasparticles-js/blob/main/LICENSE
+const TWO_PI = 2 * Math.PI;
+/** Extremely fast, simple 32‑bit PRNG */
+function Mulberry32(seed) {
+    let state = seed >>> 0;
+    return {
+        next() {
+            let t = (state + 0x6d2b79f5) | 0;
+            state = t;
+            t = Math.imul(t ^ (t >>> 15), t | 1);
+            t ^= t + Math.imul(t ^ (t >>> 7), t | 61);
+            return ((t ^ (t >>> 14)) >>> 0) / 4294967296;
+        },
+    };
+}
+// Mulberry32 is ±388% faster than Math.random()
+// Benchmark: https://jsbm.dev/muLCWR9RJCbmy
+// Spectral test: /demo/mulberry32.html
+const prng = Mulberry32(Math.random() * 2 ** 32).next;
 class CanvasParticles {
     static version = "4.1.4";
     /** Defines mouse interaction types with the particles */
@@ -36,9 +54,11 @@ class CanvasParticles {
     });
     canvas;
     ctx;
+    lastAnimationFrame = 0;
     enableAnimating = false;
     isAnimating = false;
     particles = [];
+    particleCount = 0;
     clientX = Infinity;
     clientY = Infinity;
     mouseX = Infinity;
@@ -47,7 +67,6 @@ class CanvasParticles {
     height;
     offX;
     offY;
-    particleCount;
     option;
     color;
     /**
@@ -159,8 +178,8 @@ class CanvasParticles {
     }
     /** @public Create a new particle with optional parameters */
     createParticle(posX, posY, dir, speed, size) {
-        posX = typeof posX === 'number' ? posX - this.offX : Math.random() * this.width;
-        posY = typeof posY === 'number' ? posY - this.offY : Math.random() * this.height;
+        posX = typeof posX === 'number' ? posX - this.offX : prng() * this.width;
+        posY = typeof posY === 'number' ? posY - this.offY : prng() * this.height;
         const particle = {
             posX, // Logical position in pixels
             posY, // Logical position in pixels
@@ -170,9 +189,9 @@ class CanvasParticles {
             velY: 0, // Vertical speed in pixels per update
             offX: 0, // Horizontal distance from drawn to logical position in pixels
             offY: 0, // Vertical distance from drawn to logical position in pixels
-            dir: dir || Math.random() * 2 * Math.PI, // Direction in radians
-            speed: speed || (0.5 + Math.random() * 0.5) * this.option.particles.relSpeed, // Velocity in pixels per update
-            size: size || (0.5 + Math.random() ** 5 * 2) * this.option.particles.relSize, // Ray in pixels of the particle
+            dir: dir || prng() * TWO_PI, // Direction in radians
+            speed: speed || (0.5 + prng() * 0.5) * this.option.particles.relSpeed, // Velocity in pixels per update
+            size: size || (0.5 + prng() ** 5 * 2) * this.option.particles.relSize, // Ray in pixels of the particle
             gridPos: { x: 1, y: 1 },
             isVisible: false,
         };
@@ -244,8 +263,7 @@ class CanvasParticles {
         for (let particle of this.particles) {
             // Randomly perturb direction
             particle.dir =
-                (particle.dir + Math.random() * this.option.particles.rotationSpeed * 2 - this.option.particles.rotationSpeed) %
-                    (2 * Math.PI);
+                (particle.dir + prng() * this.option.particles.rotationSpeed * 2 - this.option.particles.rotationSpeed) % TWO_PI;
             particle.velX *= this.option.gravity.friction;
             particle.velY *= this.option.gravity.friction;
             particle.posX =
@@ -322,7 +340,7 @@ class CanvasParticles {
             if (particle.size > 1) {
                 // Draw circle
                 this.ctx.beginPath();
-                this.ctx.arc(particle.x, particle.y, particle.size, 0, 2 * Math.PI);
+                this.ctx.arc(particle.x, particle.y, particle.size, 0, TWO_PI);
                 this.ctx.fill();
                 this.ctx.closePath();
             }

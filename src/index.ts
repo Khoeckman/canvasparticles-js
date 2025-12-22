@@ -281,11 +281,12 @@ export default class CanvasParticles {
 
     const len = this.particleCount
     const particles = this.particles
-    const gravRepulsiveMult = this.option.particles.connectDist * this.option.gravity.repulsive * step
-    const gravPullingMult = this.option.particles.connectDist * this.option.gravity.pulling * step
-    const maxRepulsiveDist = this.option.particles.connectDist / 2
+    const connectDist = this.option.particles.connectDist
+    const gravRepulsiveMult = connectDist * this.option.gravity.repulsive * step
+    const gravPullingMult = connectDist * this.option.gravity.pulling * step
+    const maxRepulsiveDist = connectDist / 2
     const maxRepulsiveDistSq = maxRepulsiveDist ** 2
-    const maxGrav = this.option.particles.connectDist * 0.1 * step
+    const eps = (connectDist * connectDist) / 256
 
     for (let i = 0; i < len; i++) {
       const particleA = particles[i]
@@ -298,19 +299,19 @@ export default class CanvasParticles {
         const distY = particleA.posY - particleB.posY
         const distSq = distX * distX + distY * distY
 
+        if (distSq >= maxRepulsiveDistSq && !isPullingEnabled) continue
+
         let angle
         let grav
         let gravMult
 
-        if (distSq >= maxRepulsiveDistSq && !isPullingEnabled) continue
-
-        angle = Math.atan2(particleB.posY - particleA.posY, particleB.posX - particleA.posX)
-        grav = Math.pow(1 / Math.sqrt(distSq), 1.8)
+        angle = Math.atan2(-distY, -distX)
+        grav = 1 / (distSq + eps)
         const angleX = Math.cos(angle)
         const angleY = Math.sin(angle)
 
         if (distSq < maxRepulsiveDistSq) {
-          gravMult = Math.min(maxGrav, grav * gravRepulsiveMult)
+          gravMult = grav * gravRepulsiveMult
           const gravX = angleX * gravMult
           const gravY = angleY * gravMult
           particleA.velX -= gravX
@@ -321,7 +322,7 @@ export default class CanvasParticles {
 
         if (!isPullingEnabled) continue
 
-        gravMult = Math.min(maxGrav, grav * gravPullingMult)
+        gravMult = grav * gravPullingMult
         const gravX = angleX * gravMult
         const gravY = angleY * gravMult
         particleA.velX += gravX

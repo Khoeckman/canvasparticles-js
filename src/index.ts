@@ -622,7 +622,11 @@ export default class CanvasParticles {
         stopOnLeave: !!(options.animation?.stopOnLeave ?? true),
       },
       mouse: {
-        interactionType: pno('mouse.interactionType', options.mouse?.interactionType, 1),
+        interactionType: pno(
+          'mouse.interactionType',
+          options.mouse?.interactionType,
+          CanvasParticles.interactionType.MOVE
+        ),
         connectDistMult: pno('mouse.connectDistMult', options.mouse?.connectDistMult, 2 / 3),
         connectDist: 1 /* post processed */,
         distRatio: pno('mouse.distRatio', options.mouse?.distRatio, 2 / 3),

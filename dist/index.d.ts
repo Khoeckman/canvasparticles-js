@@ -3,6 +3,8 @@ import type { CanvasParticlesOptions, CanvasParticlesOptionsInput } from './type
 export default class CanvasParticles {
     #private;
     static readonly version: string;
+    private static readonly MAX_DT;
+    private static readonly BASE_DT;
     /** Defines mouse interaction types with the particles */
     static readonly interactionType: Readonly<{
         NONE: 0;
@@ -19,6 +21,7 @@ export default class CanvasParticles {
     private ctx;
     enableAnimating: boolean;
     isAnimating: boolean;
+    private lastAnimationFrame;
     particles: Particle[];
     particleCount: number;
     private clientX;

@@ -21,7 +21,9 @@ function Mulberry32(seed) {
 // Spectral test: /demo/mulberry32.html
 const prng = Mulberry32(Math.random() * 2 ** 32).next;
 class CanvasParticles {
-    static version = "4.1.5";
+    static version = "4.1.6";
+    static MAX_DT = 1000 / 30; // milliseconds between updates @ 30 FPS
+    static BASE_DT = 1000 / 60; // milliseconds between updates @ 60 FPS
     /** Defines mouse interaction types with the particles */
     static interactionType = Object.freeze({
         NONE: 0, // No mouse interaction
@@ -75,6 +77,7 @@ class CanvasParticles {
     ctx;
     enableAnimating = false;
     isAnimating = false;
+    lastAnimationFrame = 0;
     particles = [];
     particleCount = 0;
     clientX = Infinity;
@@ -227,7 +230,7 @@ class CanvasParticles {
         };
     }
     /** @private Apply gravity forces between particles */
-    #updateGravity() {
+    #updateGravity(step) {
         const isRepulsiveEnabled = this.option.gravity.repulsive > 0;
         const isPullingEnabled = this.option.gravity.pulling > 0;
         if (!isRepulsiveEnabled && !isPullingEnabled)
@@ -278,7 +281,7 @@ class CanvasParticles {
         }
     }
     /** @private Update positions, directions, and visibility of all particles */
-    #updateParticles() {
+    #updateParticles(step) {
         const len = this.particleCount;
         const particles = this.particles;
         const width = this.width;
@@ -468,9 +471,18 @@ class CanvasParticles {
         if (!this.isAnimating)
             return;
         requestAnimationFrame(() => this.#animation());
-        this.#updateGravity();
-        this.#updateParticles();
+        const now = performance.now();
+        // Elapsed time since last frame, clamped to avoid large simulation jumps
+        const dt = Math.min(now - this.lastAnimationFrame, CanvasParticles.MAX_DT);
+        // Normalized simulation step:
+        // - step = 1   → exactly one baseline update (dt === BASE_DT)
+        // - step > 1   → more time passed (lower FPS), advance further
+        // - step < 1   → less time passed (higher FPS), advance less
+        const step = CanvasParticles.BASE_DT / dt;
+        this.#updateGravity(step);
+        this.#updateParticles(step);
         this.#render();
+        this.lastAnimationFrame = now;
     }
     /** @public Start the particle animation if it was not running before */
     start({ auto = false } = {}) {

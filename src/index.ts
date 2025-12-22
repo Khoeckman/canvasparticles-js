@@ -9,7 +9,10 @@ declare const __VERSION__: string
 const TWO_PI = 2 * Math.PI
 
 export default class CanvasParticles {
-  static version = __VERSION__
+  static readonly version = __VERSION__
+
+  private static readonly MAX_DT = 1000 / 50 // milliseconds between updates @ 50 FPS
+  private static readonly BASE_DT = 1000 / 60 // milliseconds between updates @ 60 FPS
 
   /** Defines mouse interaction types with the particles */
   static readonly interactionType = Object.freeze({
@@ -76,6 +79,7 @@ export default class CanvasParticles {
 
   enableAnimating: boolean = false
   isAnimating: boolean = false
+  private lastAnimationFrame: number = 0
 
   particles: Particle[] = []
 
@@ -247,18 +251,18 @@ export default class CanvasParticles {
   }
 
   /** @private Apply gravity forces between particles */
-  #updateGravity() {
-    const isRepulsiveEnabled = this.option.gravity.repulsive !== 0
-    const isPullingEnabled = this.option.gravity.pulling !== 0
+  #updateGravity(step: number) {
+    const isRepulsiveEnabled = this.option.gravity.repulsive > 0
+    const isPullingEnabled = this.option.gravity.pulling > 0
 
     if (!isRepulsiveEnabled && !isPullingEnabled) return
 
     const particles = this.particles
-    const gravRepulsiveMult = this.option.particles.connectDist * this.option.gravity.repulsive
-    const gravPullingMult = this.option.particles.connectDist * this.option.gravity.pulling
+    const gravRepulsiveMult = this.option.particles.connectDist * this.option.gravity.repulsive * step
+    const gravPullingMult = this.option.particles.connectDist * this.option.gravity.pulling * step
     const maxRepulsiveDist = this.option.particles.connectDist / 2
     const maxRepulsiveDistSq = maxRepulsiveDist * maxRepulsiveDist
-    const maxGrav = this.option.particles.connectDist * 0.1
+    const maxGrav = this.option.particles.connectDist * 0.1 * step
 
     for (let i = 0; i < this.particleCount; i++) {
       const particleA = particles[i]
@@ -271,15 +275,18 @@ export default class CanvasParticles {
         const distY = particleA.posY - particleB.posY
         const distSq = distX * distX + distY * distY
 
-        // Use squared distance for comparison to avoid sqrt when not needed
-        if (isRepulsiveEnabled && distSq < maxRepulsiveDistSq) {
-          // Apply repulsive forces on all particles closer than { connectDist / 2 }
-          const dist = Math.sqrt(distSq)
-          const invDist = 1 / dist
-          const grav = invDist ** 1.8
-          const gravMult = Math.min(maxGrav, grav * gravRepulsiveMult)
-          // Use direct vector math instead of atan2 + cos/sin
-          // Unit vector from A to B is (-distX/dist, -distY/dist)
+        if (distSq >= maxRepulsiveDistSq && !isPullingEnabled) continue
+
+        let angle
+        let grav
+        let gravMult
+
+        const invDist = 1 / Math.sqrt(distSq)
+        grav = Math.pow(invDist, 1.8)
+
+        if (distSq < maxRepulsiveDistSq) {
+          // Apply pushing forces
+          gravMult = Math.min(maxGrav, grav * gravRepulsiveMult)
           const gravX = -distX * invDist * gravMult
           const gravY = -distY * invDist * gravMult
           particleA.velX -= gravX
@@ -290,10 +297,7 @@ export default class CanvasParticles {
 
         if (!isPullingEnabled) continue
 
-        // Apply pulling forces on all particles
-        const dist = Math.sqrt(distSq)
-        const invDist = 1 / dist
-        const grav = invDist ** 1.8
+        // Apply pulling forces
         const gravMult = Math.min(maxGrav, grav * gravPullingMult)
         const gravX = -distX * invDist * gravMult
         const gravY = -distY * invDist * gravMult
@@ -306,7 +310,8 @@ export default class CanvasParticles {
   }
 
   /** @private Update positions, directions, and visibility of all particles */
-  #updateParticles() {
+  #updateParticles(step: number) {
+    const len = this.particleCount
     const particles = this.particles
     const width = this.width
     const height = this.height
@@ -314,26 +319,40 @@ export default class CanvasParticles {
     const offY = this.offY
     const mouseX = this.mouseX
     const mouseY = this.mouseY
-    const rotationSpeed = this.option.particles.rotationSpeed
-    const isInteractionTypeNone = this.option.mouse.interactionType !== CanvasParticles.interactionType.NONE
-    const isInteractionTypeMove = this.option.mouse.interactionType === CanvasParticles.interactionType.MOVE
+    const rotationSpeed = this.option.particles.rotationSpeed * step
+    const friction = this.option.gravity.friction
+    const mouseConnectDist = this.option.mouse.connectDist
+    const mouseDistRatio = this.option.mouse.distRatio
+    const isMouseInteractionTypeNone = this.option.mouse.interactionType === CanvasParticles.interactionType.NONE
+    const isMouseInteractionTypeMove = this.option.mouse.interactionType === CanvasParticles.interactionType.MOVE
+    const easing = 1 - Math.pow(1 - 1 / 4, step)
 
     for (let i = 0; i < this.particleCount; i++) {
       const particle = particles[i]
 
-      // Randomly perturb direction
-      particle.dir = (particle.dir + Math.random() * rotationSpeed * 2 - rotationSpeed) % TWO_PI
+      particle.dir += 2 * (Math.random() - 0.5) * rotationSpeed * step
+      particle.dir %= TWO_PI
 
-      // Apply friction to velocity
-      particle.velX *= this.option.gravity.friction
-      particle.velY *= this.option.gravity.friction
+      // Constant velocity
+      const movX = Math.sin(particle.dir) * particle.speed
+      const movY = Math.cos(particle.dir) * particle.speed
 
-      // Update position with velocity and direction (removed redundant inner modulo)
-      particle.posX =
-        (((particle.posX + particle.velX + Math.sin(particle.dir) * particle.speed) % width) + width) % width
-      particle.posY =
-        (((particle.posY + particle.velY + Math.cos(particle.dir) * particle.speed) % height) + height) % height
+      // Apply velocities
+      particle.posX += (movX + particle.velX) * step
+      particle.posY += (movY + particle.velY) * step
 
+      // Wrap particles around the canvas
+      particle.posX %= width
+      if (particle.posX < 0) particle.posX += width
+
+      particle.posY %= height
+      if (particle.posY < 0) particle.posY += height
+
+      // Slightly decrease dynamic velocity
+      particle.velX *= Math.pow(friction, step)
+      particle.velY *= Math.pow(friction, step)
+
+      // Distance from mouse
       const distX = particle.posX + offX - mouseX
       const distY = particle.posY + offY - mouseY
 
@@ -341,12 +360,12 @@ export default class CanvasParticles {
       if (isInteractionTypeNone) {
         const distRatio = this.option.mouse.connectDist / Math.hypot(distX, distY)
 
-        if (this.option.mouse.distRatio < distRatio) {
-          particle.offX += (distRatio * distX - distX - particle.offX) / 4
-          particle.offY += (distRatio * distY - distY - particle.offY) / 4
+        if (mouseDistRatio < distRatio) {
+          particle.offX += (distRatio * distX - distX - particle.offX) * easing
+          particle.offY += (distRatio * distY - distY - particle.offY) * easing
         } else {
-          particle.offX -= particle.offX / 4
-          particle.offY -= particle.offY / 4
+          particle.offX -= particle.offX * easing
+          particle.offY -= particle.offY * easing
         }
       }
 
@@ -564,9 +583,21 @@ export default class CanvasParticles {
 
     requestAnimationFrame(() => this.#animation())
 
-    this.#updateGravity()
-    this.#updateParticles()
+    const now = performance.now()
+
+    // Elapsed time since last frame, clamped to avoid large simulation jumps
+    const dt = Math.min(now - this.lastAnimationFrame, CanvasParticles.MAX_DT)
+
+    // Normalized simulation step:
+    // - step = 1   → exactly one baseline update (dt === BASE_DT)
+    // - step > 1   → more time passed (lower FPS), advance further
+    // - step < 1   → less time passed (higher FPS), advance less
+    const step = dt / CanvasParticles.BASE_DT
+
+    this.#updateGravity(step)
+    this.#updateParticles(step)
     this.#render()
+    this.lastAnimationFrame = now
   }
 
   /** @public Start the particle animation if it was not running before */

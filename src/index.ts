@@ -494,7 +494,7 @@ export default class CanvasParticles {
         const particleB = particles[j]
 
         // Don't draw the line if it wouldn't be visible
-        if (!(drawAll || this.#isLineVisible(particleA, particleB))) continue
+        if (!drawAll && !this.#isLineVisible(particleA, particleB)) continue
 
         const distX = particleA.x - particleB.x
         const distY = particleA.y - particleB.y
@@ -546,7 +546,7 @@ export default class CanvasParticles {
     this.ctx.lineWidth = 1
 
     this.#renderParticles()
-    this.#renderConnections()
+    if (this.options.particles.drawLines) this.#renderConnections()
   }
 
   /** @private Main animation loop that updates and renders the particles */
@@ -629,13 +629,14 @@ export default class CanvasParticles {
       },
       particles: {
         regenerateOnResize: !!options.particles?.regenerateOnResize,
+        drawLines: !!(options.particles?.drawLines ?? true),
         color: options.particles?.color ?? 'black',
         ppm: pno('particles.ppm', options.particles?.ppm, 100),
         max: pno('particles.max', options.particles?.max, Infinity),
         maxWork: pno('particles.maxWork', options.particles?.maxWork, Infinity, { min: 0 }),
         connectDist: pno('particles.connectDistance', options.particles?.connectDistance, 150, { min: 1 }),
         relSpeed: pno('particles.relSpeed', options.particles?.relSpeed, 1, { min: 0 }),
-        relSize: pno('particles.relSize', options.particles?.relSize, 1, { min: 1 }),
+        relSize: pno('particles.relSize', options.particles?.relSize, 1, { min: 0 }),
         rotationSpeed: pno('particles.rotationSpeed', options.particles?.rotationSpeed, 2, { min: 0 }) / 100,
       },
       gravity: {

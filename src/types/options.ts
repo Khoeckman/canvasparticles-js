@@ -15,6 +15,7 @@ export interface CanvasParticlesOptions {
 
   particles: {
     regenerateOnResize: boolean
+    drawLines: boolean
     color: string | CanvasGradient | CanvasPattern
     ppm: number
     max: number

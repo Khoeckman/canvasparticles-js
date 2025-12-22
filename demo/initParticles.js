@@ -32,7 +32,9 @@ new CanvasParticles('#cp-2', {
     color: '#96ff69',
     max: 300,
     maxWork: 15,
-    rotationSpeed: 0.2,
+    relSpeed: 3,
+    relSize: 2,
+    rotationSpeed: 40,
   },
 }).start()
 

@@ -20,7 +20,7 @@ function Mulberry32(seed) {
 const prng = Mulberry32(Math.random() * 2 ** 32).next;
 class CanvasParticles {
     static version = "4.1.6";
-    static MAX_DT = 1000 / 30; // milliseconds between updates @ 30 FPS
+    static MAX_DT = 1000 / 50; // milliseconds between updates @ 50 FPS
     static BASE_DT = 1000 / 60; // milliseconds between updates @ 60 FPS
     /** Defines mouse interaction types with the particles */
     static interactionType = Object.freeze({
@@ -235,11 +235,11 @@ class CanvasParticles {
             return;
         const len = this.particleCount;
         const particles = this.particles;
-        const gravRepulsiveMult = this.option.particles.connectDist * this.option.gravity.repulsive;
-        const gravPullingMult = this.option.particles.connectDist * this.option.gravity.pulling;
+        const gravRepulsiveMult = this.option.particles.connectDist * this.option.gravity.repulsive * step;
+        const gravPullingMult = this.option.particles.connectDist * this.option.gravity.pulling * step;
         const maxRepulsiveDist = this.option.particles.connectDist / 2;
         const maxRepulsiveDistSq = maxRepulsiveDist ** 2;
-        const maxGrav = this.option.particles.connectDist * 0.1;
+        const maxGrav = this.option.particles.connectDist * 0.1 * step;
         for (let i = 0; i < len; i++) {
             const particleA = particles[i];
             for (let j = i + 1; j < len; j++) {
@@ -254,7 +254,7 @@ class CanvasParticles {
                 if (distSq >= maxRepulsiveDistSq && !isPullingEnabled)
                     continue;
                 angle = Math.atan2(particleB.posY - particleA.posY, particleB.posX - particleA.posX);
-                grav = (1 / Math.sqrt(distSq)) ** 1.8;
+                grav = Math.pow(1 / Math.sqrt(distSq), 1.8);
                 const angleX = Math.cos(angle);
                 const angleY = Math.sin(angle);
                 if (distSq < maxRepulsiveDistSq) {
@@ -294,9 +294,10 @@ class CanvasParticles {
         const mouseDistRatio = this.option.mouse.distRatio;
         const isMouseInteractionTypeNone = this.option.mouse.interactionType === CanvasParticles.interactionType.NONE;
         const isMouseInteractionTypeMove = this.option.mouse.interactionType === CanvasParticles.interactionType.MOVE;
+        const easing = 1 - Math.pow(1 - 1 / 4, step);
         for (let i = 0; i < len; i++) {
             const particle = particles[i];
-            particle.dir += 2 * (Math.random() - 0.5) * rotationSpeed;
+            particle.dir += 2 * (Math.random() - 0.5) * rotationSpeed * step;
             particle.dir %= TWO_PI;
             // Constant velocity
             const movX = Math.sin(particle.dir) * particle.speed;
@@ -312,8 +313,8 @@ class CanvasParticles {
             if (particle.posY < 0)
                 particle.posY += height;
             // Slightly decrease dynamic velocity
-            particle.velX *= friction ** step;
-            particle.velY *= friction ** step;
+            particle.velX *= Math.pow(friction, step);
+            particle.velY *= Math.pow(friction, step);
             // Distance from mouse
             const distX = particle.posX + offX - mouseX;
             const distY = particle.posY + offY - mouseY;
@@ -321,12 +322,12 @@ class CanvasParticles {
             if (!isMouseInteractionTypeNone) {
                 const distRatio = mouseConnectDist / Math.hypot(distX, distY);
                 if (mouseDistRatio < distRatio) {
-                    particle.offX += (distRatio * distX - distX - particle.offX) / 4;
-                    particle.offY += (distRatio * distY - distY - particle.offY) / 4;
+                    particle.offX += (distRatio * distX - distX - particle.offX) * easing;
+                    particle.offY += (distRatio * distY - distY - particle.offY) * easing;
                 }
                 else {
-                    particle.offX -= particle.offX / 4;
-                    particle.offY -= particle.offY / 4;
+                    particle.offX -= particle.offX * easing;
+                    particle.offY -= particle.offY * easing;
                 }
             }
             // Visually displace the particles
@@ -476,7 +477,7 @@ class CanvasParticles {
         // - step = 1   → exactly one baseline update (dt === BASE_DT)
         // - step > 1   → more time passed (lower FPS), advance further
         // - step < 1   → less time passed (higher FPS), advance less
-        const step = CanvasParticles.BASE_DT / dt;
+        const step = dt / CanvasParticles.BASE_DT;
         this.#updateGravity(step);
         this.#updateParticles(step);
         this.#render();

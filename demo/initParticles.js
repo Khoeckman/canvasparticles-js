@@ -10,7 +10,7 @@ new CanvasParticles('#cp-1', {
   },
   particles: {
     color: '#88c8ff40',
-    max: 150,
+    max: 300,
     maxWork: 15,
     relSpeed: 0.8,
     rotationSpeed: 1,
@@ -30,8 +30,11 @@ new CanvasParticles('#cp-2', {
   },
   particles: {
     color: '#96ff69',
-    max: 200,
-    maxWork: 10,
+    max: 300,
+    maxWork: 15,
+    relSpeed: 3,
+    relSize: 2,
+    rotationSpeed: 40,
   },
 }).start()
 
@@ -39,19 +42,20 @@ new CanvasParticles('#cp-2', {
 new CanvasParticles('#cp-3', {
   background: '#423',
   mouse: {
+    interactionType: 2,
     connectDistMult: 0.5,
-    distRatio: 0.75,
+    distRatio: 1,
   },
   particles: {
     color: '#f45c',
-    ppm: 120,
-    max: 120,
-    connectDistance: 350,
+    ppm: 150,
+    max: 300,
+    connectDistance: 300,
     rotationSpeed: 5,
   },
   gravity: {
-    repulsive: 16,
-    pulling: 6,
+    repulsive: 10,
+    pulling: 2,
     friction: 0.9,
   },
 }).start()

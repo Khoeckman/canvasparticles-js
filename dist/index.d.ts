@@ -4,7 +4,7 @@ export default class CanvasParticles {
     #private;
     static readonly version: string;
     /** Defines mouse interaction types with the particles */
-    static interactionType: Readonly<{
+    static readonly interactionType: Readonly<{
         NONE: 0;
         SHIFT: 1;
         MOVE: 2;
@@ -13,8 +13,8 @@ export default class CanvasParticles {
     static readonly canvasIntersectionObserver: IntersectionObserver;
     static readonly canvasResizeObserver: ResizeObserver;
     /** Helper functions for options parsing */
-    private static defaultIfNaN;
-    private static parseNumericOption;
+    private static readonly defaultIfNaN;
+    private static readonly parseNumericOption;
     canvas: CanvasParticlesCanvas;
     private ctx;
     enableAnimating: boolean;

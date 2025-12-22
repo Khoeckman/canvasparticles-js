@@ -32,7 +32,7 @@ export default class CanvasParticles {
   static readonly version = __VERSION__
 
   /** Defines mouse interaction types with the particles */
-  static interactionType = Object.freeze({
+  static readonly interactionType = Object.freeze({
     NONE: 0, // No mouse interaction
     SHIFT: 1, // Visual displacement only
     MOVE: 2, // Actual particle movement
@@ -72,9 +72,10 @@ export default class CanvasParticles {
   })
 
   /** Helper functions for options parsing */
-  private static defaultIfNaN = (value: number, defaultValue: number): number => (isNaN(+value) ? defaultValue : +value)
+  private static readonly defaultIfNaN = (value: number, defaultValue: number): number =>
+    isNaN(+value) ? defaultValue : +value
 
-  private static parseNumericOption = (
+  private static readonly parseNumericOption = (
     name: string,
     value: number | undefined,
     defaultValue: number,
@@ -86,9 +87,7 @@ export default class CanvasParticles {
 
     if (isFinite(min) && value < min) {
       console.warn(new RangeError(`option.${name} was clamped to ${min} as ${value} is too low`))
-    }
-
-    if (isFinite(max) && value > max) {
+    } else if (isFinite(max) && value > max) {
       console.warn(new RangeError(`option.${name} was clamped to ${max} as ${value} is too high`))
     }
 

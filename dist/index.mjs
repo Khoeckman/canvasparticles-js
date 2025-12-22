@@ -56,7 +56,7 @@ class CanvasParticles {
         }
     });
     /** Helper functions for options parsing */
-    static defaultIfNaN = (value, defaultValue) => (isNaN(+value) ? defaultValue : +value);
+    static defaultIfNaN = (value, defaultValue) => isNaN(+value) ? defaultValue : +value;
     static parseNumericOption = (name, value, defaultValue, clamp) => {
         if (value == undefined)
             return defaultValue;
@@ -64,7 +64,7 @@ class CanvasParticles {
         if (isFinite(min) && value < min) {
             console.warn(new RangeError(`option.${name} was clamped to ${min} as ${value} is too low`));
         }
-        if (isFinite(max) && value > max) {
+        else if (isFinite(max) && value > max) {
             console.warn(new RangeError(`option.${name} was clamped to ${max} as ${value} is too high`));
         }
         return CanvasParticles.defaultIfNaN(Math.min(Math.max(value ?? defaultValue, min), max), defaultValue);

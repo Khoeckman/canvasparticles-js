@@ -257,17 +257,19 @@ export default class CanvasParticles {
 
     if (!isRepulsiveEnabled && !isPullingEnabled) return
 
+    const len = this.particleCount
     const particles = this.particles
-    const gravRepulsiveMult = this.option.particles.connectDist * this.option.gravity.repulsive * step
-    const gravPullingMult = this.option.particles.connectDist * this.option.gravity.pulling * step
-    const maxRepulsiveDist = this.option.particles.connectDist / 2
+    const connectDist = this.option.particles.connectDist
+    const gravRepulsiveMult = connectDist * this.option.gravity.repulsive * step
+    const gravPullingMult = connectDist * this.option.gravity.pulling * step
+    const maxRepulsiveDist = connectDist / 2
     const maxRepulsiveDistSq = maxRepulsiveDist * maxRepulsiveDist
-    const maxGrav = this.option.particles.connectDist * 0.1 * step
+    const eps = (connectDist * connectDist) / 256
 
-    for (let i = 0; i < this.particleCount; i++) {
+    for (let i = 0; i < len; i++) {
       const particleA = particles[i]
 
-      for (let j = i + 1; j < this.particleCount; j++) {
+      for (let j = i + 1; j < len; j++) {
         // Note: Code in this scope runs { particleCount ** 2 / 2 } times per update!
         const particleB = particles[j]
 
@@ -281,12 +283,16 @@ export default class CanvasParticles {
         let grav
         let gravMult
 
-        const invDist = 1 / Math.sqrt(distSq)
-        grav = Math.pow(invDist, 1.8)
+        if (distSq >= maxRepulsiveDistSq && !isPullingEnabled) continue
+
+        angle = Math.atan2(particleB.posY - particleA.posY, particleB.posX - particleA.posX)
+        grav = Math.pow(1 / Math.sqrt(distSq), 1.8)
+        const angleX = Math.cos(angle)
+        const angleY = Math.sin(angle)
 
         if (distSq < maxRepulsiveDistSq) {
           // Apply pushing forces
-          gravMult = Math.min(maxGrav, grav * gravRepulsiveMult)
+          gravMult = grav * gravRepulsiveMult
           const gravX = -distX * invDist * gravMult
           const gravY = -distY * invDist * gravMult
           particleA.velX -= gravX
@@ -298,7 +304,7 @@ export default class CanvasParticles {
         if (!isPullingEnabled) continue
 
         // Apply pulling forces
-        const gravMult = Math.min(maxGrav, grav * gravPullingMult)
+        gravMult = grav * gravPullingMult
         const gravX = -distX * invDist * gravMult
         const gravY = -distY * invDist * gravMult
         particleA.velX += gravX

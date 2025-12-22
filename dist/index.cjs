@@ -290,7 +290,7 @@ class CanvasParticles {
         const offY = this.offY;
         const mouseX = this.mouseX;
         const mouseY = this.mouseY;
-        const rotationSpeed = this.option.particles.rotationSpeed;
+        const rotationSpeed = this.option.particles.rotationSpeed * step;
         const friction = this.option.gravity.friction;
         const mouseConnectDist = this.option.mouse.connectDist;
         const mouseDistRatio = this.option.mouse.distRatio;
@@ -304,8 +304,8 @@ class CanvasParticles {
             const movX = Math.sin(particle.dir) * particle.speed;
             const movY = Math.cos(particle.dir) * particle.speed;
             // Apply velocities
-            particle.posX += movX + particle.velX;
-            particle.posY += movY + particle.velY;
+            particle.posX += (movX + particle.velX) * step;
+            particle.posY += (movY + particle.velY) * step;
             // Wrap particles around the canvas
             particle.posX %= width;
             if (particle.posX < 0)
@@ -314,8 +314,8 @@ class CanvasParticles {
             if (particle.posY < 0)
                 particle.posY += height;
             // Slightly decrease dynamic velocity
-            particle.velX *= friction;
-            particle.velY *= friction;
+            particle.velX *= friction ** step;
+            particle.velY *= friction ** step;
             // Distance from mouse
             const distX = particle.posX + offX - mouseX;
             const distY = particle.posY + offY - mouseY;

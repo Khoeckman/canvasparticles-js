@@ -48,3 +48,5 @@ export interface ContextColor {
   hex: string
   alpha: number
 }
+
+export type SpatialGrid = Map<number, number[]>

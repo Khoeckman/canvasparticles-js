@@ -1,7 +1,7 @@
 // Copyright (c) 2022–2025 Kyle Hoeckman, MIT License
 // https://github.com/Khoeckman/canvasparticles-js/blob/main/LICENSE
 
-import type { CanvasParticlesCanvas, Particle, ParticleGridPos, ContextColor } from './types'
+import type { CanvasParticlesCanvas, Particle, ContextColor, SpatialGrid } from './types'
 import type { CanvasParticlesOptions, CanvasParticlesOptionsInput } from './types/options'
 
 declare const __VERSION__: string
@@ -90,10 +90,6 @@ export default class CanvasParticles {
   particleCount!: number
   option!: CanvasParticlesOptions
   private color!: ContextColor
-
-  // Spatial hashing for O(n) connection rendering instead of O(n²)
-  private spatialGrid: Map<number, number[]> = new Map()
-  private gridCellSize: number = 150
 
   /**
    * Initialize a CanvasParticles instance
@@ -429,13 +425,12 @@ export default class CanvasParticles {
   }
 
   /** @private Build spatial hash grid for efficient neighbor lookup */
-  #buildSpatialGrid(cellSize: number): void {
-    const grid = this.spatialGrid
+  #buildSpatialGrid(cellSize: number): SpatialGrid {
+    const len = this.particleCount
     const particles = this.particles
+    const grid: SpatialGrid = new Map()
 
-    grid.clear()
-
-    for (let i = 0; i < this.particleCount; i++) {
+    for (let i = 0; i < len; i++) {
       const p = particles[i]
       const key = (((p.x / cellSize) | 0) + ((p.y / cellSize) | 0)) << 16
 
@@ -443,6 +438,7 @@ export default class CanvasParticles {
       if (cell) cell.push(i)
       else grid.set(key, [i])
     }
+    return grid
   }
 
   /** @private Draw lines between particles if they are close enough */
@@ -458,9 +454,9 @@ export default class CanvasParticles {
     const alphaFactor = this.color.alpha * maxDist
     const drawAll = maxDist >= Math.min(this.canvas.width, this.canvas.height)
 
+    // Build spatial hash grid - O(n)
     const cellSize = maxDist
-    this.#buildSpatialGrid(cellSize) // Build spatial hash grid - O(n)
-    const grid = this.spatialGrid
+    const grid = this.#buildSpatialGrid(cellSize)
 
     // Track which pairs we've already processed to avoid duplicates
     const processed = new Set<number>()

@@ -54,18 +54,18 @@ const generateRandomCanvasOptions = (ppm) => {
       color: `hsl(${~~(Math.random() * 360)}, ${80 + ~~(Math.random() * 20)}%, ${40 + ~~(Math.random() * 20)}%)`,
       ppm: 0 /* Particles are created later */,
       max: Infinity,
-      maxWork: ~~(30 + (ppm / 999) * 20),
-      connectDist: 100,
+      maxWork: Math.round(30 + (ppm / 1000) * 20),
+      connectDist: 75,
     },
   }
 }
 
-let mutex = false
+let populateLock = false
 let instances = []
 
 const populateCanvasContainer = async () => {
-  if (mutex) return
-  mutex = true
+  if (populateLock) return
+  populateLock = true
 
   startAnimationButton.title = 'Creating canvas elements'
   stopAnimationButton.title = 'Creating canvas elements'
@@ -165,7 +165,7 @@ const populateCanvasContainer = async () => {
   startAnimationButton.disabled = null
   stopAnimationButton.disabled = null
 
-  mutex = false
+  populateLock = false
 }
 
 // Handle settings form

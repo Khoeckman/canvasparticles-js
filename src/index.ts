@@ -437,7 +437,7 @@ export default class CanvasParticles {
 
     for (let i = 0; i < this.particleCount; i++) {
       const p = particles[i]
-      const key = ((p.x / cellSize) | 0) + ((p.y / cellSize) | 0) * 10000
+      const key = (((p.x / cellSize) | 0) + ((p.y / cellSize) | 0)) << 16
 
       const cell = grid.get(key)
       if (cell) cell.push(i)
@@ -466,7 +466,7 @@ export default class CanvasParticles {
     const processed = new Set<number>()
 
     // Alpha buckets for batched rendering (`bucketCount` buckets)
-    const bucketCount = 32
+    const bucketCount = 256
     const buckets: [number, number, number, number][][] = Array(bucketCount)
       .fill(0)
       .map(() => [])
@@ -481,7 +481,7 @@ export default class CanvasParticles {
       // Check neighboring cells (3x3 grid around current cell)
       for (let dx = -1; dx <= 1; dx++) {
         for (let dy = -1; dy <= 1; dy++) {
-          const neighborKey = cellX + dx + (cellY + dy) * 10000
+          const neighborKey = (cellX + dx + (cellY + dy)) << 16
           const neighborCell = grid.get(neighborKey)
           if (!neighborCell) continue
 
@@ -636,7 +636,7 @@ export default class CanvasParticles {
         maxWork: pno('particles.maxWork', options.particles?.maxWork, Infinity, { min: 0 }),
         connectDist: pno('particles.connectDistance', options.particles?.connectDistance, 150, { min: 1 }),
         relSpeed: pno('particles.relSpeed', options.particles?.relSpeed, 1, { min: 0 }),
-        relSize: pno('particles.relSize', options.particles?.relSize, 1, { min: 1 }),
+        relSize: pno('particles.relSize', options.particles?.relSize, 1, { min: 0 }),
         rotationSpeed: pno('particles.rotationSpeed', options.particles?.rotationSpeed, 2, { min: 0 }) / 100,
       },
       gravity: {

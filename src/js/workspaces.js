@@ -11,6 +11,7 @@ const presets = {
     distRatio: 0.6,
   },
   particles: {
+    regenerateOnResize: false,
     color: '#8cf',
     ppm: 120,
     max: 250,
@@ -19,7 +20,6 @@ const presets = {
     relSize: 1,
     relSpeed: 1,
     rotationSpeed: 2,
-    regenerateOnResize: false
   },
   gravity: {
     repulsive: 0.55,
@@ -59,7 +59,7 @@ const presets = {
     connectDistMult: 0.7,
   },
   particles: {
-    regenerateOnResize: true
+    regenerateOnResize: true,
     color: 'white',
     ppm: 125,
     connectDistance: 175,

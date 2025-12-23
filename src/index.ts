@@ -1,7 +1,7 @@
 // Copyright (c) 2022–2025 Kyle Hoeckman, MIT License
 // https://github.com/Khoeckman/canvasparticles-js/blob/main/LICENSE
 
-import type { CanvasParticlesCanvas, Particle, ParticleGridPos, ContextColor, LineSegment } from './types'
+import type { CanvasParticlesCanvas, Particle, ContextColor, LineSegment } from './types'
 import type { CanvasParticlesOptions, CanvasParticlesOptionsInput } from './types/options'
 
 const TWO_PI = 2 * Math.PI
@@ -285,7 +285,7 @@ export default class CanvasParticles {
     const gravRepulsiveMult = connectDist * this.option.gravity.repulsive * step
     const gravPullingMult = connectDist * this.option.gravity.pulling * step
     const maxRepulsiveDist = connectDist / 2
-    const maxRepulsiveDistSq = maxRepulsiveDist ** 2
+    const maxRepulsiveDistSq = maxRepulsiveDist * maxRepulsiveDist
     const eps = (connectDist * connectDist) / 256
 
     for (let i = 0; i < len; i++) {
@@ -474,9 +474,9 @@ export default class CanvasParticles {
     const particles = this.particles
     const ctx = this.ctx
     const maxDist = this.option.particles.connectDist
-    const maxDistSq = maxDist ** 2
+    const maxDistSq = maxDist * maxDist
     const halfMaxDist = maxDist / 2
-    const halfMaxDistSq = halfMaxDist ** 2
+    const halfMaxDistSq = halfMaxDist * halfMaxDist
     const drawAll = maxDist >= Math.min(this.canvas.width, this.canvas.height)
     const maxWorkPerParticle = maxDistSq * this.option.particles.maxWork
     const alpha = this.color.alpha

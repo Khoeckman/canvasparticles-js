@@ -26,9 +26,12 @@ const scheduleDataProcessing = (data, processCallback, chunkCallback = () => {},
     async function runChunk() {
       const start = performance.now()
 
-      // Yield at least every 4ms
-      while (i < len && performance.now() - start < 4) {
+      // Yield at least every 6ms
+      while (i < len && performance.now() - start < 6) {
         processCallback(data[i], i++)
+        if (i < len) processCallback(data[i], i++)
+        if (i < len) processCallback(data[i], i++)
+        if (i < len) processCallback(data[i], i++)
       }
       chunkCallback(len, Math.min(i, len))
 

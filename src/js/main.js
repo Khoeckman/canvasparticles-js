@@ -16,15 +16,19 @@ sandboxOptions.closest('pre').addEventListener('input', function () {
   caretManager.restoreCaretPosition()
 })
 
-// Togglables
+// Toggleables
 
 const togglables = [...document.querySelectorAll('main .togglable input')]
 
 togglables.forEach((checkbox) => {
   checkbox.addEventListener('click', (e) => {
     const name = e.target.id.split(/-(.*)/s)[1]
-    const op = e.target.checked ? 'start' : 'stop'
-    showcase[name]?.[op]()
+
+    if (e.target.checked) {
+      showcase[name]?.start()
+    } else {
+      showcase[name]?.stop({ clear: false })
+    }
 
     togglables.forEach((checkbox) => {
       const currentName = checkbox.id.split(/-(.*)/s)[1]

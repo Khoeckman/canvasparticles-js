@@ -695,7 +695,7 @@ new CanvasParticles('#showcase-multiple-colors-2', {
                 only
                 difference between these colors is the opacity. Profiling shows that keeping
                 <span class="highlight">ctx.fillStyle</span> the same and only changing
-                <span class="highlight">ctx.globalAlpha</span> is about 25x faster.
+                <span class="highlight">ctx.globalAlpha</span> is about 25x as fast.
               </p>
             </li>
             <li>
@@ -706,9 +706,9 @@ new CanvasParticles('#showcase-multiple-colors-2', {
             </li>
             <li>
               <p>
-                A <span class="highlight">ResizeObserver</span> is used to handle canvas as it's more efficient than
-                using events and it removes most forced reflow overhead. This makes resizing roughly 18x faster based on
-                benchmarks.
+                A <span class="highlight">ResizeObserver</span> is used to handle the canvas width and height properties
+                as it's more efficient than using events and it removes most forced reflow problems. This makes resizing
+                roughly 18x faster based on benchmarks.
               </p>
             </li>
             <li>
@@ -725,19 +725,19 @@ new CanvasParticles('#showcase-multiple-colors-2', {
             <dt>Particles at once (depends on memory limit)</dt>
             <dd aria-label="12 million">
               <script>document.currentScript.parentElement.textContent = new Intl.NumberFormat(navigator.language).format(12e6)</script>
-              <noscript>12000000</noscript> <!-- as if this website is usefull without script access... -->
+              <noscript>12,000,000</noscript> <!-- as if this website is usefull without script access... -->
             </dd>
             <dt>Total canvas area in pixels</dt>
             <dd aria-label="102 billion">
               <script>document.currentScript.parentElement.textContent = new Intl.NumberFormat(navigator.language).format(1024e8)</script>
-              <noscript>102400000000</noscript>
+              <noscript>102,400,000,000</noscript>
             </dd>
             <dt>Canvas elements</dt>
             <dd aria-label="Over 10 thousand">
               Over
               <span>
                 <script>document.currentScript.parentElement.textContent = new Intl.NumberFormat(navigator.language).format(9999)</script>
-                <noscript>9999</noscript>
+                <noscript>9,999</noscript>
               </span>
             </dd>
           </dl>

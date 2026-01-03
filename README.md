@@ -13,9 +13,11 @@ Creating a fun and interactive background. Colors, interaction and gravity can b
 [Showcase](#showcase)<br>
 [Import](#import)<br>
 [Implementation](#implementation)<br>
-[Class instantiation](#class-instantiation)<br>
+[Class Instantiation](#class-instantiation)<br>
 [Options](#options)<br>
-[One pager example](#one-pager-example)
+[One Pager Example](#one-pager-example)
+
+---
 
 ## Showcase
 
@@ -25,6 +27,8 @@ If you dont like reading documentation this website is for you:<br>
 
 [![Banner with particles and title: Canvas Particles](./demo/banner.webp)](https://khoeckman.github.io/canvasparticles-js/)
 
+---
+
 ## Import
 
 Particles will be drawn onto a `<canvas>` element.
@@ -33,8 +37,7 @@ Particles will be drawn onto a `<canvas>` element.
 <canvas id="my-canvas"></canvas>
 ```
 
-<details open>
-  <summary><h3 style="display: inline;">Import with npm</h3></summary>
+### npm
 
 ```bash
 npm install canvasparticles-js
@@ -42,7 +45,7 @@ npm install canvasparticles-js
 pnpm add canvasparticles-js
 ```
 
-#### ES Module import
+**ES Module import**
 
 ```js
 import CanvasParticles from 'canvasparticles-js'
@@ -54,7 +57,7 @@ If you don't have a bundler:
 import CanvasParticles from './node_modules/canvasparticles-js/dist/index.mjs'
 ```
 
-#### Global import
+**Global import**
 
 ```html
 <script src="./node_modules/canvasparticles-js/dist/index.umd.js" defer></script>
@@ -62,26 +65,21 @@ import CanvasParticles from './node_modules/canvasparticles-js/dist/index.mjs'
 
 No import required in each JavaScript file!
 
-</details>
+### Import with jsDelivr
 
-<details>
-  <summary><h3 style="display: inline;">Import with jsDelivr (click to expand)</h3></summary>
-
-#### ES Module import
+**ES Module import**
 
 ```js
 import CanvasParticles from 'https://cdn.jsdelivr.net/npm/canvasparticles-js/dist/index.min.mjs'
 ```
 
-#### Global import
+**Global import**
 
 ```html
 <script src="https://cdn.jsdelivr.net/npm/canvasparticles-js/dist/index.umd.min.js" defer></script>
 ```
 
-</details>
-
-<br>
+---
 
 ## Implementation
 
@@ -116,7 +114,9 @@ particles.destroy()
 delete particles // Optional
 ```
 
-## Class instantiation
+---
+
+## Class Instantiation
 
 ### Valid ways to instantiate `CanvasParticles`
 
@@ -169,7 +169,7 @@ canvas = new CanvasParticles(selector).anyOtherMethod().canvas
 
 ## Options
 
-Options to change the particles and their behavior aswell as what happens on `MouseMove` or `Resize` events.
+Options to change the particles and their behavior aswell as what happens on `MouseMove` or `Resize` events.<br>
 Play around with these values in the [Sandbox](https://khoeckman.github.io/canvasparticles-js/#sandbox).
 
 ### Options Object
@@ -237,6 +237,8 @@ Enabling gravity (`repulsive` or `pulling` > 0) performs an extra **O(n²)** gra
 | `gravity.pulling`   | `float` | `0`     | Attractive force between particles. Requires sufficient repulsion to avoid clustering. |
 | `gravity.friction`  | `float` | `0.8`   | Damping factor applied to gravitational velocity each update (`0.0 – 1.0`).            |
 
+---
+
 ### Update options on the fly
 
 You can update every option while an instance is animating and it works great; but some options require an extra step.
@@ -299,7 +301,9 @@ To reinitialize all options, pass a new options object to the `options` setter.
 instance.options = { ... }
 ```
 
-## One pager example
+---
+
+## One Pager Example
 
 ```html
 <!DOCTYPE html>
@@ -327,7 +331,7 @@ instance.options = { ... }
       const options = {
         background: 'hsl(125, 42%, 35%)',
         mouse: {
-          interactionType: CanvasParticles.interactionType.MOVE, // MOVE === 2
+          interactionType: CanvasParticles.interactionType.MOVE, // = 2
         },
         particles: {
           color: 'rgba(150, 255, 105, 0.95)',

@@ -42,19 +42,24 @@ export default class CanvasParticles {
   })
 
   /** Observes canvas elements entering or leaving the viewport to start/stop animation */
-  static readonly canvasIntersectionObserver = new IntersectionObserver((entries) => {
-    for (let i = 0; i < entries.length; i++) {
-      const entry = entries[i]
-      const canvas = entry.target as CanvasParticlesCanvas
-      const instance = canvas.instance // The CanvasParticles class instance bound to this canvas
+  static readonly canvasIntersectionObserver = new IntersectionObserver(
+    (entries) => {
+      for (let i = 0; i < entries.length; i++) {
+        const entry = entries[i]
+        const canvas = entry.target as CanvasParticlesCanvas
+        const instance = canvas.instance // The CanvasParticles class instance bound to this canvas
 
-      if (!instance.options?.animation) return
+        if (!instance.options?.animation) return
 
-      if ((canvas.inViewbox = entry.isIntersecting))
-        instance.options.animation?.startOnEnter && instance.start({ auto: true })
-      else instance.options.animation?.stopOnLeave && instance.stop({ auto: true, clear: false })
+        if ((canvas.inViewbox = entry.isIntersecting))
+          instance.options.animation?.startOnEnter && instance.start({ auto: true })
+        else instance.options.animation?.stopOnLeave && instance.stop({ auto: true, clear: false })
+      }
+    },
+    {
+      rootMargin: '-1px',
     }
-  })
+  )
 
   static readonly canvasResizeObserver = new ResizeObserver((entries) => {
     // Seperate for loops is very important to prevent huge forced reflow overhead

@@ -1,4 +1,4 @@
-// Copyright (c) 2022–2025 Kyle Hoeckman, MIT License
+// Copyright (c) 2022–2026 Kyle Hoeckman, MIT License
 // https://github.com/Khoeckman/canvasparticles-js/blob/main/LICENSE
 
 import type { CanvasParticlesCanvas, Particle, GridPos, ContextColor, LineSegment } from './types'

@@ -39,9 +39,11 @@ export interface ParticleBounds {
   left: number
 }
 
+export type GridPos = 0 | 1 | 2
+
 export interface ParticleGridPos {
-  x: 0 | 1 | 2
-  y: 0 | 1 | 2
+  x: GridPos
+  y: GridPos
 }
 
 export interface ContextColor {

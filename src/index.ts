@@ -1,7 +1,7 @@
 // Copyright (c) 2022–2025 Kyle Hoeckman, MIT License
 // https://github.com/Khoeckman/canvasparticles-js/blob/main/LICENSE
 
-import type { CanvasParticlesCanvas, Particle, ContextColor, LineSegment } from './types'
+import type { CanvasParticlesCanvas, Particle, GridPos, ContextColor, LineSegment } from './types'
 import type { CanvasParticlesOptions, CanvasParticlesOptionsInput } from './types/options'
 
 const TWO_PI = 2 * Math.PI
@@ -427,8 +427,8 @@ export default class CanvasParticles {
    * - { x: 2, y: 2 } = bottom-right
    */
   #gridPos(particle: Particle): void {
-    particle.gridPos.x = (+(particle.x >= particle.bounds.left) + +(particle.x > particle.bounds.right)) as 0 | 1 | 2
-    particle.gridPos.y = (+(particle.y >= particle.bounds.top) + +(particle.y > particle.bounds.bottom)) as 0 | 1 | 2
+    particle.gridPos.x = (+(particle.x >= particle.bounds.left) + +(particle.x > particle.bounds.right)) as GridPos
+    particle.gridPos.y = (+(particle.y >= particle.bounds.top) + +(particle.y > particle.bounds.bottom)) as GridPos
   }
 
   /** @private Determines whether a line between 2 particles crosses through the visible center of the canvas */

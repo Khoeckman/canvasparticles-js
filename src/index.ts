@@ -38,7 +38,14 @@ export default class CanvasParticles {
   static readonly interactionType = Object.freeze({
     NONE: 0, // No mouse interaction
     SHIFT: 1, // Visual displacement only
-    MOVE: 2, // Actual particle movement
+    MOVE: 2, // Actual particle movement (default)
+  })
+
+  /** Defines how the particles are auto-generated */
+  static readonly generationType = Object.freeze({
+    MANUAL: 0, // Never auto-generate particles
+    NEW: 1, // Generate particles from scratch
+    MATCH: 2, // Add or remove particles to match new count (default)
   })
 
   /** Observes canvas elements entering or leaving the viewport to start/stop animation */
@@ -210,8 +217,12 @@ export default class CanvasParticles {
     this.offX = (width - this.width) / 2
     this.offY = (height - this.height) / 2
 
-    if (this.option.particles.regenerateOnResize || this.particles.length === 0) this.newParticles()
-    else this.matchParticleCount({ updateBounds: true })
+    const generationType = this.option.particles.generationType
+
+    if (generationType !== CanvasParticles.generationType.MANUAL) {
+      if (generationType === CanvasParticles.generationType.NEW || this.particles.length === 0) this.newParticles()
+      else if (generationType === CanvasParticles.generationType.MATCH) this.matchParticleCount({ updateBounds: true })
+    }
 
     if (this.isAnimating) this.#render()
   }
@@ -256,9 +267,9 @@ export default class CanvasParticles {
       velY: 0, // Vertical speed in pixels per update
       offX: 0, // Horizontal distance from drawn to logical position in pixels
       offY: 0, // Vertical distance from drawn to logical position in pixels
-      dir: dir || prng() * TWO_PI, // Direction in radians
-      speed: speed || (0.5 + prng() * 0.5) * this.option.particles.relSpeed, // Velocity in pixels per update
-      size: size || (0.5 + Math.pow(prng(), 5) * 2) * this.option.particles.relSize, // Ray in pixels of the particle
+      dir: dir ?? prng() * TWO_PI, // Direction in radians
+      speed: speed ?? (0.5 + prng() * 0.5) * this.option.particles.relSpeed, // Velocity in pixels per update
+      size: size ?? (0.5 + Math.pow(prng(), 5) * 2) * this.option.particles.relSize, // Ray in pixels of the particle
       gridPos: { x: 1, y: 1 },
       isVisible: false,
     }
@@ -646,13 +657,18 @@ export default class CanvasParticles {
           options.mouse?.interactionType,
           CanvasParticles.interactionType.MOVE,
           { min: 0, max: 2 }
-        ),
+        ) as 0 | 1 | 2,
         connectDistMult: pno('mouse.connectDistMult', options.mouse?.connectDistMult, 2 / 3, { min: 0 }),
         connectDist: 1 /* post processed */,
         distRatio: pno('mouse.distRatio', options.mouse?.distRatio, 2 / 3, { min: 0 }),
       },
       particles: {
-        regenerateOnResize: !!options.particles?.regenerateOnResize,
+        generationType: ~~pno(
+          'particles.generationType',
+          options.particles?.generationType,
+          CanvasParticles.generationType.MATCH,
+          { min: 0, max: 2 }
+        ) as 0 | 1 | 2,
         drawLines: !!(options.particles?.drawLines ?? true),
         color: options.particles?.color ?? 'black',
         ppm: ~~pno('particles.ppm', options.particles?.ppm, 100),

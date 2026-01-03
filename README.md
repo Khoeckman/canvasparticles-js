@@ -15,6 +15,7 @@ Creating a fun and interactive background. Colors, interaction and gravity can b
 [Implementation](#implementation)<br>
 [Class Instantiation](#class-instantiation)<br>
 [Options](#options)<br>
+[Manually creating particles](#manually-creating-particles)<br>
 [One Pager Example](#one-pager-example)
 
 ---
@@ -212,18 +213,18 @@ Your screen resolution and refresh rate will directly impact perfomance!
 
 ### `particles`
 
-| Option                         | Type      | Default    | Description                                                                                       |
-| ------------------------------ | --------- | ---------- | ------------------------------------------------------------------------------------------------- |
-| `particles.color`              | `string`  | `'black'`  | Particle and connection color. Any CSS color format.                                              |
-| `particles.ppm`                | `integer` | `100`      | Particles per million pixels. _Heavily impacts performance_                                       |
-| `particles.max`                | `integer` | `Infinity` | Maximum number of particles allowed.                                                              |
-| `particles.maxWork`            | `integer` | `Infinity` | Maximum total connection length per particle. Lower values stabilize performance but may flicker. |
-| `particles.connectDistance`    | `integer` | `150`      | Maximum distance for particle connections (px). _Heavily impacts performance_                     |
-| `particles.relSpeed`           | `float`   | `1`        | Relative particle speed multiplier.                                                               |
-| `particles.relSize`            | `float`   | `1`        | Relative particle size multiplier.                                                                |
-| `particles.rotationSpeed`      | `float`   | `2`        | Direction change speed.                                                                           |
-| `particles.regenerateOnResize` | `boolean` | `false`    | Regenerate all particles when the canvas resizes.                                                 |
-| `particles.drawLines`          | `boolean` | `true`     | Whether to draw lines between particles.                                                          |
+| Option                      | Type          | Default    | Description                                                                                              |
+| --------------------------- | ------------- | ---------- | -------------------------------------------------------------------------------------------------------- |
+| `particles.generationType`  | `0 \| 1 \| 2` | `false`    | Auto-generate particles on initialization and when the canvas resizes. `0 = OFF`, `1 = NEW`, `2 = MATCH` |
+| `particles.color`           | `string`      | `'black'`  | Particle and connection color. Any CSS color format.                                                     |
+| `particles.ppm`             | `integer`     | `100`      | Particles per million pixels. _Heavily impacts performance_                                              |
+| `particles.max`             | `integer`     | `Infinity` | Maximum number of particles allowed.                                                                     |
+| `particles.maxWork`         | `integer`     | `Infinity` | Maximum total connection length per particle. Lower values stabilize performance but may flicker.        |
+| `particles.connectDistance` | `integer`     | `150`      | Maximum distance for particle connections (px). _Heavily impacts performance_                            |
+| `particles.relSpeed`        | `float`       | `1`        | Relative particle speed multiplier.                                                                      |
+| `particles.relSize`         | `float`       | `1`        | Relative particle size multiplier.                                                                       |
+| `particles.rotationSpeed`   | `float`       | `2`        | Direction change speed.                                                                                  |
+| `particles.drawLines`       | `boolean`     | `true`     | Whether to draw lines between particles.                                                                 |
 
 ---
 
@@ -320,6 +321,32 @@ To reinitialize all options, pass a new options object to the `options` setter.
 
 ```js
 instance.options = { ... }
+```
+
+---
+
+## Manually creating particles
+
+```ts
+createParticle(posX?: number, posY?: number, dir?: number, speed?: number, size?: number)
+```
+
+By default `particles.ppm` and `particles.max` are used to auto-generate random particles. This might destroy manually created particles. To fix this, set `particles.generationType` to `MANUAL (0)`.
+
+```js
+const canvas = '#my-canvas'
+const options = {
+  particles: {
+    generationType: CanvasParticles.generationType.MANUAL, // = 0
+    rotationSpeed: 0,
+  },
+}
+const instance = new CanvasParticles(canvas, options).start()
+
+// Create a horizontal line of particles moving down
+for (let x = 100; x < 300; x += 4) {
+  instance.createParticle(x, 100, 0, 1, 5)
+}
 ```
 
 ---

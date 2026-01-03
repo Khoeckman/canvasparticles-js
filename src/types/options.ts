@@ -7,14 +7,14 @@ export interface CanvasParticlesOptions {
   }
 
   mouse: {
-    interactionType: number
+    interactionType: 0 | 1 | 2 /* see CanvasParticles.interactionType */
     connectDistMult: number
     connectDist: number /* post processed */
     distRatio: number
   }
 
   particles: {
-    regenerateOnResize: boolean
+    generationType: 0 | 1 | 2 /* see CanvasParticles.generationType */
     drawLines: boolean
     color: string | CanvasGradient | CanvasPattern
     ppm: number

@@ -11,6 +11,7 @@ In an HTML canvas, a bunch of floating particles connected with lines when they 
 Creating a fun and interactive background. Colors, interaction and gravity can be customized!
 
 [Showcase](#showcase)<br>
+[Import](#import)<br>
 [Implementation](#implementation)<br>
 [Class instantiation](#class-instantiation)<br>
 [Options](#options)<br>
@@ -19,11 +20,12 @@ Creating a fun and interactive background. Colors, interaction and gravity can b
 ## Showcase
 
 If you dont like reading documentation this website is for you:<br>
+
 [https://khoeckman.github.io/canvasparticles-js/](https://khoeckman.github.io/canvasparticles-js/)
 
-![Banner with particles and title: Canvas Particles](./demo/banner.webp)
+[![Banner with particles and title: Canvas Particles](./demo/banner.webp)](https://khoeckman.github.io/canvasparticles-js/)
 
-## Implementation
+## Import
 
 Particles will be drawn onto a `<canvas>` element.
 
@@ -38,100 +40,50 @@ Particles will be drawn onto a `<canvas>` element.
 npm install canvasparticles-js
 # or
 pnpm add canvasparticles-js
-# or
-yarn add canvasparticles-js
 ```
 
-Add a `<script>` element in the `<head>` to import _initParticles.js_.
-
-```html
-<head>
-  <script src="./initParticles.js" type="module"></script>
-</head>
-```
-
-Inside _initParticles.js_:
+#### ES Module import
 
 ```js
 import CanvasParticles from 'canvasparticles-js'
-
-const selector = '#my-canvas' // Query Selector for the canvas
-const options = { ... } // See #options
-new CanvasParticles(selector, options).start()
 ```
+
+If you don't have a bundler:
+
+```js
+import CanvasParticles from './node_modules/canvasparticles-js/dist/index.mjs'
+```
+
+#### Global import
+
+```html
+<script src="./node_modules/canvasparticles-js/dist/index.umd.js" defer></script>
+```
+
+No import required in each JavaScript file!
 
 </details>
 
 <details>
   <summary><h3 style="display: inline;">Import with jsDelivr (click to expand)</h3></summary>
 
-Add a `<script>` element in the `<head>` to import `CanvasParticles`.
-
-```html
-<head>
-  <script src="https://cdn.jsdelivr.net/npm/canvasparticles-js/dist/index.umd.js" defer></script>
-</head>
-```
-
-</details>
-
-<details>
-  <summary><h3 style="display: inline;">Import raw file as ES module (click to expand)</h3></summary>
-
-Be aware that using ES modules is only possible when running the application on a (local) server.<br>
-[Same Origin Policy](https://developer.mozilla.org/en-US/docs/Web/Security/Same-origin_policy)
-
-Add a `<script>` element in the `<head>` to import _initParticles.js_.
-
-```html
-<head>
-  <script src="./initParticles.js" type="module"></script>
-</head>
-```
-
-Inside _initParticles.js_:
+#### ES Module import
 
 ```js
-import CanvasParticles from './dist/index.mjs'
-
-const selector = '#my-canvas' // Query Selector for the canvas
-const options = { ... } // See #options
-new CanvasParticles(selector, options).start()
+import CanvasParticles from 'https://cdn.jsdelivr.net/npm/canvasparticles-js/dist/index.min.mjs'
 ```
 
-</details>
-
-<details>
-  <summary><h3 style="display: inline;">Import raw file globally (click to expand)</h3></summary>
-  
-  Add a `<script>` element in the `<head>` to import the [dist/index.umd.js](https://github.com/Khoeckman/canvasparticles-js/blob/main/dist/index.umd.js) file.<br>
-  ```html
-  <head>
-    <script src="./index.umd.js" defer></script>
-  </head>
-  ```
-
-Add an inline `<script>` element at the very bottom of the `<body>`.
+#### Global import
 
 ```html
-<body>
-  ...
-
-  <script>
-    const initParticles = () => {
-      const selector = '#my-canvas' // Query Selector for the canvas
-      const options = { ... } // See #options
-      new CanvasParticles(selector, options).start()
-    }
-    document.addEventListener('DOMContentLoaded', initParticles)
-  </script>
-</body>
+<script src="https://cdn.jsdelivr.net/npm/canvasparticles-js/dist/index.umd.min.js" defer></script>
 ```
 
 </details>
 
 <br>
-<br>
+
+## Implementation
 
 ### Start animating
 
@@ -217,137 +169,85 @@ canvas = new CanvasParticles(selector).anyOtherMethod().canvas
 
 ## Options
 
-Configuration options for the particles and their behavior.<br>
-Play around with these values: [Sandbox](https://khoeckman.github.io/canvasparticles-js/#sandbox)
+Options to change the particles and their behavior aswell as what happens on `MouseMove` or `Resize` events.
+Play around with these values in the [Sandbox](https://khoeckman.github.io/canvasparticles-js/#sandbox).
 
-<details>
-  <summary><h3 style="display: inline;">Options structure (click to expand)</h3></summary>
+### Options Object
 
 The default value will be used when an option is assigned an invalid value.<br>
 Your screen resolution and refresh rate will directly impact perfomance!
 
-```js
-const options = {
-  /** @param {string} [options.background=false] - Background of the canvas. Can be any CSS supported value for the background property.
-   * @note No background will be set if background is not a string.
-   */
-  background: 'linear-gradient(115deg, #354089, black)',
+### Root options
 
-  /** @param {Object} [options.animation] - Animation settings. */
-  animation: {
-    /** @param {boolean} [options.animation.startOnEnter=true] - Whether to start the animation when the canvas enters the viewport. */
-    startOnEnter: true,
+| Option       | Type              | Default | Description                                                                   |
+| ------------ | ----------------- | ------- | ----------------------------------------------------------------------------- |
+| `background` | `string \| false` | `false` | Canvas background. Any valid CSS `background` value. Ignored if not a string. |
 
-    /** @param {boolean} [options.animation.stopOnLeave=true] - Whether to stop the animation when the canvas leaves the viewport. */
-    stopOnLeave: true,
-  },
+---
 
-  /** @param {Object} [options.mouse] - Mouse interaction settings. */
-  mouse: {
-    /** @param {0|1|2} [options.mouse.interactionType=1] - The type of interaction the mouse will have with particles.
-     *
-     * CanvasParticles.interactionType.NONE = 0 = No interaction.
-     * CanvasParticles.interactionType.SHIFT = 1 = The mouse can visually shift the particles.
-     * CanvasParticles.interactionType.MOVE = 2 = The mouse can move the particles.
-     * @note mouse.distRatio should be less than 1 to allow dragging, closer to 0 is easier to drag
-     */
-    interactionType: 2,
+### `animation`
 
-    /** @param {float} [options.mouse.connectDistMult=2÷3] - The maximum distance for the mouse to interact with the particles.
-     * The value is multiplied by particles.connectDistance
-     * @example 0.8 connectDistMult * 150 particles.connectDistance = 120 pixels
-     */
-    connectDistMult: 0.8,
+| Option                   | Type      | Default | Description                                          |
+| ------------------------ | --------- | ------- | ---------------------------------------------------- |
+| `animation.startOnEnter` | `boolean` | `true`  | Start animation when the canvas enters the viewport. |
+| `animation.stopOnLeave`  | `boolean` | `true`  | Stop animation when the canvas leaves the viewport.  |
 
-    /** @param {number} [options.mouse.distRatio=2÷3] - All particles within set radius from the mouse will be drawn to mouse.connectDistance pixels from the mouse.
-     * @example radius = 150 connectDistance / 0.4 distRatio = 375 pixels
-     * @note Keep this value above mouse.connectDistMult
-     */
-    distRatio: 1, // recommended: 0.2 - 1
-  },
+---
 
-  /** @param {Object} [options.particles] - Particle settings. */
-  particles: {
-    /** param {string} [options.particles.color='black'] - The color of the particles and their connections. Can be any CSS supported color format. */
-    color: '#88c8ffa0',
+### `mouse`
 
-    /** @param {number} [options.particles.ppm=100] - Particles per million (ppm).
-     * This determines how many particles are created per million pixels of the canvas.
-     * @example FHD on Chrome = 1920 width * 937 height = 1799040 pixels; 1799040 pixels * 100 ppm / 1_000_000 = 179.904 = 179 particles
-     * @important The amount of particles exponentially reduces performance.
-     * People with large screens will have a bad experience with high values.
-     * One solution is to increase particles.connectDistance and decrease this value.
-     */
-    ppm: 100, // recommended: < 120
+| Option                  | Type          | Default | Description                                                                                                  |
+| ----------------------- | ------------- | ------- | ------------------------------------------------------------------------------------------------------------ |
+| `mouse.interactionType` | `0 \| 1 \| 2` | `2`     | Mouse interaction mode.<br>`0 = NONE`, `1 = SHIFT`, `2 = MOVE`.                                              |
+| `mouse.connectDistMult` | `float`       | `2/3`   | Multiplier applied to `particles.connectDistance` to compute mouse interaction distance.                     |
+| `mouse.distRatio`       | `float`       | `2/3`   | Controls how strongly particles are pulled toward the mouse. Keep equal to or above `mouse.connectDistMult`. |
 
-    /** @param {number} [options.particles.max=500] - The maximum number of particles allowed. */
-    max: 200, // recommended: < 500
+**Interaction types** (enum)
 
-    /** @param {number} [options.particles.maxWork=Infinity] - The maximum "work" a particle can perform before its connections are no longer drawn.
-     * @example 10 maxWork = 10 * 150 connectDistance = max 1500 pixels of lines drawn per particle
-     * @important Low values will stabilize performance at the cost of creating an ugly effect where connections may flicker.
-     */
-    maxWork: 10,
+- `NONE (0)` – No interaction
+- `SHIFT (1)` – Visual displacement only
+- `MOVE (2)` – Actual particle movement
 
-    /** @param {number} [options.particles.connectDistance=150] - The maximum distance for a connection between 2 particles.
-     * @note Heavily affects performance. */
-    connectDistance: 150,
+---
 
-    /** @param {number} [options.particles.relSpeed=1] - The relative moving speed of the particles.
-     * The moving speed is a random value between 0.5 and 1 pixels per update multiplied by this value.
-     */
-    relSpeed: 0.8,
+### `particles`
 
-    /** @param {number} [options.particles.relSize=1] - The relative size of the particles.
-     * The ray is a random value between 0.5 and 2.5 pixels multiplied by this value.
-     */
-    relSize: 1.1,
+| Option                         | Type      | Default    | Description                                                                                       |
+| ------------------------------ | --------- | ---------- | ------------------------------------------------------------------------------------------------- |
+| `particles.color`              | `string`  | `'black'`  | Particle and connection color. Any CSS color format.                                              |
+| `particles.ppm`                | `integer` | `100`      | Particles per million pixels. _Heavily impacts performance_                                       |
+| `particles.max`                | `integer` | `Infinity` | Maximum number of particles allowed.                                                              |
+| `particles.maxWork`            | `integer` | `Infinity` | Maximum total connection length per particle. Lower values stabilize performance but may flicker. |
+| `particles.connectDistance`    | `integer` | `150`      | Maximum distance for particle connections (px). _Heavily impacts performance_                     |
+| `particles.relSpeed`           | `float`   | `1`        | Relative particle speed multiplier.                                                               |
+| `particles.relSize`            | `float`   | `1`        | Relative particle size multiplier.                                                                |
+| `particles.rotationSpeed`      | `float`   | `2`        | Direction change speed.                                                                           |
+| `particles.regenerateOnResize` | `boolean` | `false`    | Regenerate all particles when the canvas resizes.                                                 |
+| `particles.drawLines`          | `boolean` | `true`     | Whether to draw lines between particles.                                                          |
 
-    /** @param {number} [options.particles.rotationSpeed=2] - The speed at which the particles randomly changes direction.
-     * @example 1 rotationSpeed = max direction change of 0.01 radians per update
-     */
-    rotationSpeed: 1, // recommended: < 10
+---
 
-    /** @param {boolean} [options.particles.regenerateOnResize=false] - Create new particles when the canvas gets resized.
-     * @note If false, will instead add or remove a few particles to match particles.ppm
-     */
-    regenerateOnResize: false,
-  },
+### `gravity`
 
-  /** @param {Object} [options.gravity] - Gravitational force settings.
-   * @important Heavily reduces performance if gravity.repulsive or gravity.pulling is not equal to 0
-   */
-  gravity: {
-    /** @param {number} [options.gravity.repulsive=0] - The repulsive force between particles. */
-    repulsive: 2, // recommended: 0.50 - 5.00
+Enabling gravity (`repulsive` or `pulling` > 0) performs an extra **O(n²)** gravity computations per frame.
 
-    /** @param {number} [options.gravity.pulling=0] - The attractive force pulling particles together. Works poorly if `gravity.repulsive` is too low.
-     * @note gravity.repulsive should be great enough to prevent forming a singularity.
-     */
-    pulling: 0.0, // recommended: 0.01 - 0.10
-
-    /** @param {number} [options.gravity.friction=0.9] -  The smoothness of the gravitational forces.
-     * The force gets multiplied by the fricion every update.
-     * @example force after x updates = force * friction ** x
-     */
-    friction: 0.8, // recommended: 0.500 - 0.999
-  },
-}
-```
-
-</details>
+| Option              | Type    | Default | Description                                                                            |
+| ------------------- | ------- | ------- | -------------------------------------------------------------------------------------- |
+| `gravity.repulsive` | `float` | `0`     | Repulsive force between particles. Strongly impacts performance.                       |
+| `gravity.pulling`   | `float` | `0`     | Attractive force between particles. Requires sufficient repulsion to avoid clustering. |
+| `gravity.friction`  | `float` | `0.8`   | Damping factor applied to gravitational velocity each update (`0.0 – 1.0`).            |
 
 ### Update options on the fly
 
-**Note:** The new option values are not validated, except for the options with a `set...()` function. Assigning invalid values will lead to unexpected behavior.
+You can update every option while an instance is animating and it works great; but some options require an extra step.
 
-#### Using the setter
+#### Using the available setter
 
-These options require dedicated setters to ensure proper integration.
+These options are the only ones that have and require a dedicated setter to ensure proper integration:
 
-- options.background
-- options.mouse.connectDistMult
-- options.particles.color
+- `background`
+- `mouse.connectDistMult`
+- `particles.color`
 
 ```js
 const instance = new CanvasParticles(selector, options)
@@ -360,24 +260,29 @@ instance.setParticleColor('hsl(149, 100%, 50%)')
 
 #### Changing the particle count
 
-After updating the following options, the number of particles is not automatically adjusted:
+After updating the following options, the number of particles is **not automatically adjusted**:
 
-- option.particles.ppm
-- option.particles.max
+- `particles.ppm`
+- `particles.max`
 
 ```js
 // Note: the backing field is called `option` not `options`!
 instance.option.particles.ppm = 100
 instance.option.particles.max = 300
+```
 
-// Apply the changes using one of these methods:
+The changes are only applied when one of the following methods is called.
+
+```js
 instance.newParticles() // Remove all particles and create the correct amount of new ones
 instance.matchParticleCount() // Add or remove some particles to match the count
 ```
 
 #### Modifying object properties
 
-**All** other options can be updated by modifying the `option` internal field properties, with changes taking immediate effect.
+**All** other options can be updated by only modifying the `option` internal field properties, with changes taking effect immediately.
+
+> The new option values are not validated. Assigning invalid values will lead to unexpected behavior. It is therefore recommended to use the [options setter](#updating-entire-options-object).
 
 ```js
 // Note: the backing field is called `option` not `options`!
@@ -391,8 +296,7 @@ instance.option.gravity.repulsive = 1
 To reinitialize all options, pass a new options object to the `options` setter.
 
 ```js
-const options = { ... }
-instance.options = options
+instance.options = { ... }
 ```
 
 ## One pager example

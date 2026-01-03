@@ -21,7 +21,7 @@ function Mulberry32(seed: number) {
   }
 }
 
-// Mulberry32 is ±388% faster than Math.random()
+// Mulberry32 is ±392% faster than Math.random()
 // Benchmark: https://jsbm.dev/muLCWR9RJCbmy
 // Spectral test: /demo/mulberry32.html
 const prng = Mulberry32(Math.random() * 2 ** 32).next
@@ -622,10 +622,11 @@ export default class CanvasParticles {
         stopOnLeave: !!(options.animation?.stopOnLeave ?? true),
       },
       mouse: {
-        interactionType: pno(
+        interactionType: ~~pno(
           'mouse.interactionType',
           options.mouse?.interactionType,
-          CanvasParticles.interactionType.MOVE
+          CanvasParticles.interactionType.MOVE,
+          { min: 0, max: 2 }
         ),
         connectDistMult: pno('mouse.connectDistMult', options.mouse?.connectDistMult, 2 / 3),
         connectDist: 1 /* post processed */,
@@ -635,10 +636,10 @@ export default class CanvasParticles {
         regenerateOnResize: !!options.particles?.regenerateOnResize,
         drawLines: !!(options.particles?.drawLines ?? true),
         color: options.particles?.color ?? 'black',
-        ppm: pno('particles.ppm', options.particles?.ppm, 100),
-        max: pno('particles.max', options.particles?.max, Infinity),
-        maxWork: pno('particles.maxWork', options.particles?.maxWork, Infinity, { min: 0 }),
-        connectDist: pno('particles.connectDistance', options.particles?.connectDistance, 150, { min: 1 }),
+        ppm: ~~pno('particles.ppm', options.particles?.ppm, 100),
+        max: ~~pno('particles.max', options.particles?.max, Infinity),
+        maxWork: ~~pno('particles.maxWork', options.particles?.maxWork, Infinity, { min: 0 }),
+        connectDist: ~~pno('particles.connectDistance', options.particles?.connectDistance, 150, { min: 1 }),
         relSpeed: pno('particles.relSpeed', options.particles?.relSpeed, 1, { min: 0 }),
         relSize: pno('particles.relSize', options.particles?.relSize, 1, { min: 0 }),
         rotationSpeed: pno('particles.rotationSpeed', options.particles?.rotationSpeed, 2, { min: 0 }) / 100,

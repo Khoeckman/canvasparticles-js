@@ -285,8 +285,8 @@ export default class CanvasParticles {
     const gravRepulsiveMult = connectDist * this.option.gravity.repulsive * step
     const gravPullingMult = connectDist * this.option.gravity.pulling * step
     const maxRepulsiveDist = connectDist / 2
-    const maxRepulsiveDistSq = maxRepulsiveDist * maxRepulsiveDist
-    const eps = (connectDist * connectDist) / 256
+    const maxRepulsiveDistSq = maxRepulsiveDist ** 2
+    const eps = connectDist ** 2 / 256
 
     for (let i = 0; i < len; i++) {
       const particleA = particles[i]
@@ -474,9 +474,9 @@ export default class CanvasParticles {
     const particles = this.particles
     const ctx = this.ctx
     const maxDist = this.option.particles.connectDist
-    const maxDistSq = maxDist * maxDist
+    const maxDistSq = maxDist ** 2
     const halfMaxDist = maxDist / 2
-    const halfMaxDistSq = halfMaxDist * halfMaxDist
+    const halfMaxDistSq = halfMaxDist ** 2
     const drawAll = maxDist >= Math.min(this.canvas.width, this.canvas.height)
     const maxWorkPerParticle = maxDistSq * this.option.particles.maxWork
     const alpha = this.color.alpha
@@ -628,16 +628,16 @@ export default class CanvasParticles {
           CanvasParticles.interactionType.MOVE,
           { min: 0, max: 2 }
         ),
-        connectDistMult: pno('mouse.connectDistMult', options.mouse?.connectDistMult, 2 / 3),
+        connectDistMult: pno('mouse.connectDistMult', options.mouse?.connectDistMult, 2 / 3, { min: 0 }),
         connectDist: 1 /* post processed */,
-        distRatio: pno('mouse.distRatio', options.mouse?.distRatio, 2 / 3),
+        distRatio: pno('mouse.distRatio', options.mouse?.distRatio, 2 / 3, { min: 0 }),
       },
       particles: {
         regenerateOnResize: !!options.particles?.regenerateOnResize,
         drawLines: !!(options.particles?.drawLines ?? true),
         color: options.particles?.color ?? 'black',
         ppm: ~~pno('particles.ppm', options.particles?.ppm, 100),
-        max: Math.round(pno('particles.max', options.particles?.max, Infinity)),
+        max: Math.round(pno('particles.max', options.particles?.max, Infinity, { min: 0 })),
         maxWork: Math.round(pno('particles.maxWork', options.particles?.maxWork, Infinity, { min: 0 })),
         connectDist: ~~pno('particles.connectDistance', options.particles?.connectDistance, 150, { min: 1 }),
         relSpeed: pno('particles.relSpeed', options.particles?.relSpeed, 1, { min: 0 }),
@@ -645,8 +645,8 @@ export default class CanvasParticles {
         rotationSpeed: pno('particles.rotationSpeed', options.particles?.rotationSpeed, 2, { min: 0 }) / 100,
       },
       gravity: {
-        repulsive: pno('gravity.repulsive', options.gravity?.repulsive, 0),
-        pulling: pno('gravity.pulling', options.gravity?.pulling, 0),
+        repulsive: pno('gravity.repulsive', options.gravity?.repulsive, 0, { min: 0 }),
+        pulling: pno('gravity.pulling', options.gravity?.pulling, 0, { min: 0 }),
         friction: pno('gravity.friction', options.gravity?.friction, 0.8, { min: 0, max: 1 }),
       },
     }
@@ -669,8 +669,8 @@ export default class CanvasParticles {
 
   /** @public Transform the distance multiplier (float) to absolute distance (px) */
   setMouseConnectDistMult(connectDistMult: number) {
-    this.option.mouse.connectDist =
-      this.option.particles.connectDist * (isNaN(connectDistMult) ? 2 / 3 : connectDistMult)
+    const mult = CanvasParticles.parseNumericOption('mouse.connectDistMult', connectDistMult, 2 / 3, { min: 0 })
+    this.option.mouse.connectDist = this.option.particles.connectDist * mult
   }
 
   /** @public Format particle color and opacity */

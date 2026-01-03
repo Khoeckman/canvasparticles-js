@@ -18,14 +18,17 @@ new CanvasParticles('#cp-1', {
 
 // Initialize second canvas
 new CanvasParticles('#cp-2', {
-  background: 'hsl(125, 42%, 35%)',
+  background: 'hsl(125, 33%, 10%)',
+  mouse: {
+    connectDistMult: 1,
+  },
   particles: {
+    regenerateOnResize: true,
     color: '#96ff69',
-    ppm: 150,
-    max: 300,
+    ppm: 120,
+    max: 480,
     maxWork: 20,
-    relSpeed: 1.25,
-    relSize: 2,
+    relSpeed: 0.75,
     rotationSpeed: 5,
   },
   gravity: {
@@ -35,21 +38,20 @@ new CanvasParticles('#cp-2', {
 
 // Initialize third canvas
 new CanvasParticles('#cp-3', {
-  background: '#423',
+  background: '#523',
   mouse: {
     distRatio: 1,
   },
   particles: {
-    regenerateOnResize: true,
-    color: '#f45c',
-    ppm: 150,
-    max: 300,
+    color: '#f45',
+    ppm: 80,
+    max: 320,
+    maxWork: 50,
     connectDistance: 250,
-    rotationSpeed: 3,
   },
   gravity: {
-    repulsive: 15,
-    pulling: 3,
-    friction: 0.9,
+    repulsive: 10,
+    pulling: 2,
+    friction: 0.95,
   },
 }).start()

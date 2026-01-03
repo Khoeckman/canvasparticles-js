@@ -277,24 +277,16 @@ export default class CanvasParticles {
         const distY = particleA.posY - particleB.posY
         const distSq = distX * distX + distY * distY
 
-        if (distSq >= maxRepulsiveDistSq && !isPullingEnabled) continue
+        if (!isPullingEnabled && distSq >= maxRepulsiveDistSq) continue
 
-        let angle
         let grav
-        let gravMult
+        const invDistSq = 1 / (distSq + eps)
 
-        if (distSq >= maxRepulsiveDistSq && !isPullingEnabled) continue
-
-        angle = Math.atan2(particleB.posY - particleA.posY, particleB.posX - particleA.posX)
-        grav = Math.pow(1 / Math.sqrt(distSq), 1.8)
-        const angleX = Math.cos(angle)
-        const angleY = Math.sin(angle)
-
-        if (distSq < maxRepulsiveDistSq) {
+        if (isRepulsiveEnabled && distSq < maxRepulsiveDistSq) {
           // Apply pushing forces
-          gravMult = grav * gravRepulsiveMult
-          const gravX = -distX * invDist * gravMult
-          const gravY = -distY * invDist * gravMult
+          grav = invDistSq * gravRepulsiveMult
+          const gravX = -distX * grav
+          const gravY = -distY * grav
           particleA.velX -= gravX
           particleA.velY -= gravY
           particleB.velX += gravX
@@ -304,9 +296,9 @@ export default class CanvasParticles {
         if (!isPullingEnabled) continue
 
         // Apply pulling forces
-        gravMult = grav * gravPullingMult
-        const gravX = -distX * invDist * gravMult
-        const gravY = -distY * invDist * gravMult
+        grav = invDistSq * gravPullingMult
+        const gravX = -distX * grav
+        const gravY = -distY * grav
         particleA.velX += gravX
         particleA.velY += gravY
         particleB.velX -= gravX
@@ -363,7 +355,7 @@ export default class CanvasParticles {
       const distY = particle.posY + offY - mouseY
 
       // Mouse interaction
-      if (isInteractionTypeNone) {
+      if (!isMouseInteractionTypeNone) {
         const distRatio = this.option.mouse.connectDist / Math.hypot(distX, distY)
 
         if (mouseDistRatio < distRatio) {
@@ -380,7 +372,7 @@ export default class CanvasParticles {
       particle.y = particle.posY + particle.offY
 
       // Move the particles
-      if (isInteractionTypeMove) {
+      if (isMouseInteractionTypeMove) {
         particle.posX = particle.x
         particle.posY = particle.y
       }

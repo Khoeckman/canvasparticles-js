@@ -273,11 +273,30 @@ instance.option.particles.ppm = 100
 instance.option.particles.max = 300
 ```
 
-The changes are only applied when one of the following methods is called.
+The changes are only applied when one of the following methods is called:
 
 ```js
 instance.newParticles() // Remove all particles and create the correct amount of new ones
 instance.matchParticleCount() // Add or remove some particles to match the count
+```
+
+### Changing particle properties
+
+After updating the following options, the particles are **not automatically updated**:
+
+- `particles.relSize`
+- `particles.relSpeed`
+
+```js
+// Note: the backing field is called `option` not `options`!
+instance.option.particles.relSize = 2
+instance.option.particles.relSpeed = 3
+```
+
+The changes are only applied when the following method is called:
+
+```js
+instance.updateParticles() // Updates the particle.speed and particle.size properties without regenerating any particles
 ```
 
 #### Modifying object properties
@@ -296,6 +315,8 @@ instance.option.gravity.repulsive = 1
 #### Updating entire options object
 
 To reinitialize all options, pass a new options object to the `options` setter.
+
+> Existing particles their properties will not be updated automatically. [Changing particle properties](#changing-particle-properties)
 
 ```js
 instance.options = { ... }

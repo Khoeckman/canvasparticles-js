@@ -258,7 +258,7 @@ export default class CanvasParticles {
       offY: 0, // Vertical distance from drawn to logical position in pixels
       dir: dir || prng() * TWO_PI, // Direction in radians
       speed: speed || (0.5 + prng() * 0.5) * this.option.particles.relSpeed, // Velocity in pixels per update
-      size: size || (0.5 + prng() ** 5 * 2) * this.option.particles.relSize, // Ray in pixels of the particle
+      size: size || (0.5 + Math.pow(prng(), 5) * 2) * this.option.particles.relSize, // Ray in pixels of the particle
       gridPos: { x: 1, y: 1 },
       isVisible: false,
     }
@@ -274,6 +274,20 @@ export default class CanvasParticles {
       right: this.canvas.width + particle.size,
       bottom: this.canvas.height + particle.size,
       left: -particle.size,
+    }
+  }
+
+  /* @public Randomize speed and size of all particles based on current options */
+  updateParticles() {
+    const len = this.particleCount
+    const particles = this.particles
+    const relSpeed = this.option.particles.relSpeed
+    const relSize = this.option.particles.relSize
+
+    for (let i = 0; i < len; i++) {
+      const particle = particles[i]
+      particle.speed = (0.5 + prng() * 0.5) * relSpeed
+      particle.size = (0.5 + Math.pow(prng(), 5) * 2) * relSize
     }
   }
 

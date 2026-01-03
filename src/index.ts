@@ -117,8 +117,6 @@ export default class CanvasParticles {
   private lastAnimationFrame: number = 0
 
   particles: Particle[] = []
-  particleCount: number = 0
-
   private clientX: number = Infinity
   private clientY: number = Infinity
   mouseX: number = Infinity
@@ -228,29 +226,31 @@ export default class CanvasParticles {
   }
 
   /** @private Update the target number of particles based on the current canvas size and `options.particles.ppm`, capped at `options.particles.max`. */
-  #updateParticleCount() {
+  #targetParticleCount(): number {
     // Amount of particles to be created
-    const particleCount = ((this.option.particles.ppm * this.width * this.height) / 1_000_000) | 0
-    this.particleCount = Math.min(this.option.particles.max, particleCount)
+    let particleCount = Math.round((this.option.particles.ppm * this.width * this.height) / 1_000_000)
+    particleCount = Math.min(this.option.particles.max, particleCount)
 
-    if (!isFinite(this.particleCount)) throw new RangeError('particleCount must be finite')
+    if (!isFinite(particleCount)) throw new RangeError('particleCount must be finite')
+    return particleCount | 0
   }
 
   /** @public Remove existing particles and generate new ones */
   newParticles() {
-    this.#updateParticleCount()
+    const particleCount = this.#targetParticleCount()
 
     this.particles = []
-    for (let i = 0; i < this.particleCount; i++) this.createParticle()
+    for (let i = 0; i < particleCount; i++) this.createParticle()
   }
 
   /** @public Adjust particle array length to match `options.particles.ppm` */
   matchParticleCount({ updateBounds = false }: { updateBounds?: boolean } = {}) {
-    this.#updateParticleCount()
+    const particleCount = this.#targetParticleCount()
 
-    this.particles = this.particles.slice(0, this.particleCount)
+    this.particles = this.particles.slice(0, particleCount)
     if (updateBounds) this.particles.forEach((particle) => this.#updateParticleBounds(particle))
-    while (this.particleCount > this.particles.length) this.createParticle()
+
+    while (particleCount > this.particles.length) this.createParticle()
   }
 
   /** @public Create a new particle with optional parameters */
@@ -290,8 +290,8 @@ export default class CanvasParticles {
 
   /* @public Randomize speed and size of all particles based on current options */
   updateParticles() {
-    const len = this.particleCount
     const particles = this.particles
+    const len = particles.length
     const relSpeed = this.option.particles.relSpeed
     const relSize = this.option.particles.relSize
 
@@ -309,8 +309,8 @@ export default class CanvasParticles {
 
     if (!isRepulsiveEnabled && !isPullingEnabled) return
 
-    const len = this.particleCount
     const particles = this.particles
+    const len = particles.length
     const connectDist = this.option.particles.connectDist
     const gravRepulsiveMult = connectDist * this.option.gravity.repulsive * step
     const gravPullingMult = connectDist * this.option.gravity.pulling * step
@@ -365,8 +365,8 @@ export default class CanvasParticles {
 
   /** @private Update positions, directions, and visibility of all particles */
   #updateParticles(step: number) {
-    const len = this.particleCount
     const particles = this.particles
+    const len = particles.length
     const width = this.width
     const height = this.height
     const offX = this.offX
@@ -475,8 +475,8 @@ export default class CanvasParticles {
 
   /** @private Draw the particles on the canvas */
   #renderParticles() {
-    const len = this.particleCount
     const particles = this.particles
+    const len = particles.length
     const ctx = this.ctx
 
     for (let i = 0; i < len; i++) {
@@ -500,8 +500,8 @@ export default class CanvasParticles {
 
   /** @private Draw lines between particles if they are close enough */
   #renderConnections() {
-    const len = this.particleCount
     const particles = this.particles
+    const len = particles.length
     const ctx = this.ctx
     const maxDist = this.option.particles.connectDist
     const maxDistSq = maxDist ** 2

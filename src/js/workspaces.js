@@ -28,34 +28,26 @@ const presets = {
   }
 }`,
 
-  gravity: `sandbox.options = {
+  dots: `sandbox.options = {
   background: '#423',
-  animation: {
-    startOnEnter: false,
-  },
   mouse: {
-    interactionType: 2,
-    distRatio: 0.9,
+    connectDistMult: 1,
+    distRatio: 1,
   },
   particles: {
-    color: '#f45',
-    ppm: 175,
-    maxWork: 30,
+    drawLines: false,
+    color: '#f75',
+    ppm: 999,
     connectDistance: 125,
-    relSize: 0.5,
-    relSpeed: 5,
-    rotationSpeed: 5,
-  },
-  gravity: {
-    repulsive: 5,
-    pulling: 0.3,
-    friction: 0.99,
+    relSpeed: 0.1,
+    rotationSpeed: 3,
   }
 }`,
 
   shapes: `sandbox.options = {
   background: 'linear-gradient(100deg, #f80, #0f8 150%)',
   mouse: {
+    interactionType: 1,
     connectDistMult: 0.7,
   },
   particles: {

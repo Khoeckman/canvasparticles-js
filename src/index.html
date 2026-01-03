@@ -1,5 +1,5 @@
 <!--
-Copyright (c) 2022–2025 Kyle Hoeckman, MIT License
+Copyright (c) 2022–2026 Kyle Hoeckman, MIT License
 https://github.com/Khoeckman/canvasparticles-js/blob/main/LICENSE
 -->
 <!doctype html>
@@ -148,14 +148,14 @@ https://github.com/Khoeckman/canvasparticles-js/blob/main/LICENSE
             <h4>ES Module import</h4>
 
             <div class="codeblock">
-              <span class="head">ESM</span>
+              <span class="head">JavaScript (module)</span>
               <pre><code class="language-js">import CanvasParticles from 'canvasparticles-js'</code></pre>
             </div>
 
             <p>If you don't have a bundler:</p>
 
             <div class="codeblock">
-              <span class="head">ESM</span>
+              <span class="head">JavaScript (module)</span>
               <pre><code class="language-js">import CanvasParticles from './node_modules/canvasparticles-js/dist/index.mjs'</code></pre>
             </div>
 
@@ -185,7 +185,7 @@ https://github.com/Khoeckman/canvasparticles-js/blob/main/LICENSE
             <h4>ES Module import</h4>
 
             <div class="codeblock">
-              <span class="head">ESM</span>
+              <span class="head">JavaScript (module)</span>
               <pre><code class="language-js">import CanvasParticles from 'https://cdn.jsdelivr.net/npm/canvasparticles-js/dist/index.min.mjs'</code></pre>
             </div>
 
@@ -225,7 +225,7 @@ https://github.com/Khoeckman/canvasparticles-js/blob/main/LICENSE
             </p>
 
             <div class="codeblock">
-              <span class="head">ESM</span>
+              <span class="head">JavaScript (module)</span>
               <pre><code class="language-js">import CanvasParticles from './index.mjs'</code></pre>
             </div>
           </li>
@@ -406,6 +406,7 @@ new CanvasParticles(selector, options).start()</code></pre>
           <div class="codeblock">
             <span class="head">JavaScript</span>
             <pre><code class="language-js">new CanvasParticles('#showcase-quantity', {
+  background: 'hsl(125, 42%, 35%)',
   particles: {
     ppm: 2000,
     max: 4000,
@@ -427,10 +428,10 @@ new CanvasParticles(selector, options).start()</code></pre>
             <pre><code class="language-js">new CanvasParticles('#showcase-connect-distance', {
   background: 'linear-gradient(100deg, #f80, #0f8 150%)',
   mouse: {
-    interactionType: 2,
     connectDistMult: 0.4,
   },
   particles: {
+    color: '#0006',
     connectDistance: 400,
   },
 }).start()</code></pre>
@@ -478,8 +479,9 @@ new CanvasParticles(selector, options).start()</code></pre>
 
           <div class="codeblock">
             <span class="head">JavaScript</span>
-            <pre><code class="language-js">new CanvasParticles('#showcase-pushing-gravity', {
+            <pre><code class="language-js">new CanvasParticles('#showcase-pushing-gravity', {     
   particles: {
+    ppm: 150,
     connectDistance: 175,
   },
   gravity: {
@@ -512,15 +514,16 @@ new CanvasParticles(selector, options).start()</code></pre>
             <pre><code class="language-js">const showcasePullingGravity =
 new CanvasParticles('#showcase-pulling-gravity', {
   mouse: {
-    interactionType: 2,
     distRatio: 1,
   },
   particles: {
     maxWork: Infinity
-    relSpeed: 0,
+    connectDistance: 175,
+    relSpeed: 0.2,
+    rotationSpeed: 0.2,
   },
   gravity: {
-    repulsive: 8.25,
+    repulsive: 10.5,
     pulling: 3,
   },
 })</code></pre>
@@ -618,7 +621,7 @@ new CanvasParticles('#showcase-multiple-colors-2', {
 
             <ul id="sandbox-preset-choice" class="list choice">
               <li><button name="all" class="active">All options</button></li>
-              <li><button name="gravity">Violent gravity</button></li>
+              <li><button name="dots">Dots</button></li>
               <li><button name="shapes">Shapes</button></li>
             </ul>
           </div>
@@ -763,7 +766,7 @@ new CanvasParticles('#showcase-multiple-colors-2', {
         <p>
           Copyright ©
           <a href="https://khoeckman.github.io/cv/" class="fancy">Kyle Hoeckman</a>
-          2022–2025, Licensed under the
+          2022–2026, Licensed under the
           <a href="https://github.com/Khoeckman/canvasparticles-js?tab=MIT-1-ov-file#readme" class="fancy"
             target="_blank">MIT License</a>.
         </p>

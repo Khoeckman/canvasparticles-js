@@ -1,3 +1,5 @@
+import StorageManager from './StorageManager.js'
+
 const presets = {
   all: `sandbox.options = {
   background: '#151019',
@@ -6,12 +8,13 @@ const presets = {
     stopOnLeave: true,
   },
   mouse: {
-    interactionType: 2,
+    interactionType: CanvasParticles.interactionType.MOVE, // = 2
     connectDistMult: 0.7,
     distRatio: 0.6,
   },
   particles: {
-    regenerateOnResize: false,
+    generationType: CanvasParticles.generationType.REGEN, // = 2
+    drawLines: true,
     color: '#8cf',
     ppm: 120,
     max: 250,
@@ -31,14 +34,14 @@ const presets = {
   dots: `sandbox.options = {
   background: '#423',
   mouse: {
-    connectDistMult: 1,
+    connectDistMult: 125,
     distRatio: 1,
   },
   particles: {
     drawLines: false,
     color: '#f75',
     ppm: 999,
-    connectDistance: 125,
+    connectDistance: 1,
     relSpeed: 0.1,
     rotationSpeed: 3,
   }
@@ -51,7 +54,6 @@ const presets = {
     connectDistMult: 0.7,
   },
   particles: {
-    regenerateOnResize: true,
     color: 'white',
     ppm: 125,
     connectDistance: 175,
@@ -67,8 +69,11 @@ const presets = {
 }`,
 }
 
+const workspaceStore = new StorageManager('cpjs.sandbox.workspace', {
+  defaultValue: {},
+})
+
 const sandboxOptions = document.getElementById('sandbox-options')
-const localStorageItemKey = 'cpjs.sandbox.workspace'
 let selectedWorkspaceName = null
 
 export const loadPreset = (presetName) => {
@@ -79,31 +84,17 @@ export const loadPreset = (presetName) => {
 
 export const loadWorkspace = (workspaceName) => {
   selectedWorkspaceName = workspaceName
-  let workspaces = {}
 
-  try {
-    workspaces = JSON.parse(localStorage.getItem(localStorageItemKey) ?? '{}')
+  if (!workspaceStore.value?.[workspaceName]) workspaceStore.value[workspaceName] = presets.empty
 
-    // Make sure that `workspaces` is a dictionary
-    if (!workspaces || workspaces.constructor !== Object) workspaces = { [workspaceName]: presets.empty }
-    // If the workspace does not exist, initialize it with the empty preset
-    else if (!workspaces?.[workspaceName]) workspaces[workspaceName] = presets.empty
-  } catch (err) {
-    workspaces = { [workspaceName]: presets.empty }
-  }
-
-  localStorage.setItem(localStorageItemKey, JSON.stringify(workspaces))
-
-  sandboxOptions.textContent = workspaces[selectedWorkspaceName]
+  sandboxOptions.textContent = workspaceStore.value[workspaceName]
   Prism.highlightElement(sandboxOptions)
 }
 
 const saveWorkspace = (workspaceName, code) => {
-  const workspaces = JSON.parse(localStorage.getItem(localStorageItemKey) ?? '{}')
-  workspaces[workspaceName] = code
-  localStorage.setItem(localStorageItemKey, JSON.stringify(workspaces))
+  workspaceStore.value = { ...workspaceStore.value, [workspaceName]: code }
 }
 
-sandboxOptions.addEventListener('input', () => {
-  saveWorkspace(selectedWorkspaceName, sandboxOptions.innerText)
+sandboxOptions.addEventListener('input', function () {
+  saveWorkspace(selectedWorkspaceName, this.innerText)
 })

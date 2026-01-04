@@ -102,6 +102,7 @@ runButtons.forEach((button) => {
             sandboxError.innerText = err
             sandboxError.hidden = false
           }
+          sandbox.updateParticles()
           sandbox.matchParticleCount()
           sandbox.start()
         }

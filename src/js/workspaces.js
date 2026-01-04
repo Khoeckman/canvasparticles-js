@@ -1,4 +1,4 @@
-import StorageManager from './StorageManager.js'
+import StorageManager from './StorageManager.min.js'
 
 const presets = {
   all: `sandbox.options = {

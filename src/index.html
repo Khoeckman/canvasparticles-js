@@ -609,6 +609,43 @@ new CanvasParticles('#showcase-multiple-colors-2', {
           <canvas id="showcase-multiple-colors-2" class="overlay"></canvas>
         </div>
       </article>
+
+      <article>
+        <div class="content">
+          <h3>Create custom particles</h3>
+          <p>
+            Use <span class="highlight">createParticle()</span> to create particles at specific locations with custom
+            directions, speeds and sizes.
+          </p>
+          <p>
+            <strong>Syntax</strong>:
+            <code class="language-js">createParticle(posX, posY, dir, speed, size)</code>
+          </p>
+
+          <div class="codeblock">
+            <span class="head">JavaScript</span>
+            <pre><code class="language-js">const showcaseCreateParticles = new CanvasParticles('#showcase-create-particles', {
+  mouse: {
+    interactionType: 1, // Don't actually move the particles
+    connectDistMult: 75,
+    distRatio: 1,
+  },
+  particles: {
+    generationType: 0, // Don't autogenerate particles
+    connectDistance: 2,
+    rotationSpeed: 0,
+  },
+}).start()
+
+// Create a sine wave of particles moving down
+for (let x = 0; x < showcaseCreateParticles.canvas.width; x += 1) {
+  const y = Math.sin(x / 50) * 150
+  showcaseCreateParticles.createParticle(x, y, 0, 1, 2)
+}</code></pre>
+          </div>
+        </div>
+        <canvas id="showcase-create-particles"></canvas>
+      </article>
     </section>
 
     <section id="sandbox">

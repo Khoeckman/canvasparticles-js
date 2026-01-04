@@ -149,6 +149,28 @@ showcase['multiple-colors-2'] = new CanvasParticles('#showcase-multiple-colors-2
   },
 })
 
+showcase['create-particles'] = new CanvasParticles('#showcase-create-particles', {
+  background: 'var(--bg)',
+  mouse: {
+    interactionType: 1,
+    connectDistMult: 75,
+    distRatio: 1,
+  },
+  particles: {
+    generationType: 0,
+    color: '#f40',
+    connectDistance: 2,
+    rotationSpeed: 0,
+  },
+}).start()
+
+// Create a sine wave of particles moving down
+for (let x = 0; x < showcase['create-particles'].canvas.width; x += 1) {
+  const y = Math.sin(x / 50) * 150
+  showcase['create-particles'].createParticle(x, y, 0, 1, 2)
+}
+
+// Do not autostart these showcases:
 const startIgnore = ['pushing-gravity', 'pulling-gravity']
 
 Object.entries(showcase).forEach(([name, showcase]) => {

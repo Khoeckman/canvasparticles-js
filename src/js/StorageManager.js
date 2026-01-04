@@ -326,7 +326,11 @@ class StorageManager {
   sync(decodeFn = this.decodeFn) {
     let value = this.storage.getItem(this.itemName)
     if (typeof value !== 'string') return this.reset()
-    value = decodeFn(value)
+    try {
+      value = decodeFn(value)
+    } catch {
+      return this.reset()
+    }
     if (!value.startsWith('\0JSON\0\x20')) return (this.value = value) // value can only be of type T as it is checked on assignment
     // Slice off '\0JSON\0\x20' prefix
     value = value.slice(7)

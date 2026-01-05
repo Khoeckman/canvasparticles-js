@@ -117,6 +117,7 @@ export default class CanvasParticles {
   private lastAnimationFrame: number = 0
 
   particles: Particle[] = []
+  hasManualParticles = false // set to true once @public createParticle() is used
   private clientX: number = Infinity
   private clientY: number = Infinity
   mouseX: number = Infinity
@@ -239,22 +240,70 @@ export default class CanvasParticles {
   newParticles() {
     const particleCount = this.#targetParticleCount()
 
-    this.particles = []
-    for (let i = 0; i < particleCount; i++) this.createParticle()
+    if (this.hasManualParticles) {
+      this.particles = this.particles.filter((particle) => particle.manual)
+      this.hasManualParticles = this.particles.length > 0
+    } else {
+      this.particles = []
+    }
+
+    for (let i = 0; i < particleCount; i++) this.#createParticle()
   }
 
   /** @public Adjust particle array length to match `options.particles.ppm` */
   matchParticleCount({ updateBounds = false }: { updateBounds?: boolean } = {}) {
     const particleCount = this.#targetParticleCount()
 
-    this.particles = this.particles.slice(0, particleCount)
-    if (updateBounds) this.particles.forEach((particle) => this.#updateParticleBounds(particle))
+    if (this.hasManualParticles) {
+      const pruned: Particle[] = []
+      let autoCount = 0
 
-    while (particleCount > this.particles.length) this.createParticle()
+      // Keep manual particles while pruning automatic particles that exceed `particleCount`
+      // Only count automatic particles towards `particledCount`
+      for (const particle of this.particles) {
+        if (autoCount >= particleCount) break
+        if (particle.manual) autoCount++
+        pruned.push(particle)
+      }
+      this.particles = pruned
+    } else {
+      this.particles = this.particles.slice(0, particleCount)
+    }
+
+    // Only necessary after resize
+    if (updateBounds) {
+      for (const particle of this.particles) {
+        this.#updateParticleBounds(particle)
+      }
+    }
+
+    for (let i = this.particles.length; i < particleCount; i++) this.#createParticle()
+  }
+
+  /** @private Create a random new particle */
+  #createParticle() {
+    const particle: Omit<Particle, 'bounds'> = {
+      posX: 0, // Logical position in pixels
+      posY: 0, // Logical position in pixels
+      x: 0, // Visual position in pixels
+      y: 0, // Visual position in pixels
+      velX: 0, // Horizonal speed in pixels per update
+      velY: 0, // Vertical speed in pixels per update
+      offX: 0, // Horizontal distance from drawn to logical position in pixels
+      offY: 0, // Vertical distance from drawn to logical position in pixels
+      dir: prng() * TWO_PI, // Direction in radians
+      speed: (0.5 + prng() * 0.5) * this.option.particles.relSpeed, // Velocity in pixels per update
+      size: (0.5 + Math.pow(prng(), 5) * 2) * this.option.particles.relSize, // Ray in pixels of the particle
+      gridPos: { x: 1, y: 1 },
+      isVisible: false,
+      manual: false,
+    }
+    this.#updateParticleBounds(particle)
+    this.particles.push(particle)
   }
 
   /** @public Create a new particle with optional parameters */
-  createParticle(posX?: number, posY?: number, dir?: number, speed?: number, size?: number) {
+  createParticle(posX: number, posY: number, dir: number, speed: number, size: number) {
     posX = typeof posX === 'number' ? posX - this.offX : prng() * this.width
     posY = typeof posY === 'number' ? posY - this.offY : prng() * this.height
 
@@ -267,18 +316,22 @@ export default class CanvasParticles {
       velY: 0, // Vertical speed in pixels per update
       offX: 0, // Horizontal distance from drawn to logical position in pixels
       offY: 0, // Vertical distance from drawn to logical position in pixels
-      dir: dir ?? prng() * TWO_PI, // Direction in radians
-      speed: speed ?? (0.5 + prng() * 0.5) * this.option.particles.relSpeed, // Velocity in pixels per update
-      size: size ?? (0.5 + Math.pow(prng(), 5) * 2) * this.option.particles.relSize, // Ray in pixels of the particle
+      dir: dir, // Direction in radians
+      speed: speed, // Velocity in pixels per update
+      size: size, // Ray in pixels of the particle
       gridPos: { x: 1, y: 1 },
       isVisible: false,
+      manual: true,
     }
     this.#updateParticleBounds(particle)
-    this.particles.push(particle as Particle)
+    this.particles.push(particle)
+    this.hasManualParticles = true
   }
 
   /** @private Update the visible bounds of a particle */
-  #updateParticleBounds(particle: Omit<Particle, 'bounds'> & Partial<Pick<Particle, 'bounds'>>) {
+  #updateParticleBounds(
+    particle: Omit<Particle, 'bounds'> & Partial<Pick<Particle, 'bounds'>>
+  ): asserts particle is Particle {
     // The particle is considered visible within these bounds
     particle.bounds = {
       top: -particle.size,

@@ -44,7 +44,14 @@ togglables.forEach((checkbox) => {
 const runButtons = [...document.querySelectorAll('main .run')]
 let hue = 0
 let hueRotateInterval
-const sandbox = new CanvasParticles('#cp-sandbox', { animation: { startOnEnter: false } })
+const sandbox = new CanvasParticles('#cp-sandbox', {
+  animation: {
+    startOnEnter: false,
+  },
+  particles: {
+    generationType: 0,
+  },
+})
 
 runButtons.forEach((button) => {
   const handler = (() => {
@@ -103,7 +110,7 @@ runButtons.forEach((button) => {
             sandboxError.hidden = false
           }
           sandbox.updateParticles()
-          sandbox.matchParticleCount()
+          sandbox.resizeCanvas()
           sandbox.start()
         }
 

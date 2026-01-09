@@ -20,6 +20,9 @@ importers:
       '@types/node':
         specifier: ^24.10.4
         version: 24.10.4
+      pnpm:
+        specifier: ^10.27.0
+        version: 10.27.0
       prettier:
         specifier: ^3.7.4
         version: 3.7.4
@@ -336,6 +339,11 @@ packages:
   picomatch@4.0.3:
     resolution: {integrity: sha512-5gTmgEY/sqK6gFXLIsQNH19lWb4ebPDLA4SdLP7dsWkIXHWlG66oPuVvXSGFPppYZz8ZDZq0dYYrbHfBCVUb1Q==}
     engines: {node: '>=12'}
+
+  pnpm@10.27.0:
+    resolution: {integrity: sha512-ctaZ2haxF5wUup5k3HHJpAmIy9xlwmTLDkidt96RfyDc9NZNhyNiXylpulLUt+KhFwaC2awqXcrqq3MrfhbwSg==}
+    engines: {node: '>=18.12'}
+    hasBin: true
 
   presentable-error@0.0.1:
     resolution: {integrity: sha512-E6rsNU1QNJgB3sjj7OANinGncFKuK+164sLXw1/CqBjj/EkXSoSdHCtWQGBNlREIGLnL7IEUEGa08YFVUbrhVg==}
@@ -660,6 +668,8 @@ snapshots:
   picomatch@2.3.1: {}
 
   picomatch@4.0.3: {}
+
+  pnpm@10.27.0: {}
 
   presentable-error@0.0.1: {}
 

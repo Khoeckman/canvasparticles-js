@@ -100,9 +100,9 @@ export default class CanvasParticles {
 
     const { min = -Infinity, max = Infinity } = clamp ?? {}
 
-    if (isFinite(min) && value < min) {
+    if (value < min) {
       console.warn(new RangeError(`option.${name} was clamped to ${min} as ${value} is too low`))
-    } else if (isFinite(max) && value > max) {
+    } else if (value > max) {
       console.warn(new RangeError(`option.${name} was clamped to ${max} as ${value} is too high`))
     }
 

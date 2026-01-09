@@ -282,11 +282,14 @@ export default class CanvasParticles {
 
   /** @private Create a random new particle */
   #createParticle() {
+    const posX = prng() * this.width
+    const posY = prng() * this.height
+
     const particle: Omit<Particle, 'bounds'> = {
-      posX: 0, // Logical position in pixels
-      posY: 0, // Logical position in pixels
-      x: 0, // Visual position in pixels
-      y: 0, // Visual position in pixels
+      posX, // Logical position in pixels
+      posY, // Logical position in pixels
+      x: posX, // Visual position in pixels
+      y: posY, // Visual position in pixels
       velX: 0, // Horizonal speed in pixels per update
       velY: 0, // Vertical speed in pixels per update
       offX: 0, // Horizontal distance from drawn to logical position in pixels
@@ -304,9 +307,6 @@ export default class CanvasParticles {
 
   /** @public Create a new particle with optional parameters */
   createParticle(posX: number, posY: number, dir: number, speed: number, size: number) {
-    posX = typeof posX === 'number' ? posX - this.offX : prng() * this.width
-    posY = typeof posY === 'number' ? posY - this.offY : prng() * this.height
-
     const particle: Omit<Particle, 'bounds'> = {
       posX, // Logical position in pixels
       posY, // Logical position in pixels

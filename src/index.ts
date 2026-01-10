@@ -59,8 +59,8 @@ export default class CanvasParticles {
         if (!instance.options?.animation) return
 
         if ((canvas.inViewbox = entry.isIntersecting))
-          instance.options.animation?.startOnEnter && instance.start({ auto: true })
-        else instance.options.animation?.stopOnLeave && instance.stop({ auto: true, clear: false })
+          instance.option.animation?.startOnEnter && instance.start({ auto: true })
+        else instance.option.animation?.stopOnLeave && instance.stop({ auto: true, clear: false })
       }
     },
     {
@@ -226,7 +226,7 @@ export default class CanvasParticles {
     if (this.isAnimating) this.#render()
   }
 
-  /** @private Update the target number of particles based on the current canvas size and `options.particles.ppm`, capped at `options.particles.max`. */
+  /** @private Update the target number of particles based on the current canvas size and `option.particles.ppm`, capped at `option.particles.max`. */
   #targetParticleCount(): number {
     // Amount of particles to be created
     let particleCount = Math.round((this.option.particles.ppm * this.width * this.height) / 1_000_000)
@@ -250,7 +250,7 @@ export default class CanvasParticles {
     for (let i = 0; i < particleCount; i++) this.#createParticle()
   }
 
-  /** @public Adjust particle array length to match `options.particles.ppm` */
+  /** @public Adjust particle array length to match `option.particles.ppm` */
   matchParticleCount({ updateBounds = false }: { updateBounds?: boolean } = {}) {
     const particleCount = this.#targetParticleCount()
 
@@ -343,15 +343,13 @@ export default class CanvasParticles {
 
   /* @public Randomize speed and size of all particles based on current options */
   updateParticles() {
-    const particles = this.particles
-    const len = particles.length
     const relSpeed = this.option.particles.relSpeed
     const relSize = this.option.particles.relSize
 
-    for (let i = 0; i < len; i++) {
-      const particle = particles[i]
+    for (const particle of this.particles) {
       particle.speed = (0.5 + prng() * 0.5) * relSpeed
       particle.size = (0.5 + Math.pow(prng(), 5) * 2) * relSize
+      this.#updateParticleBounds(particle) // because size changed
     }
   }
 
@@ -629,7 +627,7 @@ export default class CanvasParticles {
     this.ctx.lineWidth = 1
 
     this.#renderParticles()
-    if (this.options.particles.drawLines) this.#renderConnections()
+    if (this.option.particles.drawLines) this.#renderConnections()
   }
 
   /** @private Main animation loop that updates and renders the particles */

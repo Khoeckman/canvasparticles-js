@@ -241,7 +241,7 @@ export default class CanvasParticles {
     const particleCount = this.#targetParticleCount()
 
     if (this.hasManualParticles) {
-      this.particles = this.particles.filter((particle) => particle.manual)
+      this.particles = this.particles.filter((particle) => particle.isManual)
       this.hasManualParticles = this.particles.length > 0
     } else {
       this.particles = []
@@ -261,8 +261,12 @@ export default class CanvasParticles {
       // Keep manual particles while pruning automatic particles that exceed `particleCount`
       // Only count automatic particles towards `particledCount`
       for (const particle of this.particles) {
-        if (autoCount >= particleCount) break
-        if (particle.manual) autoCount++
+        if (particle.isManual) {
+          pruned.push(particle)
+          continue
+        }
+
+        if (autoCount >= particleCount) continue
         pruned.push(particle)
       }
       this.particles = pruned
@@ -285,28 +289,18 @@ export default class CanvasParticles {
     const posX = prng() * this.width
     const posY = prng() * this.height
 
-    const particle: Omit<Particle, 'bounds'> = {
-      posX, // Logical position in pixels
-      posY, // Logical position in pixels
-      x: posX, // Visual position in pixels
-      y: posY, // Visual position in pixels
-      velX: 0, // Horizonal speed in pixels per update
-      velY: 0, // Vertical speed in pixels per update
-      offX: 0, // Horizontal distance from drawn to logical position in pixels
-      offY: 0, // Vertical distance from drawn to logical position in pixels
-      dir: prng() * TWO_PI, // Direction in radians
-      speed: (0.5 + prng() * 0.5) * this.option.particles.relSpeed, // Velocity in pixels per update
-      size: (0.5 + Math.pow(prng(), 5) * 2) * this.option.particles.relSize, // Ray in pixels of the particle
-      gridPos: { x: 1, y: 1 },
-      isVisible: false,
-      manual: false,
-    }
-    this.#updateParticleBounds(particle)
-    this.particles.push(particle)
+    this.createParticle(
+      posX,
+      posY,
+      prng() * TWO_PI,
+      (0.5 + prng() * 0.5) * this.option.particles.relSpeed,
+      (0.5 + Math.pow(prng(), 5) * 2) * this.option.particles.relSize,
+      false
+    )
   }
 
   /** @public Create a new particle with optional parameters */
-  createParticle(posX: number, posY: number, dir: number, speed: number, size: number) {
+  createParticle(posX: number, posY: number, dir: number, speed: number, size: number, isManual = true) {
     const particle: Omit<Particle, 'bounds'> = {
       posX, // Logical position in pixels
       posY, // Logical position in pixels
@@ -321,7 +315,7 @@ export default class CanvasParticles {
       size: size, // Ray in pixels of the particle
       gridPos: { x: 1, y: 1 },
       isVisible: false,
-      manual: true,
+      isManual,
     }
     this.#updateParticleBounds(particle)
     this.particles.push(particle)
@@ -517,7 +511,7 @@ export default class CanvasParticles {
     // Visible if either particle is in the center
     if (particleA.isVisible || particleB.isVisible) return true
 
-    // Not visible if both particles are in the same vertical or horizontal line but outside the center
+    // Not visible if both particles are in the same vertical or horizontal line that does not cross the center
     return !(
       (particleA.gridPos.x === particleB.gridPos.x && particleA.gridPos.x !== 1) ||
       (particleA.gridPos.y === particleB.gridPos.y && particleA.gridPos.y !== 1)

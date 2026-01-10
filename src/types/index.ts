@@ -30,7 +30,7 @@ export interface Particle {
   bounds: ParticleBounds
   gridPos: ParticleGridPos
   isVisible: boolean
-  manual: boolean
+  isManual: boolean
 }
 
 export interface ParticleBounds {

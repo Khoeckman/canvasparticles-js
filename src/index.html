@@ -27,7 +27,7 @@ https://github.com/Khoeckman/canvasparticles-js/blob/main/LICENSE
   <link rel="stylesheet" href="css/prism.min.css" />
 
   <!-- JS -->
-  <script src="https://cdn.jsdelivr.net/npm/canvasparticles-js@4/dist/index.umd.js" defer></script>
+  <script src="https://cdn.jsdelivr.net/npm/canvasparticles-js@4.3.1/dist/index.umd.js" defer></script>
   <script src="js/main.js" type="module"></script>
   <script src="js/nav.js" type="module"></script>
   <script src="js/prism.min.js" type="module"></script>
@@ -523,8 +523,8 @@ new CanvasParticles('#showcase-pulling-gravity', {
     rotationSpeed: 0.2,
   },
   gravity: {
-    repulsive: 10.5,
-    pulling: 3,
+    repulsive: 14,
+    pulling: 4,
   },
 })</code></pre>
           </div>
@@ -624,23 +624,23 @@ new CanvasParticles('#showcase-multiple-colors-2', {
 
           <div class="codeblock">
             <span class="head">JavaScript</span>
-            <pre><code class="language-js">const showcaseCreateParticles = new CanvasParticles('#showcase-create-particles', {
+            <pre><code class="language-js">const showcase = new CanvasParticles('#showcase-create-particles', {
   mouse: {
     interactionType: 1, // Don't actually move the particles
-    connectDistMult: 75,
+    connectDistMult: 15,
     distRatio: 1,
   },
   particles: {
     generationType: 0, // Don't autogenerate particles
-    connectDistance: 2,
+    connectDistance: 10,
     rotationSpeed: 0,
   },
 }).start()
 
 // Create a sine wave of particles moving down
-for (let x = 0; x < showcaseCreateParticles.canvas.width; x += 1) {
+for (let x = -showcase.offX; x < showcase.width; x += 1) {
   const y = Math.sin(x / 50) * 150
-  showcaseCreateParticles.createParticle(x, y, 0, 1, 2)
+  showcase.createParticle(x, y, 0, 1, 2)
 }</code></pre>
           </div>
         </div>

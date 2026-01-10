@@ -43,7 +43,8 @@ togglables.forEach((checkbox) => {
 
 const runButtons = [...document.querySelectorAll('main .run')]
 let hue = 0
-let hueRotateInterval
+let hueRotateInterval = -1
+
 const sandbox = new CanvasParticles('#cp-sandbox', {
   animation: {
     startOnEnter: false,
@@ -52,6 +53,20 @@ const sandbox = new CanvasParticles('#cp-sandbox', {
     generationType: 0,
   },
 })
+
+const runHueRotation = () => {
+  hueRotateInterval = setInterval(() => {
+    if (!showcase['hue-rotation'].isAnimating) return
+
+    const color = `hsl(${hue++}, 100%, 50%)`
+    hue %= 360
+    showcase['hue-rotation'].setParticleColor(color)
+
+    const stringToken = document.querySelectorAll('#showcase article:has(#showcase-hue-rotation) code .token.string')[2]
+    stringToken.innerText = color
+  }, 20)
+}
+runHueRotation()
 
 runButtons.forEach((button) => {
   const handler = (() => {
@@ -83,23 +98,25 @@ runButtons.forEach((button) => {
       case 'run-hue-rotation':
         return () => {
           clearInterval(hueRotateInterval)
-
-          hueRotateInterval = setInterval(() => {
-            const color = `hsl(${hue++}, 100%, 50%)`
-            hue %= 360
-            showcase['hue-rotation'].setParticleColor(color)
-
-            const stringToken = document.querySelectorAll(
-              '#showcase article:has(#showcase-hue-rotation) code .token.string'
-            )[2]
-            stringToken.innerText = color
-          }, 20)
+          hueRotateInterval = runHueRotation()
         }
 
       case 'stop-hue-rotation':
         return () => clearInterval(hueRotateInterval)
 
       case 'run-sandbox':
+        window.addEventListener('scroll', () => {
+          button.style.top =
+            Math.min(
+              document.querySelector('#sandbox-options').offsetHeight + 30,
+              Math.max(
+                0,
+                document.querySelector('body > header').offsetHeight -
+                  document.querySelector('#sandbox-options').getBoundingClientRect().top
+              )
+            ) + 'px'
+        })
+
         return () => {
           sandboxError.hidden = true
 

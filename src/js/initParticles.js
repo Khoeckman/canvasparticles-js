@@ -157,7 +157,6 @@ showcase['create-particles'] = new CanvasParticles('#showcase-create-particles',
     distRatio: 1,
   },
   particles: {
-    generationType: 0,
     color: '#f40',
     connectDistance: 15,
     rotationSpeed: 0,
@@ -165,9 +164,18 @@ showcase['create-particles'] = new CanvasParticles('#showcase-create-particles',
 })
 
 // Create a sine wave of particles moving down
-for (let x = -showcase['create-particles'].offX; x < showcase['create-particles'].width; x += 1) {
-  const y = Math.sin(x / 50) * 150
-  showcase['create-particles'].createParticle(x, y, 0, 1, 2)
+const createParticleSineWaves = () => {
+  showcase['create-particles'].newParticles({ keepAuto: true, keepManual: false })
+
+  for (let x = 0; x < showcase['create-particles'].width; x += 1) {
+    const y1 = Math.sin(x / 50) * 150
+    const y2 = Math.cos(x / 15) * 50 + 250
+    showcase['create-particles'].createParticle(x, y1, 0, 1, 2)
+    showcase['create-particles'].createParticle(x, y2, 0, 1, 3)
+  }
 }
+
+createParticleSineWaves()
+window.addEventListener('resize', createParticleSineWaves)
 
 Object.entries(showcase).forEach(([_, showcase]) => showcase.start())

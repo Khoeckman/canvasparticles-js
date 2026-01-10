@@ -16,29 +16,6 @@ sandboxOptions.closest('pre').addEventListener('input', function () {
   caretManager.restoreCaretPosition()
 })
 
-// Toggleables
-
-const togglables = [...document.querySelectorAll('main .togglable input')]
-
-togglables.forEach((checkbox) => {
-  checkbox.addEventListener('click', (e) => {
-    const name = e.target.id.split(/-(.*)/s)[1]
-
-    if (e.target.checked) {
-      showcase[name]?.start()
-    } else {
-      showcase[name]?.stop({ clear: false })
-    }
-
-    togglables.forEach((checkbox) => {
-      const currentName = checkbox.id.split(/-(.*)/s)[1]
-      if (name === currentName) return
-      checkbox.checked = false
-      showcase[currentName]?.stop({ clear: false })
-    })
-  })
-})
-
 // Runners
 
 const runButtons = [...document.querySelectorAll('main .run')]

@@ -27,7 +27,7 @@ https://github.com/Khoeckman/canvasparticles-js/blob/main/LICENSE
   <link rel="stylesheet" href="css/prism.min.css" />
 
   <!-- JS -->
-  <script src="https://cdn.jsdelivr.net/npm/canvasparticles-js@4.3.1/dist/index.umd.js" defer></script>
+  <script src="https://cdn.jsdelivr.net/npm/canvasparticles-js@4.3.2/dist/index.umd.js" defer></script>
   <script src="js/main.js" type="module"></script>
   <script src="js/nav.js" type="module"></script>
   <script src="js/prism.min.js" type="module"></script>
@@ -461,17 +461,7 @@ new CanvasParticles(selector, options).start()</code></pre>
 
       <article>
         <div class="content">
-          <div class="togglable">
-            <h3>Pushing Gravity</h3>
-            <label>
-              Enabled
-              <span class="checkbox">
-                <input id="toggle-pushing-gravity" type="checkbox" />
-                <span></span>
-              </span>
-            </label>
-          </div>
-
+          <h3>Pushing Gravity</h3>
           <p>
             <span class="highlight red">Important</span>
             Gravity requires heavy calculations.
@@ -496,17 +486,7 @@ new CanvasParticles(selector, options).start()</code></pre>
 
       <article>
         <div class="content">
-          <div class="togglable">
-            <h3>Pulling Gravity</h3>
-            <label>
-              Enabled
-              <span class="checkbox">
-                <input id="toggle-pulling-gravity" type="checkbox" />
-                <span></span>
-              </span>
-            </label>
-          </div>
-
+          <h3>Pulling Gravity</h3>
           <p>Also requires repulsive gravity to avoid forming a singularity.</p>
 
           <div class="codeblock">
@@ -631,17 +611,23 @@ new CanvasParticles('#showcase-multiple-colors-2', {
     distRatio: 1,
   },
   particles: {
-    generationType: 0, // Don't autogenerate particles
     connectDistance: 10,
-    rotationSpeed: 0,
+    rotationSpeed: 0, // Very important!
   },
 }).start()
 
-// Create a sine wave of particles moving down
-for (let x = -showcase.offX; x < showcase.width; x += 1) {
-  const y = Math.sin(x / 50) * 150
-  showcase.createParticle(x, y, 0, 1, 2)
-}</code></pre>
+const createParticleSineWaves = () => {
+  showcase.newParticles({ keepAuto: true, keepManual: false })
+
+  for (let x = 0; x < showcase.width; x += 1) {
+    const y1 = Math.sin(x / 50) * 150
+    const y2 = Math.cos(x / 15) * 50 + 250
+    showcase.createParticle(x, y1, 0, 1, 2)
+    showcase.createParticle(x, y2, 0, 1, 3)
+  }
+}
+createParticleSineWaves()
+window.addEventListener('resize', createParticleSineWaves)</code></pre>
           </div>
         </div>
         <canvas id="showcase-create-particles"></canvas>

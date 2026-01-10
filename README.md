@@ -344,7 +344,7 @@ const options = {
 const instance = new CanvasParticles(canvas, options).start()
 
 // Create a horizontal line of particles moving down
-for (let x = 100; x < 300; x += 4) {
+for (let x = 0; x < instance.width; x += 4) {
   instance.createParticle(x, 100, 0, 1, 5)
 }
 

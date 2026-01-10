@@ -63,7 +63,7 @@ const cp4 = new CanvasParticles('#cp-4', {
     distRatio: 1,
   },
   particles: {
-    // generationType: CanvasParticles.generationType.MANUAL, // = 0
+    generationType: CanvasParticles.generationType.MATCH, // = 2
     color: 'red',
     maxWork: 100,
     ppm: 40,
@@ -72,16 +72,23 @@ const cp4 = new CanvasParticles('#cp-4', {
   },
 }).start()
 
-const w = cp4.width
-const h = cp4.height
+const createParticleSineWave = () => {
+  cp4.newParticles({ keepAuto: true, keepManual: false })
 
-// Manually create particles in a sine wave pattern
-for (let x = -cp4.offX; x < w; x += 4) {
-  const y = h / 4 + (Math.sin(x / 100) * h) / 4
-  cp4.createParticle(x, y, 0, 1, 5)
+  const w = cp4.width
+  const h = cp4.height
+
+  // Manually create particles in a sine wave pattern
+  for (let x = 0; x < w; x += 4) {
+    const y = h / 4 + Math.sin(x / 100) * (h / 4)
+    cp4.createParticle(x, y, 0, 1, 5)
+  }
+
+  for (let y = 0; y < h; y += 4) {
+    const x = w / 2 + Math.sin(y / 100) * (h / 4)
+    cp4.createParticle(x, y, 0, 2.3, 5)
+  }
 }
 
-for (let y = -cp4.offY; y < h; y += 4) {
-  const x = w / 2 + (Math.sin(y / 100) * h) / 4
-  cp4.createParticle(x, y, 0, 1, 5)
-}
+createParticleSineWave()
+window.addEventListener('resize', createParticleSineWave)

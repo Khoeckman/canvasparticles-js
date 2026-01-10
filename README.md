@@ -337,7 +337,7 @@ By default `particles.ppm` and `particles.max` are used to auto-generate random 
 const canvas = '#my-canvas'
 const options = {
   particles: {
-    generationType: CanvasParticles.generationType.MANUAL, // = 0
+    max: 0,
     rotationSpeed: 0,
   },
 }
@@ -347,6 +347,9 @@ const instance = new CanvasParticles(canvas, options).start()
 for (let x = 100; x < 300; x += 4) {
   instance.createParticle(x, 100, 0, 1, 5)
 }
+
+// Keep automatically generated particles and remove manually created ones
+instance.newParticles({ keepAuto: true, keepManual: false })
 ```
 
 ---

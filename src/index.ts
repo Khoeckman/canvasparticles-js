@@ -237,11 +237,13 @@ export default class CanvasParticles {
   }
 
   /** @public Remove existing particles and generate new ones */
-  newParticles() {
+  newParticles({ keepAuto = false, keepManual = true } = {}) {
     const particleCount = this.#targetParticleCount()
 
-    if (this.hasManualParticles) {
-      this.particles = this.particles.filter((particle) => particle.isManual)
+    if (this.hasManualParticles && (keepAuto || keepManual)) {
+      this.particles = this.particles.filter(
+        (particle) => (keepAuto && !particle.isManual) || (keepManual && particle.isManual)
+      )
       this.hasManualParticles = this.particles.length > 0
     } else {
       this.particles = []

@@ -268,6 +268,7 @@ export default class CanvasParticles {
 
         if (autoCount >= particleCount) continue
         pruned.push(particle)
+        autoCount++
       }
       this.particles = pruned
     } else {

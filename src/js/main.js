@@ -82,18 +82,6 @@ runButtons.forEach((button) => {
         return () => clearInterval(hueRotateInterval)
 
       case 'run-sandbox':
-        window.addEventListener('scroll', () => {
-          button.style.top =
-            Math.min(
-              document.querySelector('#sandbox-options').offsetHeight + 30,
-              Math.max(
-                0,
-                document.querySelector('body > header').offsetHeight -
-                  document.querySelector('#sandbox-options').getBoundingClientRect().top
-              )
-            ) + 'px'
-        })
-
         return () => {
           sandboxError.hidden = true
 
@@ -116,15 +104,45 @@ runButtons.forEach((button) => {
   button.addEventListener('click', handler)
 })
 
+// Sticky runners
+
+const header = document.querySelector('header')
+const runSandbox = document.getElementById('run-sandbox')
+const stopSandbox = document.getElementById('stop-sandbox')
+
+let requestingStickyUpdate = false
+
+window.addEventListener(
+  'scroll',
+  () => {
+    if (!requestingStickyUpdate) {
+      requestAnimationFrame(() => {
+        const headerHeight = header.offsetHeight
+        const sandboxHeight = sandboxOptions.offsetHeight
+        const top = sandboxOptions.getBoundingClientRect().top
+
+        runSandbox.style.top = Math.min(sandboxHeight - 33, Math.max(0, headerHeight + 43 - top)) + 'px'
+        stopSandbox.style.top = Math.min(sandboxHeight, Math.max(33, headerHeight + 75 - top)) + 'px'
+
+        requestingStickyUpdate = false
+      })
+      requestingStickyUpdate = true
+    }
+  },
+  { passive: true }
+)
+
 // Choices
 
 const choiceLists = [...document.querySelectorAll('main .choice')]
 
 const updateActiveList = (buttons, activeButton) => {
-  buttons.forEach((button) => {
-    if (button === activeButton) return
-    button.removeAttribute('class')
-  })
+  runButtons
+    .find((id) => id === '')
+    .forEach((button) => {
+      if (button === activeButton) return
+      button.removeAttribute('class')
+    })
   activeButton.classList.add('active')
 }
 

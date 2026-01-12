@@ -1,4 +1,4 @@
-import StorageManager from './StorageManager.min.js'
+import HyperStorage from './HyperStorage.mjs'
 
 const presets = {
   all: `sandbox.options = {
@@ -69,9 +69,7 @@ const presets = {
 }`,
 }
 
-const workspaceStore = new StorageManager('cpjs.sandbox.workspace', {
-  defaultValue: {},
-})
+const workspaceStore = new HyperStorage('cpjs.sandbox.workspace', {})
 
 const sandboxOptions = document.getElementById('sandbox-options')
 let selectedWorkspaceName = null

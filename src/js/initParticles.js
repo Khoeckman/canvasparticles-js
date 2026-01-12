@@ -165,7 +165,7 @@ showcase['create-particles'] = new CanvasParticles('#showcase-create-particles',
 
 // Create a sine wave of particles moving down
 const createParticleSineWaves = () => {
-  showcase['create-particles'].newParticles({ keepAuto: true, keepManual: false })
+  showcase['create-particles'].newParticles({ keepManual: false })
 
   for (let x = 0; x < showcase['create-particles'].width; x += 1) {
     const y1 = Math.sin(x / 50) * 150

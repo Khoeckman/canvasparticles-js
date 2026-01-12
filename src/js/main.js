@@ -137,12 +137,10 @@ window.addEventListener(
 const choiceLists = [...document.querySelectorAll('main .choice')]
 
 const updateActiveList = (buttons, activeButton) => {
-  runButtons
-    .find((id) => id === '')
-    .forEach((button) => {
-      if (button === activeButton) return
-      button.removeAttribute('class')
-    })
+  buttons.forEach((button) => {
+    if (button === activeButton) return
+    button.removeAttribute('class')
+  })
   activeButton.classList.add('active')
 }
 

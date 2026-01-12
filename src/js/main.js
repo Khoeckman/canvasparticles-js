@@ -112,25 +112,24 @@ const stopSandbox = document.getElementById('stop-sandbox')
 
 let requestingStickyUpdate = false
 
-window.addEventListener(
-  'scroll',
-  () => {
-    if (!requestingStickyUpdate) {
-      requestAnimationFrame(() => {
-        const headerHeight = header.offsetHeight
-        const sandboxHeight = sandboxOptions.offsetHeight
-        const top = sandboxOptions.getBoundingClientRect().top
+const requestStickyUpdate = () => {
+  if (requestingStickyUpdate) return
 
-        runSandbox.style.top = Math.min(sandboxHeight - 33, Math.max(0, headerHeight + 43 - top)) + 'px'
-        stopSandbox.style.top = Math.min(sandboxHeight, Math.max(33, headerHeight + 75 - top)) + 'px'
+  requestAnimationFrame(() => {
+    const headerHeight = header.offsetHeight
+    const sandboxHeight = sandboxOptions.offsetHeight
+    const top = sandboxOptions.getBoundingClientRect().top
 
-        requestingStickyUpdate = false
-      })
-      requestingStickyUpdate = true
-    }
-  },
-  { passive: true }
-)
+    runSandbox.style.top = Math.min(sandboxHeight - 33, Math.max(0, headerHeight + 43 - top)) + 'px'
+    stopSandbox.style.top = Math.min(sandboxHeight, Math.max(33, headerHeight + 75 - top)) + 'px'
+
+    requestingStickyUpdate = false
+  })
+  requestingStickyUpdate = true
+}
+
+window.addEventListener('resize', requestStickyUpdate, { passive: true })
+window.addEventListener('scroll', requestStickyUpdate, { passive: true })
 
 // Choices
 

@@ -249,7 +249,9 @@ export default class CanvasParticles {
       this.particles = []
     }
 
-    for (let i = 0; i < particleCount; i++) this.#createParticle()
+    if (!keepAuto) {
+      for (let i = 0; i < particleCount; i++) this.#createParticle()
+    }
   }
 
   /** @public Adjust particle array length to match `option.particles.ppm` */

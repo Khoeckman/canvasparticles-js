@@ -82,7 +82,7 @@ export default class CanvasParticles {
     for (let i = 0; i < entries.length; i++) {
       const entry = entries[i]
       const canvas = entry.target as CanvasParticlesCanvas
-      canvas.instance.resizeCanvas()
+      canvas.instance.#resizeCanvas()
     }
   })
 
@@ -165,14 +165,11 @@ export default class CanvasParticles {
     this.handleMouseMove = this.handleMouseMove.bind(this)
     this.handleScroll = this.handleScroll.bind(this)
 
-    this.updateCanvasRect()
     this.resizeCanvas()
-
     window.addEventListener('mousemove', this.handleMouseMove, { passive: true })
     window.addEventListener('scroll', this.handleScroll, { passive: true })
   }
 
-  /* @public Update the canvas bounding rectangle and mouse position relative to it */
   updateCanvasRect() {
     const { top, left, width, height } = this.canvas.getBoundingClientRect()
     this.canvas.rect = { top, left, width, height }
@@ -195,15 +192,14 @@ export default class CanvasParticles {
     this.updateMousePos()
   }
 
-  /** @public Update mouse coordinates */
   updateMousePos() {
     const { top, left } = this.canvas.rect
     this.mouseX = this.clientX - left
     this.mouseY = this.clientY - top
   }
 
-  /** @public Resize the canvas and update particles accordingly */
-  resizeCanvas() {
+  /** @private Resize the canvas and update particles accordingly */
+  #resizeCanvas() {
     const width = (this.canvas.width = this.canvas.rect.width)
     const height = (this.canvas.height = this.canvas.rect.height)
 
@@ -224,6 +220,12 @@ export default class CanvasParticles {
     }
 
     if (this.isAnimating) this.#render()
+  }
+
+  /** @public Update the canvas bounding rectangle, resize the canvas and update particles accordingly */
+  resizeCanvas() {
+    this.updateCanvasRect()
+    this.#resizeCanvas()
   }
 
   /** @private Update the target number of particles based on the current canvas size and `option.particles.ppm`, capped at `option.particles.max`. */

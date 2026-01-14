@@ -149,7 +149,7 @@ showcase['multiple-colors-2'] = new CanvasParticles('#showcase-multiple-colors-2
   },
 })
 
-showcase['create-particles'] = new CanvasParticles('#showcase-create-particles', {
+const scp = (showcase['create-particles'] = new CanvasParticles('#showcase-create-particles', {
   background: 'var(--bg)',
   mouse: {
     interactionType: 1,
@@ -161,21 +161,24 @@ showcase['create-particles'] = new CanvasParticles('#showcase-create-particles',
     connectDistance: 15,
     rotationSpeed: 0,
   },
-})
+}))
 
 // Create a sine wave of particles moving down
 const createParticleSineWaves = () => {
-  showcase['create-particles'].newParticles({ keepAuto: true, keepManual: false })
+  scp.resizeCanvas()
+  scp.newParticles({ keepAuto: true, keepManual: false })
 
-  for (let x = 0; x < showcase['create-particles'].width; x += 1) {
-    const y1 = Math.sin(x / 50) * 150
-    const y2 = Math.cos(x / 15) * 50 + 250
-    showcase['create-particles'].createParticle(x, y1, 0, 1, 2)
-    showcase['create-particles'].createParticle(x, y2, 0, 1, 3)
+  const w = scp.canvas.width - scp.offX * 2
+
+  for (let x = 0; x < w; x += 1) {
+    const y1 = Math.sin(x / 50) * 50
+    const y2 = Math.cos(x / (w / 50)) * 50 + 250
+    scp.createParticle(x + y1, y1 * 3, 0, 1, 2)
+    scp.createParticle(x, y2, Math.PI / 2, 1, 3)
   }
 }
 
 createParticleSineWaves()
 window.addEventListener('resize', createParticleSineWaves)
 
-Object.entries(showcase).forEach(([_, showcase]) => showcase.start())
+Object.values(showcase).forEach((showcase) => showcase.start())

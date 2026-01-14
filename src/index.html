@@ -27,10 +27,10 @@ https://github.com/Khoeckman/canvasparticles-js/blob/main/LICENSE
   <link rel="stylesheet" href="css/prism.min.css" />
 
   <!-- JS -->
-  <script src="https://cdn.jsdelivr.net/npm/canvasparticles-js@4.3.3/dist/index.umd.js" defer></script>
+  <script src="https://cdn.jsdelivr.net/npm/canvasparticles-js@4.3.4/dist/index.umd.js" defer></script>
+  <script src="js/prism.min.js" type="module"></script>
   <script src="js/main.js" type="module"></script>
   <script src="js/nav.js" type="module"></script>
-  <script src="js/prism.min.js" type="module"></script>
 </head>
 
 <body>
@@ -604,7 +604,7 @@ new CanvasParticles('#showcase-multiple-colors-2', {
 
           <div class="codeblock">
             <span class="head">JavaScript</span>
-            <pre><code class="language-js">const showcase = new CanvasParticles('#showcase-create-particles', {
+            <pre><code class="language-js">const scp = new CanvasParticles('#showcase-create-particles', {
   mouse: {
     interactionType: 1, // Don't actually move the particles
     connectDistMult: 15,
@@ -617,13 +617,15 @@ new CanvasParticles('#showcase-multiple-colors-2', {
 }).start()
 
 const createParticleSineWaves = () => {
-  showcase.newParticles({ keepAuto: true, keepManual: false })
+  scp.resizeCanvas()
+  scp.newParticles({ keepAuto: true, keepManual: false })
+  const w = scp.canvas.width - scp.offX * 2
 
-  for (let x = 0; x < showcase.width; x += 1) {
-    const y1 = Math.sin(x / 50) * 150
-    const y2 = Math.cos(x / 15) * 50 + 250
-    showcase.createParticle(x, y1, 0, 1, 2)
-    showcase.createParticle(x, y2, 0, 1, 3)
+  for (let x = 0; x < w; x += 1) {
+    const y1 = Math.sin(x / 50) * 50
+    const y2 = Math.cos(x / (w / 50)) * 50 + 250
+    scp.createParticle(x + y1, y1 * 3, 0, 1, 2)
+    scp.createParticle(x, y2, Math.PI / 2, 1, 3)
   }
 }
 createParticleSineWaves()

@@ -66,13 +66,14 @@ const cp4 = new CanvasParticles('#cp-4', {
     generationType: CanvasParticles.generationType.MATCH, // = 2
     color: 'red',
     maxWork: 100,
-    ppm: 40,
+    ppm: 20,
     connectDistance: 200,
     rotationSpeed: 0,
   },
 }).start()
 
 const createParticleSineWave = () => {
+  cp4.resizeCanvas()
   cp4.newParticles({ keepAuto: true, keepManual: false })
 
   const w = cp4.width

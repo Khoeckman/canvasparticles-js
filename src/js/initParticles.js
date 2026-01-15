@@ -153,12 +153,13 @@ const scp = (showcase['create-particles'] = new CanvasParticles('#showcase-creat
   background: 'var(--bg)',
   mouse: {
     interactionType: 1,
-    connectDistMult: 10,
+    connectDistMult: 150,
     distRatio: 1,
   },
   particles: {
+    drawLines: false,
     color: '#f40',
-    connectDistance: 15,
+    connectDistance: 1,
     rotationSpeed: 0,
   },
 }))
@@ -170,7 +171,7 @@ const createParticleSineWaves = () => {
 
   const w = scp.canvas.width - scp.offX * 2
 
-  for (let x = 0; x < w; x += 1) {
+  for (let x = 0; x < w; x += 0.5) {
     const y1 = Math.sin(x / 50) * 50
     const y2 = Math.cos(x / (w / 50)) * 50 + 250
     scp.createParticle(x + y1, y1 * 3, 0, 1, 2)

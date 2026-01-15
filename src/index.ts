@@ -383,15 +383,13 @@ export default class CanvasParticles {
 
         if (distSq >= maxRepulsiveDistSq && !isPullingEnabled) continue
 
-        const angle = Math.atan2(-distY, -distX)
-        const invDistSq = 1 / (distSq + epsilon)
-        const angleX = Math.cos(angle)
-        const angleY = Math.sin(angle)
+        const invSqrt = 1 / Math.sqrt(distSq + epsilon)
+        const invDist = invSqrt * invSqrt * invSqrt
 
         if (distSq < maxRepulsiveDistSq) {
-          const grav = invDistSq * gravRepulsiveMult
-          const gravX = angleX * grav
-          const gravY = angleY * grav
+          const grav = invDist * gravRepulsiveMult
+          const gravX = -distX * grav
+          const gravY = -distY * grav
           particleA.velX -= gravX
           particleA.velY -= gravY
           particleB.velX += gravX
@@ -400,9 +398,9 @@ export default class CanvasParticles {
 
         if (!isPullingEnabled) continue
 
-        const grav = invDistSq * gravPullingMult
-        const gravX = angleX * grav
-        const gravY = angleY * grav
+        const grav = invDist * gravPullingMult
+        const gravX = -distX * grav
+        const gravY = -distY * grav
         particleA.velX += gravX
         particleA.velY += gravY
         particleB.velX -= gravX

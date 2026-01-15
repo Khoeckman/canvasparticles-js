@@ -38,21 +38,24 @@ new CanvasParticles('#cp-2', {
 
 // Initialize third canvas
 new CanvasParticles('#cp-3', {
-  background: '#523',
+  background: '#423',
   mouse: {
-    distRatio: 1,
+    interactionType: 2,
+    connectDistMult: 2,
+    distRatio: 0.9,
   },
   particles: {
     color: '#f45',
-    ppm: 80,
-    max: 320,
+    ppm: 750,
+    max: 1500,
     maxWork: 50,
-    connectDistance: 250,
+    connectDistance: 100,
+    rotationSpeed: 2,
   },
   gravity: {
-    repulsive: 10,
-    pulling: 2,
-    friction: 0.95,
+    repulsive: 5,
+    pulling: 1,
+    friction: 0.75,
   },
 }).start()
 

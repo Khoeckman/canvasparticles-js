@@ -368,7 +368,7 @@ export default class CanvasParticles {
     const gravPullingMult = connectDist * this.option.gravity.pulling * step
     const maxRepulsiveDist = connectDist / 2
     const maxRepulsiveDistSq = maxRepulsiveDist ** 2
-    const eps = connectDist ** 2 / 256
+    const epsilon = connectDist ** 2 / 256
 
     for (let i = 0; i < len; i++) {
       const particleA = particles[i]
@@ -383,19 +383,15 @@ export default class CanvasParticles {
 
         if (distSq >= maxRepulsiveDistSq && !isPullingEnabled) continue
 
-        let angle
-        let grav
-        let gravMult
-
-        angle = Math.atan2(-distY, -distX)
-        grav = 1 / (distSq + eps)
+        const angle = Math.atan2(-distY, -distX)
+        const invDistSq = 1 / (distSq + epsilon)
         const angleX = Math.cos(angle)
         const angleY = Math.sin(angle)
 
         if (distSq < maxRepulsiveDistSq) {
-          gravMult = grav * gravRepulsiveMult
-          const gravX = angleX * gravMult
-          const gravY = angleY * gravMult
+          const grav = invDistSq * gravRepulsiveMult
+          const gravX = angleX * grav
+          const gravY = angleY * grav
           particleA.velX -= gravX
           particleA.velY -= gravY
           particleB.velX += gravX
@@ -404,9 +400,9 @@ export default class CanvasParticles {
 
         if (!isPullingEnabled) continue
 
-        gravMult = grav * gravPullingMult
-        const gravX = angleX * gravMult
-        const gravY = angleY * gravMult
+        const grav = invDistSq * gravPullingMult
+        const gravX = angleX * grav
+        const gravY = angleY * grav
         particleA.velX += gravX
         particleA.velY += gravY
         particleB.velX -= gravX

@@ -343,7 +343,7 @@ export default class CanvasParticles {
   }
 
   /* @public Randomize speed and size of all particles based on current options */
-  updateParticles() {
+  randomizeParticles() {
     const relSpeed = this.option.particles.relSpeed
     const relSize = this.option.particles.relSize
 

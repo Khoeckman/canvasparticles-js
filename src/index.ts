@@ -331,7 +331,7 @@ export default class CanvasParticles {
 
   /** @private Update the visible bounds of a particle */
   #updateParticleBounds(
-    particle: Omit<Particle, 'bounds'> & Partial<Pick<Particle, 'bounds'>>
+    particle: Omit<Particle, 'bounds'> & Partial<Pick<Particle, 'bounds'>> // Make bounds optional on particle
   ): asserts particle is Particle {
     // The particle is considered visible within these bounds
     particle.bounds = {
@@ -481,42 +481,27 @@ export default class CanvasParticles {
       particle.x += offX
       particle.y += offY
 
-      this.#gridPos(particle)
+      /**
+       * Determine a particle's location in a 3x3 canvas grid to assess visibility.
+       *
+       * This helps identify whether two particles, even if off-canvas, might have a visible connection.
+       *
+       * Grid regions:
+       * - { x: 0, y: 0 } = top-left
+       * - { x: 1, y: 0 } = top
+       * - { x: 2, y: 0 } = top-right
+       * - { x: 0, y: 1 } = left
+       * - { x: 1, y: 1 } = center (visible part of the canvas)
+       * - { x: 2, y: 1 } = right
+       * - { x: 0, y: 2 } = bottom-left
+       * - { x: 1, y: 2 } = bottom
+       * - { x: 2, y: 2 } = bottom-right
+       */
+      particle.gridPos.x = (+(particle.x >= particle.bounds.left) + +(particle.x > particle.bounds.right)) as GridPos
+      particle.gridPos.y = (+(particle.y >= particle.bounds.top) + +(particle.y > particle.bounds.bottom)) as GridPos
+
       particle.isVisible = particle.gridPos.x === 1 && particle.gridPos.y === 1
     }
-  }
-
-  /**
-   * @private Determine a particle's location in a 3x3 canvas grid to assess visibility.
-   *
-   * This helps identify whether two particles, even if off-canvas, might have a visible connection.
-   *
-   * Grid regions:
-   * - { x: 0, y: 0 } = top-left
-   * - { x: 1, y: 0 } = top
-   * - { x: 2, y: 0 } = top-right
-   * - { x: 0, y: 1 } = left
-   * - { x: 1, y: 1 } = center (visible part of the canvas)
-   * - { x: 2, y: 1 } = right
-   * - { x: 0, y: 2 } = bottom-left
-   * - { x: 1, y: 2 } = bottom
-   * - { x: 2, y: 2 } = bottom-right
-   */
-  #gridPos(particle: Particle): void {
-    particle.gridPos.x = (+(particle.x >= particle.bounds.left) + +(particle.x > particle.bounds.right)) as GridPos
-    particle.gridPos.y = (+(particle.y >= particle.bounds.top) + +(particle.y > particle.bounds.bottom)) as GridPos
-  }
-
-  /** @private Determines whether a line between 2 particles crosses through the visible center of the canvas */
-  #isLineVisible(particleA: Particle, particleB: Particle) {
-    // Visible if either particle is in the center
-    if (particleA.isVisible || particleB.isVisible) return true
-
-    // Not visible if both particles are in the same vertical or horizontal line that does not cross the center
-    return !(
-      (particleA.gridPos.x === particleB.gridPos.x && particleA.gridPos.x !== 1) ||
-      (particleA.gridPos.y === particleB.gridPos.y && particleA.gridPos.y !== 1)
-    )
   }
 
   /** @private Draw the particles on the canvas */
@@ -542,6 +527,18 @@ export default class CanvasParticles {
         ctx.fillRect(particle.x - particle.size, particle.y - particle.size, particle.size * 2, particle.size * 2)
       }
     }
+  }
+
+  /** @private Determines whether a line between 2 particles crosses through the visible center of the canvas */
+  #isLineVisible(particleA: Particle, particleB: Particle) {
+    // Visible if either particle is in the center
+    if (particleA.isVisible || particleB.isVisible) return true
+
+    // Not visible if both particles are in the same vertical or horizontal line that does not cross the center
+    return !(
+      (particleA.gridPos.x === particleB.gridPos.x && particleA.gridPos.x !== 1) ||
+      (particleA.gridPos.y === particleB.gridPos.y && particleA.gridPos.y !== 1)
+    )
   }
 
   /** @private Draw lines between particles if they are close enough */

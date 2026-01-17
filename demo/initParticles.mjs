@@ -46,8 +46,8 @@ new CanvasParticles('#cp-3', {
   },
   particles: {
     color: '#f45',
-    ppm: 750,
-    max: 1500,
+    ppm: 500,
+    max: 1000,
     maxWork: 50,
     connectDistance: 100,
     rotationSpeed: 2,

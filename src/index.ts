@@ -51,8 +51,7 @@ export default class CanvasParticles {
   /** Observes canvas elements entering or leaving the viewport to start/stop animation */
   static readonly canvasIntersectionObserver = new IntersectionObserver(
     (entries) => {
-      for (let i = 0; i < entries.length; i++) {
-        const entry = entries[i]
+      for (const entry of entries) {
         const canvas = entry.target as CanvasParticlesCanvas
         const instance = canvas.instance // The CanvasParticles class instance bound to this canvas
 
@@ -72,15 +71,13 @@ export default class CanvasParticles {
     // Seperate for loops is very important to prevent huge forced reflow overhead
 
     // First read all canvas rects at once
-    for (let i = 0; i < entries.length; i++) {
-      const entry = entries[i]
+    for (const entry of entries) {
       const canvas = entry.target as CanvasParticlesCanvas
       canvas.instance.updateCanvasRect()
     }
 
     // Then resize all canvases at once
-    for (let i = 0; i < entries.length; i++) {
-      const entry = entries[i]
+    for (const entry of entries) {
       const canvas = entry.target as CanvasParticlesCanvas
       canvas.instance.#resizeCanvas()
     }
@@ -411,8 +408,6 @@ export default class CanvasParticles {
 
   /** @private Update positions, directions, and visibility of all particles */
   #updateParticles(step: number) {
-    const particles = this.particles
-    const len = particles.length
     const width = this.width
     const height = this.height
     const offX = this.offX
@@ -427,9 +422,7 @@ export default class CanvasParticles {
     const isMouseInteractionTypeMove = this.option.mouse.interactionType === CanvasParticles.interactionType.MOVE
     const easing = 1 - Math.pow(1 - 1 / 4, step)
 
-    for (let i = 0; i < len; i++) {
-      const particle = particles[i]
-
+    for (const particle of this.particles) {
       particle.dir += 2 * (Math.random() - 0.5) * rotationSpeed * step
       particle.dir %= TWO_PI
 
@@ -506,13 +499,9 @@ export default class CanvasParticles {
 
   /** @private Draw the particles on the canvas */
   #renderParticles() {
-    const particles = this.particles
-    const len = particles.length
     const ctx = this.ctx
 
-    for (let i = 0; i < len; i++) {
-      const particle = particles[i]
-
+    for (const particle of this.particles) {
       if (!particle.isVisible) continue
 
       // Draw particles smaller than 1px as a square instead of a circle for performance

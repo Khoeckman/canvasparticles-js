@@ -114,7 +114,7 @@ export default class CanvasParticles {
   private lastAnimationFrame: number = 0
 
   particles: Particle[] = []
-  hasManualParticles = false // set to true once @public createParticle() is used
+  hasManualParticles = false // set to true once createParticle() is used
   private clientX: number = Infinity
   private clientY: number = Infinity
   mouseX: number = Infinity
@@ -195,7 +195,7 @@ export default class CanvasParticles {
     this.mouseY = this.clientY - top
   }
 
-  /** @private Resize the canvas and update particles accordingly */
+  /** Resize the canvas and update particles accordingly */
   #resizeCanvas() {
     const width = (this.canvas.width = this.canvas.rect.width)
     const height = (this.canvas.height = this.canvas.rect.height)
@@ -219,13 +219,13 @@ export default class CanvasParticles {
     if (this.isAnimating) this.#render()
   }
 
-  /** @public Update the canvas bounding rectangle, resize the canvas and update particles accordingly */
+  /** Update the canvas bounding rectangle, resize the canvas and update particles accordingly */
   resizeCanvas() {
     this.updateCanvasRect()
     this.#resizeCanvas()
   }
 
-  /** @private Update the target number of particles based on the current canvas size and `option.particles.ppm`, capped at `option.particles.max`. */
+  /** Update the target number of particles based on the current canvas size and `option.particles.ppm`, capped at `option.particles.max`. */
   #targetParticleCount(): number {
     // Amount of particles to be created
     let particleCount = Math.round((this.option.particles.ppm * this.width * this.height) / 1_000_000)
@@ -235,7 +235,7 @@ export default class CanvasParticles {
     return particleCount | 0
   }
 
-  /** @public Remove existing particles and generate new ones */
+  /** Remove existing particles and generate new ones */
   newParticles({ keepAuto = false, keepManual = true } = {}) {
     const particleCount = this.#targetParticleCount()
 
@@ -253,7 +253,7 @@ export default class CanvasParticles {
     }
   }
 
-  /** @public Adjust particle array length to match `option.particles.ppm` */
+  /** Adjust particle array length to match `option.particles.ppm` */
   matchParticleCount({ updateBounds = false }: { updateBounds?: boolean } = {}) {
     const particleCount = this.#targetParticleCount()
 
@@ -288,7 +288,7 @@ export default class CanvasParticles {
     for (let i = this.particles.length; i < particleCount; i++) this.#createParticle()
   }
 
-  /** @private Create a random new particle */
+  /** Create a random new particle */
   #createParticle() {
     const posX = prng() * this.width
     const posY = prng() * this.height
@@ -303,7 +303,7 @@ export default class CanvasParticles {
     )
   }
 
-  /** @public Create a new particle with optional parameters */
+  /** Create a new particle with optional parameters */
   createParticle(posX: number, posY: number, dir: number, speed: number, size: number, isManual = true) {
     const particle: Omit<Particle, 'bounds'> = {
       posX, // Logical position in pixels
@@ -326,7 +326,7 @@ export default class CanvasParticles {
     this.hasManualParticles = true
   }
 
-  /** @private Update the visible bounds of a particle */
+  /** Update the visible bounds of a particle */
   #updateParticleBounds(
     particle: Omit<Particle, 'bounds'> & Partial<Pick<Particle, 'bounds'>> // Make bounds optional on particle
   ): asserts particle is Particle {
@@ -339,7 +339,7 @@ export default class CanvasParticles {
     }
   }
 
-  /* @public Randomize speed and size of all particles based on current options */
+  /* Randomize speed and size of all particles based on current options */
   randomizeParticles() {
     const relSpeed = this.option.particles.relSpeed
     const relSize = this.option.particles.relSize
@@ -351,7 +351,7 @@ export default class CanvasParticles {
     }
   }
 
-  /** @private Apply gravity forces between particles */
+  /** Apply gravity forces between particles */
   #updateGravity(step: number) {
     const isRepulsiveEnabled = this.option.gravity.repulsive > 0
     const isPullingEnabled = this.option.gravity.pulling > 0
@@ -406,7 +406,7 @@ export default class CanvasParticles {
     }
   }
 
-  /** @private Update positions, directions, and visibility of all particles */
+  /** Update positions, directions, and visibility of all particles */
   #updateParticles(step: number) {
     const width = this.width
     const height = this.height
@@ -497,7 +497,7 @@ export default class CanvasParticles {
     }
   }
 
-  /** @private Draw the particles on the canvas */
+  /** Draw the particles on the canvas */
   #renderParticles() {
     const ctx = this.ctx
 
@@ -518,8 +518,8 @@ export default class CanvasParticles {
     }
   }
 
-  /** @private Determines whether a line between 2 particles crosses through the visible center of the canvas */
-  #isLineVisible(particleA: Particle, particleB: Particle) {
+  /** Determines whether a line between 2 particles crosses through the visible center of the canvas */
+  static #isLineVisible(particleA: Particle, particleB: Particle) {
     // Visible if either particle is in the center
     if (particleA.isVisible || particleB.isVisible) return true
 
@@ -530,7 +530,7 @@ export default class CanvasParticles {
     )
   }
 
-  /** @private Draw lines between particles if they are close enough */
+  /** Draw lines between particles if they are close enough */
   #renderConnections() {
     const particles = this.particles
     const len = particles.length
@@ -598,7 +598,7 @@ export default class CanvasParticles {
     ctx.stroke()
   }
 
-  /** @private Clear the canvas and render the particles and their connections onto the canvas */
+  /** Clear the canvas and render the particles and their connections onto the canvas */
   #render() {
     this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height)
 
@@ -611,7 +611,7 @@ export default class CanvasParticles {
     if (this.option.particles.drawLines) this.#renderConnections()
   }
 
-  /** @private Main animation loop that updates and renders the particles */
+  /** Main animation loop that updates and renders the particles */
   #animation() {
     if (!this.isAnimating) return
 
@@ -634,7 +634,7 @@ export default class CanvasParticles {
     this.lastAnimationFrame = now
   }
 
-  /** @public Start the particle animation if it was not running before */
+  /** Start the particle animation if it was not running before */
   start({ auto = false }: { auto?: boolean } = {}): CanvasParticles {
     if (!this.isAnimating && (!auto || this.enableAnimating)) {
       this.enableAnimating = true
@@ -649,7 +649,7 @@ export default class CanvasParticles {
     return this
   }
 
-  /** @public Stops the particle animation and optionally clears the canvas */
+  /** Stops the particle animation and optionally clears the canvas */
   stop({ auto = false, clear = true }: { auto?: boolean; clear?: boolean } = {}): boolean {
     if (!auto) this.enableAnimating = false
     this.isAnimating = false
@@ -657,7 +657,7 @@ export default class CanvasParticles {
     return true
   }
 
-  /** @public Gracefully destroy the instance and remove the canvas element */
+  /** Gracefully destroy the instance and remove the canvas element */
   destroy() {
     this.stop()
 
@@ -727,20 +727,20 @@ export default class CanvasParticles {
     return this.option
   }
 
-  /** @public Sets the canvas background */
+  /** Sets the canvas background */
   setBackground(background: CanvasParticlesOptionsInput['background']) {
     if (!background) return
     if (typeof background !== 'string') throw new TypeError('background is not a string')
     this.canvas.style.background = this.option.background = background
   }
 
-  /** @public Transform the distance multiplier (float) to absolute distance (px) */
+  /** Transform the distance multiplier (float) to absolute distance (px) */
   setMouseConnectDistMult(connectDistMult: number) {
     const mult = CanvasParticles.parseNumericOption('mouse.connectDistMult', connectDistMult, 2 / 3, { min: 0 })
     this.option.mouse.connectDist = this.option.particles.connectDist * mult
   }
 
-  /** @public Format particle color and opacity */
+  /** Format particle color and opacity */
   setParticleColor(color: string | CanvasGradient | CanvasPattern) {
     this.ctx.fillStyle = color
 

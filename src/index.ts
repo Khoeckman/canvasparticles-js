@@ -1,7 +1,7 @@
 // Copyright (c) 2022–2026 Kyle Hoeckman, MIT License
 // https://github.com/Khoeckman/canvasparticles-js/blob/main/LICENSE
 
-import type { CanvasParticlesCanvas, Particle, GridPos, ContextColor, LineSegment } from './types'
+import type { CanvasParticlesCanvas, Particle, GridPos, ContextColor, LineSegment, SpatialGrid } from './types'
 import type { CanvasParticlesOptions, CanvasParticlesOptionsInput } from './types/options'
 
 const TWO_PI = 2 * Math.PI
@@ -516,6 +516,25 @@ export default class CanvasParticles {
         ctx.fillRect(particle.x - particle.size, particle.y - particle.size, particle.size * 2, particle.size * 2)
       }
     }
+  }
+
+  /** @private */
+  #buildSpatialGrid(): SpatialGrid {
+    const particles = this.particles
+    const len = particles.length
+    const width = this.width | 0
+    const invCellSize = Math.fround(1 / this.option.particles.connectDist)
+    const grid: SpatialGrid = new Map()
+
+    for (let i = 0; i < len; i++) {
+      const particle = particles[i]
+      const key = ((particle.x * invCellSize) | 0) + ((particle.y * invCellSize) | 0) * width
+      const cell = grid.get(key)
+
+      if (cell) cell.push(i)
+      else grid.set(key, [i])
+    }
+    return grid
   }
 
   /** Determines whether a line between 2 particles crosses through the visible center of the canvas */

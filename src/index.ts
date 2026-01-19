@@ -704,6 +704,24 @@ export default class CanvasParticles {
     ctx.restore()
   }
 
+  /* Move all particles by one step based on how much time passed */
+  #update() {
+    const now = performance.now()
+
+    // Elapsed time since last frame, clamped to avoid large simulation jumps
+    const dt = Math.min(now - this.lastAnimationFrame, CanvasParticles.MAX_DT)
+
+    // Normalized simulation step:
+    // - step = 1   → exactly one baseline update (dt === BASE_DT)
+    // - step > 1   → more time passed (lower FPS), advance further
+    // - step < 1   → less time passed (higher FPS), advance less
+    const step = dt / CanvasParticles.BASE_DT
+
+    this.#updateGravity(step)
+    this.#updateParticles(step)
+    this.lastAnimationFrame = now
+  }
+
   /** Clear the canvas and render the particles and their connections onto the canvas */
   #render() {
     this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height)
@@ -725,21 +743,8 @@ export default class CanvasParticles {
 
     requestAnimationFrame(() => this.#animation())
 
-    const now = performance.now()
-
-    // Elapsed time since last frame, clamped to avoid large simulation jumps
-    const dt = Math.min(now - this.lastAnimationFrame, CanvasParticles.MAX_DT)
-
-    // Normalized simulation step:
-    // - step = 1   → exactly one baseline update (dt === BASE_DT)
-    // - step > 1   → more time passed (lower FPS), advance further
-    // - step < 1   → less time passed (higher FPS), advance less
-    const step = dt / CanvasParticles.BASE_DT
-
-    this.#updateGravity(step)
-    this.#updateParticles(step)
+    this.#update()
     this.#render()
-    this.lastAnimationFrame = now
   }
 
   /** Start the particle animation if it was not running before */

@@ -635,6 +635,24 @@ window.addEventListener('resize', createParticleSineWaves)</code></pre>
         </div>
         <canvas id="showcase-create-particles"></canvas>
       </article>
+
+      <article>
+        <div class="content">
+          <h3>Debug</h3>
+          <p>Intended for development and debugging. Can be useful to understand internal behavior.</p>
+
+          <div class="codeblock">
+            <span class="head">JavaScript</span>
+            <pre><code class="language-js">new CanvasParticles('#showcase-debug', {
+  debug: {
+    drawGrid: true,
+    drawIndexes: true,
+  },
+}).start()</code></pre>
+          </div>
+        </div>
+        <canvas id="showcase-debug"></canvas>
+      </article>
     </section>
 
     <section id="sandbox">

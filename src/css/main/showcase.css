@@ -89,6 +89,10 @@
   height: 30rem;
 }
 
+#showcase .content:has(+ #showcase-debug) {
+  flex: 0;
+}
+
 @media only screen and (width < 80em) {
   #showcase {
     max-width: 46rem;

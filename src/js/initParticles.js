@@ -153,16 +153,35 @@ const scp = (showcase['create-particles'] = new CanvasParticles('#showcase-creat
   background: 'var(--bg)',
   mouse: {
     interactionType: 1,
-    connectDistMult: 150,
+    connectDistMult: 15,
     distRatio: 1,
   },
   particles: {
     drawLines: false,
     color: '#f40',
-    connectDistance: 1,
+    connectDistance: 10,
     rotationSpeed: 0,
   },
 }))
+
+showcase['debug'] = new CanvasParticles('#showcase-debug', {
+  background: '#121',
+  mouse: {
+    interactionType: CanvasParticles.interactionType.SHIFT,
+    connectDistMult: 1,
+  },
+  particles: {
+    color: '#96ff69',
+    ppm: 150,
+  },
+  gravity: {
+    repulsive: 3,
+  },
+  debug: {
+    drawGrid: true,
+    drawIndexes: true,
+  },
+})
 
 // Create a sine wave of particles moving down
 const createParticleSineWaves = () => {

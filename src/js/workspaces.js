@@ -28,6 +28,10 @@ const presets = {
     repulsive: 0.55,
     pulling: 0,
     friction: 0.9,
+  },
+  debug: {
+    drawGrid: false,
+    drawIndexes: false,
   }
 }`,
 

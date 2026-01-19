@@ -420,7 +420,7 @@ export default class CanvasParticles {
     const mouseDistRatio = this.option.mouse.distRatio
     const isMouseInteractionTypeNone = this.option.mouse.interactionType === CanvasParticles.interactionType.NONE
     const isMouseInteractionTypeMove = this.option.mouse.interactionType === CanvasParticles.interactionType.MOVE
-    const easing = 1 - Math.pow(1 - 1 / 4, step)
+    const easing = 1 - Math.pow(3 / 4, step)
 
     for (const p of this.particles) {
       p.dir += 2 * (Math.random() - 0.5) * rotationSpeed * step
@@ -519,16 +519,14 @@ export default class CanvasParticles {
   }
 
   /** @private */
-  #buildSpatialGrid(): SpatialGrid {
+  #buildSpatialGrid(stride: number, invCellSize: number): SpatialGrid {
     const particles = this.particles
     const len = particles.length
-    const width = this.width | 0
-    const invCellSize = Math.fround(1 / this.option.particles.connectDist)
     const grid: SpatialGrid = new Map()
 
     for (let i = 0; i < len; i++) {
-      const particle = particles[i]
-      const key = ((particle.x * invCellSize) | 0) + ((particle.y * invCellSize) | 0) * width
+      const p = particles[i]
+      const key = ((p.x * invCellSize) | 0) + Math.imul(p.y * invCellSize, stride)
       const cell = grid.get(key)
 
       if (cell) cell.push(i)
@@ -556,51 +554,99 @@ export default class CanvasParticles {
     const ctx = this.ctx
     const maxDist = this.option.particles.connectDist
     const maxDistSq = maxDist ** 2
-    const halfMaxDist = maxDist / 2
-    const halfMaxDistSq = halfMaxDist ** 2
+    const halfMaxDistSq = (maxDist / 2) ** 2
+
+    const invCellSize = 1 / maxDist
+    const stride = Math.ceil(this.width * invCellSize)
+
     const drawAll = maxDist >= Math.min(this.canvas.width, this.canvas.height)
     const maxWorkPerParticle = maxDistSq * this.option.particles.maxWork
     const alpha = this.color.alpha
     const alphaFactor = this.color.alpha * maxDist
 
-    /** Batch line segments of max alpha */
-    const bucket: LineSegment[] = []
+    const bucket: LineSegment[] = [] // Batch line segments of max alpha
+    const grid = this.#buildSpatialGrid(stride, invCellSize) // O(n^2) -> O(n)
 
-    for (let i = 0; i < len; i++) {
-      const particleA = particles[i]
-      let particleWork = 0
+    let particleWork = 0
+    let allowWork = true
 
-      for (let j = i + 1; j < len; j++) {
-        // Code in this scope runs O(n^2) times per frame!
-        const particleB = particles[j]
+    function renderConnection(ax: number, ay: number, bx: number, by: number) {
+      const distX = ax - bx
+      const distY = ay - by
+      const distSq = distX * distX + distY * distY
+
+      // Don't draw the line if the particles are too far away
+      if (distSq > maxDistSq) return
+
+      if (distSq > halfMaxDistSq) {
+        ctx.globalAlpha = alphaFactor / Math.sqrt(distSq) - alpha
+
+        ctx.beginPath()
+        ctx.moveTo(ax, ay)
+        ctx.lineTo(bx, by)
+        ctx.stroke()
+      } else {
+        // Cache lines with max alpha to later be drawn in one batch
+        bucket.push([ax, ay, bx, by])
+      }
+      particleWork += distSq
+      allowWork = particleWork < maxWorkPerParticle
+    }
+
+    function renderConnectionsToOwnCell(cell: number[], a: number, pa: Particle) {
+      // Loops though indexes of particles in `this.particles`
+      for (const b of cell) {
+        if (a >= b) continue // Skip self and particles that already drew a line in the opposite direction
+
+        const pb = particles[b]
 
         // Don't draw the line if it wouldn't be visible
-        if (!drawAll && !this.#isLineVisible(particleA, particleB)) continue
+        if (!drawAll && !CanvasParticles.#isLineVisible(pa, pb)) continue
 
-        const distX = particleA.x - particleB.x
-        const distY = particleA.y - particleB.y
-
-        const distSq = distX * distX + distY * distY
-
-        // Don't draw the line if the particles are too far away
-        if (distSq > maxDistSq) continue
-
-        if (distSq > halfMaxDistSq) {
-          // Calculate line alpha
-          ctx.globalAlpha = alphaFactor / Math.sqrt(distSq) - alpha
-
-          // Draw the line
-          ctx.beginPath()
-          ctx.moveTo(particleA.x, particleA.y)
-          ctx.lineTo(particleB.x, particleB.y)
-          ctx.stroke()
-        } else {
-          bucket.push([particleA.x, particleA.y, particleB.x, particleB.y])
-        }
+        renderConnection(pa.x, pa.y, pb.x, pb.y)
 
         // Stop drawing lines from this particle if it has exceeded what's allowed by configuration
-        if ((particleWork += distSq) >= maxWorkPerParticle) break
+        if (!allowWork) break
       }
+    }
+
+    function renderConnectionsToCell(cell: number[], pa: Particle) {
+      // Loops though indexes of particles in `this.particles`
+      for (const b of cell) {
+        const pb = particles[b]
+
+        // Don't draw the line if it wouldn't be visible
+        if (!drawAll && !CanvasParticles.#isLineVisible(pa, pb)) continue
+
+        renderConnection(pa.x, pa.y, pb.x, pb.y)
+
+        // Stop drawing lines from this particle if it has exceeded what's allowed by configuration
+        if (!allowWork) break
+      }
+    }
+
+    for (let a = 0; a < len; a++) {
+      particleWork = 0
+      allowWork = true
+
+      /**
+       * 3x3 Grid Hop
+       * Fastest approach: https://jsbm.dev/XIRm7thFFw82v (Unrolled: Positive Only)
+       *
+       * Cells with negative dx and dy can be skipped since they will at one point be the
+       * selected cell and do their own grid hop which will include the current cell
+       */
+      const pa = particles[a]
+      const cellX = (pa.x * invCellSize) | 0
+      const cellY = (pa.y * invCellSize) | 0
+      const key = cellX + Math.imul(cellY, stride)
+      let cell = grid.get(key)
+
+      if (cellX >= 0 && cellY >= 0 && cellX < stride - 2) renderConnectionsToOwnCell(cell || [], a, pa)
+      if ((cell = grid.get(key + 1))) renderConnectionsToCell(cell, pa) // (+1, 0)
+      if ((cell = grid.get(key + stride))) renderConnectionsToCell(cell, pa) // (0, +1)
+      if ((cell = grid.get(key + stride + 1))) renderConnectionsToCell(cell, pa) // (+1, +1)
+      if ((cell = grid.get(key + stride - 1))) renderConnectionsToCell(cell, pa) // (-1, +1)
     }
 
     if (!bucket.length) return

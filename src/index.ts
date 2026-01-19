@@ -636,10 +636,10 @@ export default class CanvasParticles {
        * Cells with negative dx and dy can be skipped since they will at one point be the
        * selected cell and do their own grid hop which will include the current cell
        */
-      const pa = particles[a]
-      const cellX = (pa.x * invCellSize) | 0
-      const cellY = (pa.y * invCellSize) | 0
-      const key = cellX + Math.imul(cellY, stride)
+      let pa = particles[a]
+      let cellX = (pa.x * invCellSize) | 0
+      let cellY = (pa.y * invCellSize) | 0
+      let key = cellX + Math.imul(cellY, stride)
       let cell
 
       if ((cell = grid.get(key + 1))) renderConnectionsToCell(cell, pa) // (+1, 0)
@@ -650,8 +650,56 @@ export default class CanvasParticles {
       if (!allowWork) continue
       if ((cell = grid.get(key + stride - 1))) renderConnectionsToCell(cell, pa) // (-1, +1)
       if (!allowWork) continue
-      if (allowWork && cellX >= 0 && cellY >= 0 && cellX < stride - 2 && (cell = grid.get(key)))
+      if (cellX >= 0 && cellY >= 0 && cellX < stride - 2 && (cell = grid.get(key)))
         renderConnectionsToOwnCell(cell || [], a, pa)
+
+      // Next iteration
+      a++
+      if (!(a < len)) break
+
+      // Same code inline but the order of grid.get() is different to remove maxWork artifacts
+      particleWork = 0
+      allowWork = true
+
+      pa = particles[a]
+      cellX = (pa.x * invCellSize) | 0
+      cellY = (pa.y * invCellSize) | 0
+      key = cellX + Math.imul(cellY, stride)
+
+      if ((cell = grid.get(key + stride + 1))) renderConnectionsToCell(cell, pa) // (+1, +1)
+      if (!allowWork) continue
+      if ((cell = grid.get(key + stride - 1))) renderConnectionsToCell(cell, pa) // (-1, +1)
+      if (!allowWork) continue
+      if ((cell = grid.get(key + 1))) renderConnectionsToCell(cell, pa) // (+1, 0)
+      if (!allowWork) continue
+      if ((cell = grid.get(key + stride))) renderConnectionsToCell(cell, pa) // (0, +1)
+      if (!allowWork) continue
+      if (cellX >= 0 && cellY >= 0 && cellX < stride - 2 && (cell = grid.get(key)))
+        renderConnectionsToOwnCell(cell || [], a, pa)
+
+      // Next iteration
+      a++
+      if (!(a < len)) break
+
+      // Same code inline but the order of grid.get() is different to remove maxWork artifacts
+      particleWork = 0
+      allowWork = true
+
+      pa = particles[a]
+      cellX = (pa.x * invCellSize) | 0
+      cellY = (pa.y * invCellSize) | 0
+      key = cellX + Math.imul(cellY, stride)
+
+      if ((cell = grid.get(key + stride))) renderConnectionsToCell(cell, pa) // (0, +1)
+      if (!allowWork) continue
+      if ((cell = grid.get(key + 1))) renderConnectionsToCell(cell, pa) // (+1, 0)
+      if (!allowWork) continue
+      if (cellX >= 0 && cellY >= 0 && cellX < stride - 2 && (cell = grid.get(key)))
+        renderConnectionsToOwnCell(cell || [], a, pa)
+      if (!allowWork) continue
+      if ((cell = grid.get(key + stride - 1))) renderConnectionsToCell(cell, pa) // (-1, +1)
+      if (!allowWork) continue
+      if ((cell = grid.get(key + stride + 1))) renderConnectionsToCell(cell, pa) // (+1, +1)
     }
 
     if (!bucket.length) return

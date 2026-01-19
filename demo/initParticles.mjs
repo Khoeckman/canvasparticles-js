@@ -50,16 +50,16 @@ new CanvasParticles('#cp-3', {
   },
   particles: {
     color: '#f45',
-    ppm: 500,
-    max: 1000,
-    maxWork: 50,
-    connectDistance: 100,
+    ppm: 400,
+    max: 800,
+    maxWork: 40,
+    connectDistance: 80,
     rotationSpeed: 2,
   },
   gravity: {
     repulsive: 5,
     pulling: 1,
-    friction: 0.75,
+    friction: 0.5,
   },
 }).start()
 

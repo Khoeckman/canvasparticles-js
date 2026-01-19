@@ -292,7 +292,7 @@ instance.newParticles() // Remove all particles and create the correct amount of
 instance.matchParticleCount() // Add or remove some particles to match the count
 ```
 
-### Changing particle properties
+#### Changing particle properties
 
 After updating the following options, the particles are **not automatically updated**:
 

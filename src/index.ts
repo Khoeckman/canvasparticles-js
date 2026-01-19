@@ -367,15 +367,15 @@ export default class CanvasParticles {
     const maxRepulsiveDistSq = maxRepulsiveDist ** 2
     const epsilon = connectDist ** 2 / 256
 
-    for (let i = 0; i < len; i++) {
-      const particleA = particles[i]
+    for (let a = 0; a < len; a++) {
+      const pa = particles[a]
 
-      for (let j = i + 1; j < len; j++) {
+      for (let b = a + 1; b < len; b++) {
         // Code in this scope runs O(n^2) times per frame!
-        const particleB = particles[j]
+        const pb = particles[b]
 
-        const distX = particleA.posX - particleB.posX
-        const distY = particleA.posY - particleB.posY
+        const distX = pa.posX - pb.posX
+        const distY = pa.posY - pb.posY
         const distSq = distX * distX + distY * distY
 
         if (distSq >= maxRepulsiveDistSq && !isPullingEnabled) continue
@@ -387,10 +387,10 @@ export default class CanvasParticles {
           const grav = invDist * gravRepulsiveMult
           const gravX = -distX * grav
           const gravY = -distY * grav
-          particleA.velX -= gravX
-          particleA.velY -= gravY
-          particleB.velX += gravX
-          particleB.velY += gravY
+          pa.velX -= gravX
+          pa.velY -= gravY
+          pb.velX += gravX
+          pb.velY += gravY
         }
 
         if (!isPullingEnabled) continue
@@ -398,10 +398,10 @@ export default class CanvasParticles {
         const grav = invDist * gravPullingMult
         const gravX = -distX * grav
         const gravY = -distY * grav
-        particleA.velX += gravX
-        particleA.velY += gravY
-        particleB.velX -= gravX
-        particleB.velY -= gravY
+        pa.velX += gravX
+        pa.velY += gravY
+        pb.velX -= gravX
+        pb.velY -= gravY
       }
     }
   }
@@ -422,57 +422,57 @@ export default class CanvasParticles {
     const isMouseInteractionTypeMove = this.option.mouse.interactionType === CanvasParticles.interactionType.MOVE
     const easing = 1 - Math.pow(1 - 1 / 4, step)
 
-    for (const particle of this.particles) {
-      particle.dir += 2 * (Math.random() - 0.5) * rotationSpeed * step
-      particle.dir %= TWO_PI
+    for (const p of this.particles) {
+      p.dir += 2 * (Math.random() - 0.5) * rotationSpeed * step
+      p.dir %= TWO_PI
 
       // Constant velocity
-      const movX = Math.sin(particle.dir) * particle.speed
-      const movY = Math.cos(particle.dir) * particle.speed
+      const movX = Math.sin(p.dir) * p.speed
+      const movY = Math.cos(p.dir) * p.speed
 
       // Apply velocities
-      particle.posX += (movX + particle.velX) * step
-      particle.posY += (movY + particle.velY) * step
+      p.posX += (movX + p.velX) * step
+      p.posY += (movY + p.velY) * step
 
       // Wrap particles around the canvas
-      particle.posX %= width
-      if (particle.posX < 0) particle.posX += width
+      p.posX %= width
+      if (p.posX < 0) p.posX += width
 
-      particle.posY %= height
-      if (particle.posY < 0) particle.posY += height
+      p.posY %= height
+      if (p.posY < 0) p.posY += height
 
       // Slightly decrease dynamic velocity
-      particle.velX *= Math.pow(friction, step)
-      particle.velY *= Math.pow(friction, step)
+      p.velX *= Math.pow(friction, step)
+      p.velY *= Math.pow(friction, step)
 
       // Distance from mouse
-      const distX = particle.posX + offX - mouseX
-      const distY = particle.posY + offY - mouseY
+      const distX = p.posX + offX - mouseX
+      const distY = p.posY + offY - mouseY
 
       // Mouse interaction
       if (!isMouseInteractionTypeNone) {
         const distRatio = mouseConnectDist / Math.hypot(distX, distY)
 
         if (mouseDistRatio < distRatio) {
-          particle.offX += (distRatio * distX - distX - particle.offX) * easing
-          particle.offY += (distRatio * distY - distY - particle.offY) * easing
+          p.offX += (distRatio * distX - distX - p.offX) * easing
+          p.offY += (distRatio * distY - distY - p.offY) * easing
         } else {
-          particle.offX -= particle.offX * easing
-          particle.offY -= particle.offY * easing
+          p.offX -= p.offX * easing
+          p.offY -= p.offY * easing
         }
       }
 
       // Visually displace the particles
-      particle.x = particle.posX + particle.offX
-      particle.y = particle.posY + particle.offY
+      p.x = p.posX + p.offX
+      p.y = p.posY + p.offY
 
       // Move the particles
       if (isMouseInteractionTypeMove) {
-        particle.posX = particle.x
-        particle.posY = particle.y
+        p.posX = p.x
+        p.posY = p.y
       }
-      particle.x += offX
-      particle.y += offY
+      p.x += offX
+      p.y += offY
 
       /**
        * Determine a particle's location in a 3x3 canvas grid to assess visibility.
@@ -490,10 +490,10 @@ export default class CanvasParticles {
        * - { x: 1, y: 2 } = bottom
        * - { x: 2, y: 2 } = bottom-right
        */
-      particle.gridPos.x = (+(particle.x >= particle.bounds.left) + +(particle.x > particle.bounds.right)) as GridPos
-      particle.gridPos.y = (+(particle.y >= particle.bounds.top) + +(particle.y > particle.bounds.bottom)) as GridPos
+      p.gridPos.x = (+(p.x >= p.bounds.left) + +(p.x > p.bounds.right)) as GridPos
+      p.gridPos.y = (+(p.y >= p.bounds.top) + +(p.y > p.bounds.bottom)) as GridPos
 
-      particle.isVisible = particle.gridPos.x === 1 && particle.gridPos.y === 1
+      p.isVisible = p.gridPos.x === 1 && p.gridPos.y === 1
     }
   }
 
@@ -501,19 +501,19 @@ export default class CanvasParticles {
   #renderParticles() {
     const ctx = this.ctx
 
-    for (const particle of this.particles) {
-      if (!particle.isVisible) continue
+    for (const p of this.particles) {
+      if (!p.isVisible) continue
 
       // Draw particles smaller than 1px as a square instead of a circle for performance
-      if (particle.size > 1) {
+      if (p.size > 1) {
         // Draw circle
         ctx.beginPath()
-        ctx.arc(particle.x, particle.y, particle.size, 0, TWO_PI)
+        ctx.arc(p.x, p.y, p.size, 0, TWO_PI)
         ctx.fill()
         ctx.closePath()
       } else {
         // Draw square (±183% faster)
-        ctx.fillRect(particle.x - particle.size, particle.y - particle.size, particle.size * 2, particle.size * 2)
+        ctx.fillRect(p.x - p.size, p.y - p.size, p.size * 2, p.size * 2)
       }
     }
   }

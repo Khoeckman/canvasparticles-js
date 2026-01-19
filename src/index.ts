@@ -640,13 +640,18 @@ export default class CanvasParticles {
       const cellX = (pa.x * invCellSize) | 0
       const cellY = (pa.y * invCellSize) | 0
       const key = cellX + Math.imul(cellY, stride)
-      let cell = grid.get(key)
+      let cell
 
-      if (cellX >= 0 && cellY >= 0 && cellX < stride - 2) renderConnectionsToOwnCell(cell || [], a, pa)
       if ((cell = grid.get(key + 1))) renderConnectionsToCell(cell, pa) // (+1, 0)
+      if (!allowWork) continue
       if ((cell = grid.get(key + stride))) renderConnectionsToCell(cell, pa) // (0, +1)
+      if (!allowWork) continue
       if ((cell = grid.get(key + stride + 1))) renderConnectionsToCell(cell, pa) // (+1, +1)
+      if (!allowWork) continue
       if ((cell = grid.get(key + stride - 1))) renderConnectionsToCell(cell, pa) // (-1, +1)
+      if (!allowWork) continue
+      if (allowWork && cellX >= 0 && cellY >= 0 && cellX < stride - 2 && (cell = grid.get(key)))
+        renderConnectionsToOwnCell(cell || [], a, pa)
     }
 
     if (!bucket.length) return

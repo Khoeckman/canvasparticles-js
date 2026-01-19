@@ -688,28 +688,22 @@ window.addEventListener('resize', createParticleSineWaves)</code></pre>
           <h3>Handling particles beyond canvas bounds</h3>
           <p>
             Particles are only drawn if they are within the visible area of the canvas, accounting for their size.
-            Particles are
-            considered to still be visible if their edges are within the canvas bounds, preventing large particles from
-            disappearing when
-            their center crosses the edge.
+            Particles are considered to still be visible if their edges are within the canvas bounds, preventing large
+            particles from disappearing when their center crosses the edge.
           </p>
           <p>When particles move beyond the floating area bounds, they will teleport to the opposite side.</p>
 
           <h3>Handling particle connections beyond canvas bounds</h3>
           <p>
             The floating area for the particles is larger than the canvas bounds to ensure no lines between particles
-            will suddenly
-            dissapear near the edges. The floating space added to all 4 sides is exactly equal to the maximum length of
-            a line, defined
-            with <span class="highlight">option.particles.connectDist</span>.
+            will suddenly dissapear near the edges. The floating space added to all 4 sides is exactly equal to the
+            maximum length of a line, defined with <code class="language-js">option.particles.connectDist</code>.
           </p>
           <p>By default, a line is not drawn between particles if both are outside the visible canvas area.</p>
           <p>
             Each particle's grid position is calculated based on its location relative to the visible canvas area. This
-            allows for
-            determining whether two particles, even when outside the canvas, should have a connecting line drawn between
-            them because part
-            of it can still be seen.
+            allows for determining whether two particles, even when outside the canvas, should have a connecting line
+            drawn between them because part of it can still be seen.
           </p>
 
           <h3>Performance optimizations</h3>
@@ -720,11 +714,22 @@ window.addEventListener('resize', createParticleSineWaves)</code></pre>
           <ul>
             <li>
               <p>The heaviest task of the animation loop is processing and assigning a new color to
-                <span class="highlight">ctx.fillStyle</span> for every single line being drawn, every frame, but the
+                <code class="language-js">ctx.fillStyle</code> for every single line being drawn, every frame, but the
+                only difference between these colors is the opacity. Profiling shows that keeping
+                <code class="language-js">ctx.fillStyle</code> the same and only changing
+                <code class="language-js">ctx.globalAlpha</code> is about 25x as fast.
+              </p>
+            </li>
+            <li>
+              <p>
+                To avoid checking every particle against every other particle (an
+                <code class="language-py">O(n²)</code> operation), the renderer uses a spatial grid to partition the
+                canvas into
+                fixed-size cells. Each particle is inserted into a cell based on its position, and connection checks are
                 only
-                difference between these colors is the opacity. Profiling shows that keeping
-                <span class="highlight">ctx.fillStyle</span> the same and only changing
-                <span class="highlight">ctx.globalAlpha</span> is about 25x as fast.
+                performed against particles in the same cell and neighboring cells. This reduces the average number of
+                distance
+                checks dramatically and keeps the animation loop close to linear time even with large particle counts.
               </p>
             </li>
             <li>
@@ -742,6 +747,13 @@ window.addEventListener('resize', createParticleSineWaves)</code></pre>
             </li>
             <li>
               <p>Particles smaller than one pixel are drawn as squares instead of circles which is ±183% faster.</p>
+            </li>
+            <li>
+              <p>In versions 4.3.4 and older, gravity used <code class="language-js">Math.atan2</code>,
+                <code class="language-js">Math.sin</code> and <code class="language-js">Math.cos</code> to calculate the
+                angle between particles to correctly translate it to separate X and Y forces. After some research it
+                appears that this is possible without any trigonometry, just vector math.
+              </p>
             </li>
           </ul>
 

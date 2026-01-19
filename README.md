@@ -240,6 +240,17 @@ Enabling gravity (`repulsive` or `pulling` > 0) performs an extra **O(n²)** gra
 
 ---
 
+### `debug`
+
+Intended for development and debugging. Can be useful to understand internal behavior.
+
+| Option              | Type      | Default | Description                                     |
+| ------------------- | --------- | ------- | ----------------------------------------------- |
+| `debug.drawGrid`    | `boolean` | `false` | Renders the spatial grid used for partitioning. |
+| `debug.drawIndexes` | `boolean` | `false` | Displays particle indices on the canvas.        |
+
+---
+
 ### Update options on the fly
 
 You can update every option while an instance is animating and it works great; but some options require an extra step.

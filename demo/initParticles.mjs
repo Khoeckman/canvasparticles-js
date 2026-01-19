@@ -27,12 +27,16 @@ new CanvasParticles('#cp-2', {
     color: '#96ff69',
     ppm: 120,
     max: 480,
-    maxWork: 20,
+    maxWork: 50,
     relSpeed: 0.75,
     rotationSpeed: 5,
   },
   gravity: {
     repulsive: 3,
+  },
+  debug: {
+    drawGrid: true,
+    drawIndexes: true,
   },
 }).start()
 

@@ -32,6 +32,11 @@ export interface CanvasParticlesOptions {
     pulling: number
     friction: number
   }
+
+  debug: {
+    drawGrid: boolean
+    drawIndexes: boolean
+  }
 }
 
 type DeepPartial<T> = {

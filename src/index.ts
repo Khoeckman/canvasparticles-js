@@ -663,6 +663,47 @@ export default class CanvasParticles {
     ctx.stroke()
   }
 
+  #renderGrid(cellSize: number) {
+    const ctx = this.ctx
+    const { width, height } = this.canvas
+
+    ctx.save()
+    ctx.globalAlpha = 0.5
+
+    ctx.beginPath()
+
+    for (let x = 0.5; x <= width; x += cellSize) {
+      ctx.moveTo(x, 0)
+      ctx.lineTo(x, height)
+    }
+
+    for (let y = 0.5; y <= height; y += cellSize) {
+      ctx.moveTo(0, y)
+      ctx.lineTo(width, y)
+    }
+
+    ctx.stroke()
+    ctx.restore()
+  }
+
+  #renderParticleIndexes() {
+    const ctx = this.ctx
+    const particles = this.particles
+    const len = particles.length
+
+    ctx.save()
+    ctx.globalAlpha = 1
+    ctx.fillStyle = '#fff'
+    ctx.textAlign = 'center'
+    ctx.textBaseline = 'middle'
+
+    for (let i = 0; i < len; i++) {
+      const p = particles[i]
+      ctx.fillText(String(i), p.x, p.y)
+    }
+    ctx.restore()
+  }
+
   /** Clear the canvas and render the particles and their connections onto the canvas */
   #render() {
     this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height)
@@ -674,6 +715,8 @@ export default class CanvasParticles {
 
     this.#renderParticles()
     if (this.option.particles.drawLines) this.#renderConnections()
+    if (this.option.debug.drawGrid) this.#renderGrid(this.option.particles.connectDist)
+    if (this.option.debug.drawIndexes) this.#renderParticleIndexes()
   }
 
   /** Main animation loop that updates and renders the particles */
@@ -780,6 +823,10 @@ export default class CanvasParticles {
         repulsive: pno('gravity.repulsive', options.gravity?.repulsive, 0, { min: 0 }),
         pulling: pno('gravity.pulling', options.gravity?.pulling, 0, { min: 0 }),
         friction: pno('gravity.friction', options.gravity?.friction, 0.8, { min: 0, max: 1 }),
+      },
+      debug: {
+        drawGrid: !!options.debug?.drawGrid,
+        drawIndexes: !!options.debug?.drawIndexes,
       },
     }
 

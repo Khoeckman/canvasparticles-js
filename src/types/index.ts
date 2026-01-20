@@ -52,6 +52,4 @@ export interface ContextColor {
   alpha: number
 }
 
-export type LineSegment = [ax: number, ay: number, bx: number, by: number]
-
 export type SpatialGrid = Map</* key: */ number, /* indexesOfParticles: */ number[]>

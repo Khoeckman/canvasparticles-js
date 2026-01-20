@@ -4,14 +4,15 @@ import CanvasParticles from '../dist/index.mjs'
 new CanvasParticles('#cp-1', {
   background: 'linear-gradient(115deg, #354089, black)',
   mouse: {
-    connectDistMult: 1,
+    connectDistMult: 75,
     distRatio: 1,
   },
   particles: {
-    drawLines: false,
     color: '#88c8ff',
-    ppm: 10000,
-    max: 20000,
+    ppm: 8000,
+    max: 16000,
+    maxWork: 1,
+    connectDistance: 2,
     relSpeed: 0.05,
   },
 }).start()
@@ -59,7 +60,7 @@ new CanvasParticles('#cp-3', {
   gravity: {
     repulsive: 5,
     pulling: 1,
-    friction: 0.5,
+    friction: 0.75,
   },
 }).start()
 

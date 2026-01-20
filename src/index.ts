@@ -1,7 +1,7 @@
 // Copyright (c) 2022–2026 Kyle Hoeckman, MIT License
 // https://github.com/Khoeckman/canvasparticles-js/blob/main/LICENSE
 
-import type { CanvasParticlesCanvas, Particle, GridPos, ContextColor, LineSegment, SpatialGrid } from './types'
+import type { CanvasParticlesCanvas, Particle, GridPos, ContextColor, SpatialGrid } from './types'
 import type { CanvasParticlesOptions, CanvasParticlesOptionsInput } from './types/options'
 
 const TWO_PI = 2 * Math.PI
@@ -564,7 +564,7 @@ export default class CanvasParticles {
     const alpha = this.color.alpha
     const alphaFactor = this.color.alpha * maxDist
 
-    const bucket: LineSegment[] = [] // Batch line segments of max alpha
+    const bucket: number[] = [] // Batch line segments of max alpha (2D -> 1D; stride = 4)
     const grid = this.#buildSpatialGrid(stride, invCellSize) // O(n^2) -> O(n)
 
     let particleWork = 0
@@ -587,7 +587,7 @@ export default class CanvasParticles {
         ctx.stroke()
       } else {
         // Cache lines with max alpha to later be drawn in one batch
-        bucket.push([ax, ay, bx, by])
+        bucket.push(ax, ay, bx, by)
       }
       particleWork += distSq
       allowWork = particleWork < maxWorkPerParticle
@@ -654,8 +654,7 @@ export default class CanvasParticles {
         renderConnectionsToOwnCell(cell || [], a, pa)
 
       // Next iteration
-      a++
-      if (!(a < len)) break
+      if (++a >= len) break
 
       // Same code inline but the order of grid.get() is different to remove maxWork artifacts
       particleWork = 0
@@ -678,8 +677,7 @@ export default class CanvasParticles {
         renderConnectionsToOwnCell(cell || [], a, pa)
 
       // Next iteration
-      a++
-      if (!(a < len)) break
+      if (++a >= len) break
 
       // Same code inline but the order of grid.get() is different to remove maxWork artifacts
       particleWork = 0
@@ -708,10 +706,9 @@ export default class CanvasParticles {
     ctx.globalAlpha = alpha
     ctx.beginPath()
 
-    for (let i = 0; i < bucket.length; i++) {
-      const line = bucket[i]
-      ctx.moveTo(line[0], line[1])
-      ctx.lineTo(line[2], line[3])
+    for (let line = 0; line < bucket.length; line += 4) {
+      ctx.moveTo(bucket[line], bucket[line + 1])
+      ctx.lineTo(bucket[line + 2], bucket[line + 3])
     }
     ctx.stroke()
   }

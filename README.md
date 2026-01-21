@@ -239,11 +239,12 @@ It's best to not touch these values if it's unclear what it does.
 
 Enabling gravity (`repulsive` or `pulling` > 0) performs an extra **O(n²)** gravity computations per frame.
 
-| Option              | Type    | Default | Description                                                                            |
-| ------------------- | ------- | ------- | -------------------------------------------------------------------------------------- |
-| `gravity.repulsive` | `float` | `0`     | Repulsive force between particles.                                                     |
-| `gravity.pulling`   | `float` | `0`     | Attractive force between particles. Requires sufficient repulsion to avoid clustering. |
-| `gravity.friction`  | `float` | `0.8`   | Damping factor applied to gravitational velocity each update (`0.0 – 1.0`).            |
+| Option                      | Type      | Default | Description                                                                                   |
+| --------------------------- | --------- | ------- | --------------------------------------------------------------------------------------------- |
+| `gravity.repulsive`         | `float`   | `0`     | Repulsive force between particles.                                                            |
+| `gravity.pulling`           | `float`   | `0`     | Attractive force between particles. Requires sufficient repulsion to avoid clustering.        |
+| `gravity.friction`          | `float`   | `0.8`   | Damping factor applied to gravitational velocity each update (`0.0 – 1.0`).                   |
+| `gravity.preventExplosions` | `boolean` | `false` | Clamp the maximum velocity so particles will not explode outward under heavy pulling gravity. |
 
 ---
 

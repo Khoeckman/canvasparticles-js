@@ -31,6 +31,7 @@ export interface CanvasParticlesOptions {
     repulsive: number
     pulling: number
     friction: number
+    preventExplosions: boolean
   }
 
   debug: {

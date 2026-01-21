@@ -61,6 +61,7 @@ new CanvasParticles('#cp-3', {
     repulsive: 5,
     pulling: 1,
     friction: 0.75,
+    preventExplosions: true,
   },
 }).start()
 

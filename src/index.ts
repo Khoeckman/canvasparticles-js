@@ -414,12 +414,13 @@ export default class CanvasParticles {
     const offY = this.offY
     const mouseX = this.mouseX
     const mouseY = this.mouseY
-    const rotationSpeed = this.option.particles.rotationSpeed * step
-    const friction = this.option.gravity.friction
-    const mouseConnectDist = this.option.mouse.connectDist
-    const mouseDistRatio = this.option.mouse.distRatio
     const isMouseInteractionTypeNone = this.option.mouse.interactionType === CanvasParticles.interactionType.NONE
     const isMouseInteractionTypeMove = this.option.mouse.interactionType === CanvasParticles.interactionType.MOVE
+    const mouseConnectDist = this.option.mouse.connectDist
+    const mouseDistRatio = this.option.mouse.distRatio
+    const rotationSpeed = this.option.particles.rotationSpeed * step
+    const friction = this.option.gravity.friction
+    const preventExplosions = this.option.gravity.preventExplosions
     const easing = 1 - Math.pow(3 / 4, step)
 
     for (const p of this.particles) {
@@ -429,6 +430,17 @@ export default class CanvasParticles {
       // Constant velocity
       const movX = Math.sin(p.dir) * p.speed
       const movY = Math.cos(p.dir) * p.speed
+
+      // Maximum velocity
+      if (preventExplosions) {
+        const maxVel = Math.max(p.speed, friction) * 2
+
+        if (p.velX > maxVel) p.velX = maxVel
+        if (p.velX < -maxVel) p.velX = -maxVel
+
+        if (p.velY > maxVel) p.velY = maxVel
+        if (p.velY < -maxVel) p.velY = -maxVel
+      }
 
       // Apply velocities
       p.posX += (movX + p.velX) * step
@@ -878,6 +890,7 @@ export default class CanvasParticles {
         repulsive: pno('gravity.repulsive', options.gravity?.repulsive, 0, { min: 0 }),
         pulling: pno('gravity.pulling', options.gravity?.pulling, 0, { min: 0 }),
         friction: pno('gravity.friction', options.gravity?.friction, 0.8, { min: 0, max: 1 }),
+        preventExplosions: !!options.gravity?.preventExplosions,
       },
       debug: {
         drawGrid: !!options.debug?.drawGrid,

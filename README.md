@@ -175,8 +175,7 @@ Play around with these values in the [Sandbox](https://khoeckman.github.io/canva
 
 ### Options Object
 
-The default value will be used when an option is assigned an invalid value.<br>
-Your screen resolution and refresh rate will directly impact perfomance!
+The default value will be used when an option is assigned an invalid value.
 
 ### Root options
 
@@ -187,6 +186,8 @@ Your screen resolution and refresh rate will directly impact perfomance!
 ---
 
 ### `animation`
+
+It's best to not touch these values if it's unclear what it does.
 
 | Option                   | Type      | Default | Description                                          |
 | ------------------------ | --------- | ------- | ---------------------------------------------------- |
@@ -207,24 +208,30 @@ Your screen resolution and refresh rate will directly impact perfomance!
 
 - `NONE (0)` – No interaction
 - `SHIFT (1)` – Visual displacement only
-- `MOVE (2)` – Actual particle movement
+- `MOVE (2)` – Actual particle movement (default)
 
 ---
 
 ### `particles`
 
-| Option                      | Type          | Default    | Description                                                                                              |
-| --------------------------- | ------------- | ---------- | -------------------------------------------------------------------------------------------------------- |
-| `particles.generationType`  | `0 \| 1 \| 2` | `false`    | Auto-generate particles on initialization and when the canvas resizes. `0 = OFF`, `1 = NEW`, `2 = MATCH` |
-| `particles.color`           | `string`      | `'black'`  | Particle and connection color. Any CSS color format.                                                     |
-| `particles.ppm`             | `integer`     | `100`      | Particles per million pixels. _Heavily impacts performance_                                              |
-| `particles.max`             | `integer`     | `Infinity` | Maximum number of particles allowed.                                                                     |
-| `particles.maxWork`         | `integer`     | `Infinity` | Maximum total connection length per particle. Lower values stabilize performance but may flicker.        |
-| `particles.connectDistance` | `integer`     | `150`      | Maximum distance for particle connections (px). _Heavily impacts performance_                            |
-| `particles.relSpeed`        | `float`       | `1`        | Relative particle speed multiplier.                                                                      |
-| `particles.relSize`         | `float`       | `1`        | Relative particle size multiplier.                                                                       |
-| `particles.rotationSpeed`   | `float`       | `2`        | Direction change speed.                                                                                  |
-| `particles.drawLines`       | `boolean`     | `true`     | Whether to draw lines between particles.                                                                 |
+| Option                      | Type          | Default    | Description                                                                                       |
+| --------------------------- | ------------- | ---------- | ------------------------------------------------------------------------------------------------- |
+| `particles.generationType`  | `0 \| 1 \| 2` | `false`    | Auto-generate particles on initialization and when the canvas resizes. `1 = OFF`, `2 = MATCH`     |
+| `particles.color`           | `string`      | `'black'`  | Particle and connection color. Any CSS color format.                                              |
+| `particles.ppm`             | `integer`     | `100`      | Particles per million pixels.                                                                     |
+| `particles.max`             | `integer`     | `Infinity` | Maximum number of particles allowed.                                                              |
+| `particles.maxWork`         | `integer`     | `Infinity` | Maximum total connection length per particle. Lower values stabilize performance but may flicker. |
+| `particles.connectDistance` | `integer`     | `150`      | Maximum distance for particle connections (px).                                                   |
+| `particles.relSpeed`        | `float`       | `1`        | Relative particle speed multiplier.                                                               |
+| `particles.relSize`         | `float`       | `1`        | Relative particle size multiplier.                                                                |
+| `particles.rotationSpeed`   | `float`       | `2`        | Direction change speed.                                                                           |
+| `particles.drawLines`       | `boolean`     | `true`     | Whether to draw lines between particles.                                                          |
+
+**Generation types** (enum)
+
+- `OFF (0)` – Never auto-generate particles
+- `NEW (1)` – Generate all particles from scratch
+- `MATCH (2)` – Add or remove some particles to match the new count (default)
 
 ---
 
@@ -234,7 +241,7 @@ Enabling gravity (`repulsive` or `pulling` > 0) performs an extra **O(n²)** gra
 
 | Option              | Type    | Default | Description                                                                            |
 | ------------------- | ------- | ------- | -------------------------------------------------------------------------------------- |
-| `gravity.repulsive` | `float` | `0`     | Repulsive force between particles. Strongly impacts performance.                       |
+| `gravity.repulsive` | `float` | `0`     | Repulsive force between particles.                                                     |
 | `gravity.pulling`   | `float` | `0`     | Attractive force between particles. Requires sufficient repulsion to avoid clustering. |
 | `gravity.friction`  | `float` | `0.8`   | Damping factor applied to gravitational velocity each update (`0.0 – 1.0`).            |
 
@@ -342,13 +349,13 @@ instance.options = { ... }
 createParticle(posX?: number, posY?: number, dir?: number, speed?: number, size?: number)
 ```
 
-By default `particles.ppm` and `particles.max` are used to auto-generate random particles. This might destroy manually created particles. To fix this, set `particles.generationType` to `MANUAL (0)`.
+By default `particles.ppm` and `particles.max` are used to auto-generate random particles. Set one or both of these properties to `0` or set `particles.generationType` to `OFF (0)` (slightly more performant).
 
 ```js
 const canvas = '#my-canvas'
 const options = {
   particles: {
-    max: 0,
+    generationType: CanvasParticles.generationType.OFF, // = 0
     rotationSpeed: 0,
   },
 }
@@ -393,7 +400,7 @@ instance.newParticles({ keepAuto: true, keepManual: false })
       const options = {
         background: 'hsl(125, 42%, 35%)',
         mouse: {
-          interactionType: CanvasParticles.interactionType.MOVE, // = 2
+          interactionType: CanvasParticles.interactionType.SHIFT, // = 1
         },
         particles: {
           color: 'rgba(150, 255, 105, 0.95)',

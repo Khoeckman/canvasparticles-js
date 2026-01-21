@@ -43,9 +43,9 @@ export default class CanvasParticles {
 
   /** Defines how the particles are auto-generated */
   static readonly generationType = Object.freeze({
-    MANUAL: 0, // Never auto-generate particles
-    NEW: 1, // Generate particles from scratch
-    MATCH: 2, // Add or remove particles to match new count (default)
+    OFF: 0, // Never auto-generate particles
+    NEW: 1, // Generate all particles from scratch
+    MATCH: 2, // Add or remove some particles to match the new count (default)
   })
 
   /** Observes canvas elements entering or leaving the viewport to start/stop animation */
@@ -211,7 +211,7 @@ export default class CanvasParticles {
 
     const generationType = this.option.particles.generationType
 
-    if (generationType !== CanvasParticles.generationType.MANUAL) {
+    if (generationType !== CanvasParticles.generationType.OFF) {
       if (generationType === CanvasParticles.generationType.NEW || this.particles.length === 0) this.newParticles()
       else if (generationType === CanvasParticles.generationType.MATCH) this.matchParticleCount({ updateBounds: true })
     }

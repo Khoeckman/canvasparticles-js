@@ -46,7 +46,7 @@ new CanvasParticles('#cp-3', {
   background: '#423',
   mouse: {
     interactionType: 2,
-    connectDistMult: 2,
+    connectDistMult: 1.5,
     distRatio: 0.9,
   },
   particles: {
@@ -55,13 +55,12 @@ new CanvasParticles('#cp-3', {
     max: 800,
     maxWork: 40,
     connectDistance: 80,
-    rotationSpeed: 2,
+    relSpeed: 0.5,
   },
   gravity: {
-    repulsive: 5,
+    repulsive: 12,
     pulling: 1,
-    friction: 0.75,
-    preventExplosions: true,
+    maxVelocity: 3,
   },
 }).start()
 

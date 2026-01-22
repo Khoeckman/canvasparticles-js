@@ -31,7 +31,7 @@ declare const __VERSION__: string
 export default class CanvasParticles {
   static readonly version = __VERSION__
 
-  private static readonly MAX_DT = 1000 / 50 // milliseconds between updates @ 50 FPS
+  private static readonly MAX_DT = 1000 / 30 // milliseconds between updates @ 30 FPS
   private static readonly BASE_DT = 1000 / 60 // milliseconds between updates @ 60 FPS
 
   /** Defines mouse interaction types with the particles */
@@ -420,7 +420,7 @@ export default class CanvasParticles {
     const mouseDistRatio = this.option.mouse.distRatio
     const rotationSpeed = this.option.particles.rotationSpeed * step
     const friction = this.option.gravity.friction
-    const preventExplosions = this.option.gravity.preventExplosions
+    const maxVel = this.option.gravity.maxVelocity
     const easing = 1 - Math.pow(3 / 4, step)
 
     for (const p of this.particles) {
@@ -432,9 +432,7 @@ export default class CanvasParticles {
       const movY = Math.cos(p.dir) * p.speed
 
       // Maximum velocity
-      if (preventExplosions) {
-        const maxVel = Math.max(p.speed, friction) * 2
-
+      if (maxVel > 0) {
         if (p.velX > maxVel) p.velX = maxVel
         if (p.velX < -maxVel) p.velX = -maxVel
 
@@ -890,7 +888,7 @@ export default class CanvasParticles {
         repulsive: pno('gravity.repulsive', options.gravity?.repulsive, 0, { min: 0 }),
         pulling: pno('gravity.pulling', options.gravity?.pulling, 0, { min: 0 }),
         friction: pno('gravity.friction', options.gravity?.friction, 0.8, { min: 0, max: 1 }),
-        preventExplosions: !!options.gravity?.preventExplosions,
+        maxVelocity: pno('gravity.maxVelocity', options.gravity?.maxVelocity, Infinity, { min: 0 }),
       },
       debug: {
         drawGrid: !!options.debug?.drawGrid,

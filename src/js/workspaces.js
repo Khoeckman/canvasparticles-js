@@ -88,7 +88,12 @@ export const loadPreset = (presetName) => {
 export const loadWorkspace = (workspaceName) => {
   selectedWorkspaceName = workspaceName
 
-  if (!workspaceStore.value?.[workspaceName]) workspaceStore.value[workspaceName] = presets.empty
+  try {
+    if (workspaceStore.value.constructor !== Object) workspaceStore.value = { [workspaceName]: presets.empty }
+    else if (!workspaceStore.value?.[workspaceName]) workspaceStore.value[workspaceName] = presets.empty
+  } catch {
+    workspaceStore.value = { [workspaceName]: presets.empty }
+  }
 
   sandboxOptions.textContent = workspaceStore.value[workspaceName]
   Prism.highlightElement(sandboxOptions)

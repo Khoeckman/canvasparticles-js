@@ -26,9 +26,11 @@ function Mulberry32(seed: number) {
 // Spectral test: /demo/mulberry32.html
 const prng = Mulberry32(Math.random() * 2 ** 32).next
 
+// Injected by Rollup
 declare const __VERSION__: string
 
 export default class CanvasParticles {
+  /** Version of the library, injected via Rollup replace plugin. */
   static readonly version = __VERSION__
 
   private static readonly MAX_DT = 1000 / 30 // milliseconds between updates @ 30 FPS

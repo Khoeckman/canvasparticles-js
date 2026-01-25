@@ -1,4 +1,4 @@
-import CanvasParticles from 'https://cdn.jsdelivr.net/npm/canvasparticles-js@4.4.4/dist/index.mjs'
+import CanvasParticles from 'https://cdn.jsdelivr.net/npm/canvasparticles-js@4.4.5/dist/index.mjs'
 
 // Version
 document.getElementById('version').innerText = CanvasParticles.version ?? 'unknown'

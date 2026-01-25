@@ -28,7 +28,7 @@ const presets = {
     repulsive: 0.55,
     pulling: 0,
     friction: 0.9,
-    preventExplosions: true,
+    maxVelocity: 5,
   },
   debug: {
     drawGrid: false,

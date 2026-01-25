@@ -86,15 +86,16 @@ export default class CanvasParticles {
   })
 
   /** Helper functions for options parsing */
-  private static readonly defaultIfNaN = (value: number, defaultValue: number): number =>
-    isNaN(+value) ? defaultValue : +value
+  private static defaultIfNaN(value: number, defaultValue: number): number {
+    return isNaN(+value) ? defaultValue : +value
+  }
 
-  private static readonly parseNumericOption = (
+  private static parseNumericOption(
     name: string,
     value: number | undefined,
     defaultValue: number,
     clamp?: { min?: number; max?: number }
-  ): number => {
+  ): number {
     if (value == undefined) return defaultValue
 
     const { min = -Infinity, max = Infinity } = clamp ?? {}

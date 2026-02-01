@@ -24,7 +24,7 @@ function Mulberry32(seed: number) {
 // Mulberry32 is ±392% faster than Math.random()
 // Benchmark: https://jsbm.dev/muLCWR9RJCbmy
 // Spectral test: /demo/mulberry32.html
-const prng = Mulberry32(Math.random() * 2 ** 32).next
+const prng = Mulberry32(Math.random() * 4294967296).next
 
 // Injected by Rollup
 declare const __VERSION__: string

@@ -27,7 +27,18 @@ https://github.com/Khoeckman/canvasparticles-js/blob/main/LICENSE
   <link rel="stylesheet" href="css/prism.min.css" />
 
   <!-- JS -->
-  <script src="js/redirect.js"></script>
+  <script>
+    (() => {
+      const host = location.hostname
+      const isLocalhost = host === 'localhost' || host === '127.0.0.1' || host === '::1' || host.endsWith('.localhost')
+
+      if (!isLocalhost && host !== 'khoeckman.github.io') {
+        const tail = location.pathname + location.search + location.hash
+        location.replace('https://khoeckman.github.io/canvasparticles-js' + tail)
+      }
+    })()
+  </script>
+
   <script src="https://cdn.jsdelivr.net/npm/canvasparticles-js@4.4.6/dist/index.umd.js" defer></script>
   <script src="js/prism.min.js" type="module"></script>
   <script src="js/main.js" type="module"></script>

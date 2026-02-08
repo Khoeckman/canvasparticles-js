@@ -9,8 +9,8 @@ new CanvasParticles('#cp-1', {
   },
   particles: {
     color: '#88c8ff',
-    ppm: 8000,
-    max: 16000,
+    ppm: 8192,
+    max: 16384,
     maxWork: 1,
     connectDistance: 2,
     relSpeed: 0.05,

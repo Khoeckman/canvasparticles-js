@@ -27,6 +27,18 @@ https://github.com/Khoeckman/canvasparticles-js/blob/main/LICENSE
   <link rel="stylesheet" href="../css/benchmark.css" />
 
   <!-- JS -->
+  <script>
+    (() => {
+      const host = location.hostname
+      const isLocalhost = host === 'localhost' || host === '127.0.0.1' || host === '::1' || host.endsWith('.localhost')
+
+      if (!isLocalhost && host !== 'khoeckman.github.io') {
+        const tail = location.pathname + location.search + location.hash
+        location.replace('https://khoeckman.github.io/canvasparticles-js' + tail)
+      }
+    })()
+  </script>
+
   <script src="./benchmark.js" type="module"></script>
 </head>
 

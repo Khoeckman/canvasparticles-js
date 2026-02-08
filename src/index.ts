@@ -200,8 +200,10 @@ export default class CanvasParticles {
 
   /** Resize the canvas and update particles accordingly */
   #resizeCanvas() {
-    const width = (this.canvas.width = this.canvas.rect.width)
-    const height = (this.canvas.height = this.canvas.rect.height)
+    const dpr = window.devicePixelRatio || 1
+    const width = (this.canvas.width = this.canvas.rect.width * dpr)
+    const height = (this.canvas.height = this.canvas.rect.height * dpr)
+    this.ctx.scale(dpr, dpr)
 
     // Hide the mouse when resizing because it must be outside the viewport to do so
     this.mouseX = Infinity

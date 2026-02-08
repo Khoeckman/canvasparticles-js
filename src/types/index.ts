@@ -1,5 +1,5 @@
-import CanvasParticles from '..'
-import { CanvasParticlesOptions } from './options'
+import type CanvasParticles from '..'
+import type { CanvasParticlesOptions } from './options'
 
 export interface CanvasParticlesCanvas extends HTMLCanvasElement {
   instance: CanvasParticles

@@ -11,6 +11,19 @@ https://github.com/Khoeckman/canvasparticles-js/blob/main/LICENSE
   <meta name="description" content="Homepage" />
   <meta name="google-site-verification" content="1Mh0lUvuIjThK1wszSkSxEJcTaV4A9HkE9Vaw_MmsFw" />
 
+  <!-- Redirect to GitHub pages -->
+  <script>
+    (() => {
+      const host = location.hostname
+      const isLocalhost = host === 'localhost' || host === '127.0.0.1' || host === '::1' || host.endsWith('.localhost')
+
+      if (!isLocalhost && host !== 'khoeckman.github.io') {
+        const tail = location.pathname + location.search + location.hash
+        location.replace('https://khoeckman.github.io/canvasparticles-js' + tail)
+      }
+    })()
+  </script>
+
   <!-- Browser Tab -->
   <title>Canvas Particles JS</title>
   <link rel="icon" href="img/favicon.webp" />
@@ -27,18 +40,6 @@ https://github.com/Khoeckman/canvasparticles-js/blob/main/LICENSE
   <link rel="stylesheet" href="css/prism.min.css" />
 
   <!-- JS -->
-  <script>
-    (() => {
-      const host = location.hostname
-      const isLocalhost = host === 'localhost' || host === '127.0.0.1' || host === '::1' || host.endsWith('.localhost')
-
-      if (!isLocalhost && host !== 'khoeckman.github.io') {
-        const tail = location.pathname + location.search + location.hash
-        location.replace('https://khoeckman.github.io/canvasparticles-js' + tail)
-      }
-    })()
-  </script>
-
   <script src="https://cdn.jsdelivr.net/npm/canvasparticles-js@4.4.8/dist/index.umd.js" defer></script>
   <script src="js/prism.min.js" type="module"></script>
   <script src="js/main.js" type="module"></script>

@@ -5,6 +5,8 @@
 @import 'helper/fancyAnchor.css';
 
 :root {
+  color-scheme: light dark;
+
   --white: #fff;
   --black: #111;
 

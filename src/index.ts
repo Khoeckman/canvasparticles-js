@@ -224,9 +224,9 @@ export default class CanvasParticles {
     if (this.isAnimating) this.#render()
   }
 
-  /** Update the canvas bounding rectangle, resize the canvas and update particles accordingly */
-  resizeCanvas() {
-    this.updateCanvasRect()
+  /** Update the canvas bounding rectangle (optional), resize the canvas and update particles accordingly */
+  resizeCanvas(updateRect = true) {
+    if (updateRect) this.updateCanvasRect()
     this.#resizeCanvas()
   }
 

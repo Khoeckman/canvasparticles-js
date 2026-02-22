@@ -91,8 +91,8 @@ runButtons.forEach((button) => {
             sandboxError.innerText = err
             sandboxError.hidden = false
           }
+          sandbox.resizeCanvas(false)
           sandbox.updateParticles()
-          sandbox.resizeCanvas()
           sandbox.start()
         }
 

@@ -1,7 +1,7 @@
 import CanvasParticles from '../dist/index.mjs'
 
 //  Initialize first canvas
-new CanvasParticles('#cp-1', {
+window.cp1 = new CanvasParticles('#cp-1', {
   background: 'linear-gradient(115deg, #354089, black)',
   mouse: {
     connectDistMult: 75,
@@ -18,7 +18,7 @@ new CanvasParticles('#cp-1', {
 }).start()
 
 // Initialize second canvas
-new CanvasParticles('#cp-2', {
+window.cp2 = new CanvasParticles('#cp-2', {
   background: 'hsl(125, 33%, 10%)',
   mouse: {
     connectDistMult: 1,
@@ -42,7 +42,7 @@ new CanvasParticles('#cp-2', {
 }).start()
 
 // Initialize third canvas
-new CanvasParticles('#cp-3', {
+window.cp3 = new CanvasParticles('#cp-3', {
   background: '#423',
   mouse: {
     interactionType: 2,
@@ -64,7 +64,7 @@ new CanvasParticles('#cp-3', {
   },
 }).start()
 
-const cp4 = new CanvasParticles('#cp-4', {
+window.cp4 = new CanvasParticles('#cp-4', {
   mouse: {
     interactionType: CanvasParticles.interactionType.SHIFT, // = 1
     connectDistMult: 1.25,
@@ -101,3 +101,8 @@ const createParticleSineWave = () => {
 
 createParticleSineWave()
 window.addEventListener('resize', createParticleSineWave)
+
+console.log('window.cp1', cp1)
+console.log('window.cp2', cp2)
+console.log('window.cp3', cp3)
+console.log('window.cp4', cp4)

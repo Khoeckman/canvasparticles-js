@@ -78,10 +78,13 @@ export default class CanvasParticles {
       canvas.instance.updateCanvasRect()
     }
 
+    // Cache to prevent fetching the dpr for every instance
+    const dpr = window.devicePixelRatio || 1
+
     // Then resize all canvases at once
     for (const entry of entries) {
       const canvas = entry.target as CanvasParticlesCanvas
-      canvas.instance.#resizeCanvas()
+      canvas.instance.#resizeCanvas(dpr)
     }
   })
 
@@ -122,6 +125,8 @@ export default class CanvasParticles {
   private clientY: number = Infinity
   mouseX: number = Infinity
   mouseY: number = Infinity
+
+  dpr: number = 1
   width!: number
   height!: number
   private offX!: number
@@ -165,7 +170,7 @@ export default class CanvasParticles {
     this.handleMouseMove = this.handleMouseMove.bind(this)
     this.handleScroll = this.handleScroll.bind(this)
 
-    this.resizeCanvas()
+    // this.resizeCanvas()
     window.addEventListener('mousemove', this.handleMouseMove, { passive: true })
     window.addEventListener('scroll', this.handleScroll, { passive: true })
   }
@@ -199,11 +204,12 @@ export default class CanvasParticles {
   }
 
   /** Resize the canvas and update particles accordingly */
-  #resizeCanvas() {
-    const dpr = window.devicePixelRatio || 1
+  #resizeCanvas(dpr = window.devicePixelRatio || 1) {
     const width = (this.canvas.width = this.canvas.rect.width * dpr)
     const height = (this.canvas.height = this.canvas.rect.height * dpr)
-    this.ctx.scale(dpr, dpr)
+
+    // Must be set every time width or height changes because scale is removed
+    if (dpr !== 1) this.ctx.scale(dpr, dpr)
 
     // Hide the mouse when resizing because it must be outside the viewport to do so
     this.mouseX = Infinity

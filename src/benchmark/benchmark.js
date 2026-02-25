@@ -1,4 +1,4 @@
-import CanvasParticles from 'https://cdn.jsdelivr.net/npm/canvasparticles-js@4.4.10/dist/index.mjs'
+import CanvasParticles from 'https://cdn.jsdelivr.net/npm/canvasparticles-js@4.5.0/dist/index.mjs'
 
 // Version
 document.getElementById('version').innerText = CanvasParticles.version ?? 'unknown'
@@ -132,7 +132,7 @@ const populateCanvasContainer = async () => {
 
   canvasContainer.appendChild(fragment)
 
-  await scheduleDataProcessing(
+  /*await scheduleDataProcessing(
     instances,
     (instance) => {
       instance.updateCanvasRect()
@@ -150,7 +150,7 @@ const populateCanvasContainer = async () => {
     (len, i) => {
       benchmarkStatus.innerText = 'Resizing canvases ' + i + '/' + len
     }
-  )
+  )*/
 
   await scheduleDataProcessing(
     instances,

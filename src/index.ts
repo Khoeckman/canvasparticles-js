@@ -1,6 +1,8 @@
 // Copyright (c) 2022–2026 Kyle Hoeckman, MIT License
 // https://github.com/Khoeckman/canvasparticles-js/blob/main/LICENSE
 
+import { parseNumericOption } from './options'
+
 import type { CanvasParticlesCanvas, Particle, GridPos, ContextColor, SpatialGrid } from './types'
 import type { CanvasParticlesOptions, CanvasParticlesOptionsInput } from './types/options'
 
@@ -50,7 +52,7 @@ export default class CanvasParticles {
     MATCH: 2, // Add or remove some particles to match the new count (default)
   })
 
-  /** Observes canvas elements entering or leaving the viewport to start/stop animation */
+  /** Observes when canvas elements enter or leave the viewport to start/stop animation */
   static readonly canvasIntersectionObserver = new IntersectionObserver(
     (entries) => {
       for (const entry of entries) {
@@ -69,6 +71,7 @@ export default class CanvasParticles {
     }
   )
 
+  /** Observes when canvas elements change size */
   static readonly canvasResizeObserver = new ResizeObserver((entries) => {
     // Seperate for loops is very important to prevent huge forced reflow overhead
 
@@ -88,29 +91,7 @@ export default class CanvasParticles {
     }
   })
 
-  /** Helper functions for options parsing */
-  private static defaultIfNaN(value: number, defaultValue: number): number {
-    return isNaN(+value) ? defaultValue : +value
-  }
-
-  private static parseNumericOption(
-    name: string,
-    value: number | undefined,
-    defaultValue: number,
-    clamp?: { min?: number; max?: number }
-  ): number {
-    if (value == undefined) return defaultValue
-
-    const { min = -Infinity, max = Infinity } = clamp ?? {}
-
-    if (value < min) {
-      console.warn(new RangeError(`option.${name} was clamped to ${min} as ${value} is too low`))
-    } else if (value > max) {
-      console.warn(new RangeError(`option.${name} was clamped to ${max} as ${value} is too high`))
-    }
-
-    return CanvasParticles.defaultIfNaN(Math.min(Math.max(value ?? defaultValue, min), max), defaultValue)
-  }
+  static instances = new Set<CanvasParticles>()
 
   canvas: CanvasParticlesCanvas
   private ctx: CanvasRenderingContext2D
@@ -162,17 +143,9 @@ export default class CanvasParticles {
 
     this.options = options // Uses setter
 
+    CanvasParticles.instances.add(this)
     CanvasParticles.canvasIntersectionObserver.observe(this.canvas)
     CanvasParticles.canvasResizeObserver.observe(this.canvas)
-
-    // Setup event handlers
-    this.resizeCanvas = this.resizeCanvas.bind(this)
-    this.handleMouseMove = this.handleMouseMove.bind(this)
-    this.handleScroll = this.handleScroll.bind(this)
-
-    // this.resizeCanvas()
-    window.addEventListener('mousemove', this.handleMouseMove, { passive: true })
-    window.addEventListener('scroll', this.handleScroll, { passive: true })
   }
 
   updateCanvasRect() {
@@ -272,17 +245,18 @@ export default class CanvasParticles {
       const pruned: Particle[] = []
       let autoCount = 0
 
-      // Keep manual particles while pruning automatic particles that exceed `particleCount`
-      // Only count automatic particles towards `particledCount`
       for (const particle of this.particles) {
+        // Keep manual particles
         if (particle.isManual) {
           pruned.push(particle)
           continue
         }
 
-        if (autoCount >= particleCount) continue
-        pruned.push(particle)
-        autoCount++
+        // Only keep `autoCount` amount of automatic particles
+        if (autoCount < particleCount) {
+          pruned.push(particle)
+          autoCount++
+        }
       }
       this.particles = pruned
     } else {
@@ -845,11 +819,9 @@ export default class CanvasParticles {
   destroy() {
     this.stop()
 
+    CanvasParticles.instances.delete(this)
     CanvasParticles.canvasIntersectionObserver.unobserve(this.canvas)
     CanvasParticles.canvasResizeObserver.unobserve(this.canvas)
-
-    window.removeEventListener('mousemove', this.handleMouseMove)
-    window.removeEventListener('scroll', this.handleScroll)
 
     this.canvas?.remove()
 
@@ -858,7 +830,7 @@ export default class CanvasParticles {
 
   /** Set and validate options (https://github.com/Khoeckman/canvasParticles?tab=readme-ov-file#options) */
   set options(options: CanvasParticlesOptionsInput) {
-    const pno = CanvasParticles.parseNumericOption
+    const pno = parseNumericOption
 
     // Format and parse all options
     this.option = {
@@ -874,7 +846,6 @@ export default class CanvasParticles {
           CanvasParticles.interactionType.MOVE,
           { min: 0, max: 2 }
         ) as 0 | 1 | 2,
-        connectDistMult: pno('mouse.connectDistMult', options.mouse?.connectDistMult, 2 / 3, { min: 0 }),
         connectDist: 1 /* post processed */,
         distRatio: pno('mouse.distRatio', options.mouse?.distRatio, 2 / 3, { min: 0 }),
       },
@@ -908,7 +879,7 @@ export default class CanvasParticles {
     }
 
     this.setBackground(this.option.background)
-    this.setMouseConnectDistMult(this.option.mouse.connectDistMult)
+    this.setMouseConnectDistMult(options.mouse?.connectDistMult)
     this.setParticleColor(this.option.particles.color)
   }
 
@@ -924,8 +895,8 @@ export default class CanvasParticles {
   }
 
   /** Transform the distance multiplier (float) to absolute distance (px) */
-  setMouseConnectDistMult(connectDistMult: number) {
-    const mult = CanvasParticles.parseNumericOption('mouse.connectDistMult', connectDistMult, 2 / 3, { min: 0 })
+  setMouseConnectDistMult(connectDistMult: number | undefined) {
+    const mult = parseNumericOption('mouse.connectDistMult', connectDistMult, 2 / 3, { min: 0 })
     this.option.mouse.connectDist = this.option.particles.connectDist * mult
   }
 
@@ -956,3 +927,24 @@ export default class CanvasParticles {
     }
   }
 }
+
+// Global event listeners that handle all instances at once
+window.addEventListener(
+  'mousemove',
+  (e) => {
+    for (const instance of CanvasParticles.instances) {
+      instance.handleMouseMove(e)
+    }
+  },
+  { passive: true }
+)
+
+window.addEventListener(
+  'scroll',
+  () => {
+    for (const instance of CanvasParticles.instances) {
+      instance.handleScroll()
+    }
+  },
+  { passive: true }
+)

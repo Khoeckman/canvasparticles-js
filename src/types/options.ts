@@ -8,7 +8,6 @@ export interface CanvasParticlesOptions {
 
   mouse: {
     interactionType: 0 | 1 | 2 /* see CanvasParticles.interactionType */
-    connectDistMult: number
     connectDist: number /* post processed */
     distRatio: number
   }
@@ -44,4 +43,6 @@ type DeepPartial<T> = {
   [K in keyof T]?: T[K] extends object ? DeepPartial<T[K]> : T[K]
 }
 
-export type CanvasParticlesOptionsInput = DeepPartial<CanvasParticlesOptions>
+export type CanvasParticlesOptionsInput = DeepPartial<CanvasParticlesOptions> & {
+  mouse?: { connectDistMult?: number }
+}

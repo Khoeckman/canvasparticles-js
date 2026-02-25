@@ -59,7 +59,7 @@ const generateRandomCanvasOptions = (ppm) => {
       color: `hsl(${~~(Math.random() * 360)}, ${80 + ~~(Math.random() * 20)}%, ${40 + ~~(Math.random() * 20)}%)`,
       ppm: 0 /* Particles are created later */,
       max: Infinity,
-      maxWork: Math.round(30 + (ppm / 1000) * 20),
+      maxWork: ~~(30 + (ppm / 1000) * 20),
       connectDist: 75,
     },
   }
@@ -131,26 +131,6 @@ const populateCanvasContainer = async () => {
   await new Promise(requestAnimationFrame)
 
   canvasContainer.appendChild(fragment)
-
-  /*await scheduleDataProcessing(
-    instances,
-    (instance) => {
-      instance.updateCanvasRect()
-    },
-    (len, i) => {
-      benchmarkStatus.innerText = 'Getting positions of canvases ' + i + '/' + len
-    }
-  )
-
-  await scheduleDataProcessing(
-    instances,
-    (instance) => {
-      instance.resizeCanvas(false)
-    },
-    (len, i) => {
-      benchmarkStatus.innerText = 'Resizing canvases ' + i + '/' + len
-    }
-  )*/
 
   await scheduleDataProcessing(
     instances,

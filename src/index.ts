@@ -266,7 +266,7 @@ export default class CanvasParticles {
     // Only necessary after resize
     if (updateBounds) {
       for (const particle of this.particles) {
-        this.#updateParticleBounds(particle)
+        this.#updateParticleUpperBounds(particle)
       }
     }
 
@@ -290,7 +290,7 @@ export default class CanvasParticles {
 
   /** Create a new particle with optional parameters */
   createParticle(posX: number, posY: number, dir: number, speed: number, size: number, isManual = true) {
-    const particle: Omit<Particle, 'bounds'> = {
+    const particle: Particle = {
       posX, // Logical position in pixels
       posY, // Logical position in pixels
       x: posX, // Visual position in pixels
@@ -305,23 +305,28 @@ export default class CanvasParticles {
       gridPos: { x: 1, y: 1 },
       isVisible: false,
       isManual,
+      bounds: {
+        top: -size,
+        right: this.canvas.width + size,
+        bottom: this.canvas.height + size,
+        left: -size,
+      },
     }
-    this.#updateParticleBounds(particle)
     this.particles.push(particle)
     this.hasManualParticles = true
   }
 
-  /** Update the visible bounds of a particle */
-  #updateParticleBounds(
-    particle: Omit<Particle, 'bounds'> & Partial<Pick<Particle, 'bounds'>> // Make bounds optional on particle
-  ): asserts particle is Particle {
-    // The particle is considered visible within these bounds
-    particle.bounds = {
-      top: -particle.size,
-      right: this.canvas.width + particle.size,
-      bottom: this.canvas.height + particle.size,
-      left: -particle.size,
-    }
+  /** Updates the particle's bounding box, including size padding, for visibility checks. */
+  #updateParticleBounds(particle: Particle) {
+    particle.bounds.top = -particle.size
+    particle.bounds.right = this.canvas.width + particle.size
+    particle.bounds.bottom = this.canvas.height + particle.size
+    particle.bounds.left = -particle.size
+  }
+
+  #updateParticleUpperBounds(particle: Particle) {
+    particle.bounds.right = this.canvas.width + particle.size
+    particle.bounds.bottom = this.canvas.height + particle.size
   }
 
   /* Randomize speed and size of all particles based on current options */

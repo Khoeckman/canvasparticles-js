@@ -68,7 +68,7 @@ runButtons.forEach((button) => {
 
           const numberToken = document.querySelectorAll(
             '#showcase article:has(#showcase-pulling-gravity) code .token.number'
-          )[2]
+          )[1]
           numberToken.innerText = +maxWork
         }
 

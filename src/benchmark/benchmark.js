@@ -1,4 +1,4 @@
-import CanvasParticles from 'https://cdn.jsdelivr.net/npm/canvasparticles-js@4.5.0/dist/index.mjs'
+import CanvasParticles from 'https://cdn.jsdelivr.net/npm/canvasparticles-js@4.5.1/dist/index.mjs'
 
 // Version
 document.getElementById('version').innerText = CanvasParticles.version ?? 'unknown'
@@ -15,7 +15,7 @@ const benchmarkStatus = document.getElementById('benchmark-status')
 
 // Prevent the UI from lagging while processing large amounts of data
 const scheduleDataProcessing = (data, processCallback, chunkCallback = () => {}, priority = 'user-visible') => {
-  return new Promise((resolve) => {
+  return new Promise(async (resolve) => {
     const len = data.length
 
     if (!data || len === 0) {
@@ -42,6 +42,10 @@ const scheduleDataProcessing = (data, processCallback, chunkCallback = () => {},
         return resolve()
       }
     }
+
+    // Allow UI to update before lagging it
+    await new Promise(requestAnimationFrame)
+    await new Promise(requestAnimationFrame)
 
     let i = 0
     scheduler.postTask(runChunk, { priority })
@@ -78,10 +82,6 @@ const populateCanvasContainer = async () => {
   stopAnimationButton.disabled = true
 
   benchmarkStatus.innerText = 'Preparing…'
-
-  // Allow the text to update before lagging the UI
-  await new Promise(requestAnimationFrame)
-  await new Promise(requestAnimationFrame)
 
   const count = +document.getElementById('canvas-count-number').value
   const ppm = +document.getElementById('ppm-number').value

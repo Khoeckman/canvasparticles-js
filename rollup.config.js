@@ -14,8 +14,8 @@ export default {
       exports: 'default',
       plugins: [
         terser({
+          keep_classnames: true,
           format: {
-            indent_level: 2,
             comments: false,
           },
         }),

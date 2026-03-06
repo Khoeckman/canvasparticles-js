@@ -52,7 +52,7 @@ header nav li.title .version {
 }
 
 span#version {
-  display: inline-block; 
+  display: inline-block;
 }
 
 header nav li.title .version::before {
@@ -68,7 +68,12 @@ header nav li.title .version:is(:hover, :focus-visible)::before {
 }
 
 header nav li .button {
-  transition: background 150ms, border-color 150ms, color 150ms, transform 300ms, filter 300ms;
+  transition:
+    background 150ms,
+    border-color 150ms,
+    color 150ms,
+    transform 300ms,
+    filter 300ms;
 }
 
 header nav li .button:is(:hover, :focus-visible) {

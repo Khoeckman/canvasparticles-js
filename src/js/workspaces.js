@@ -1,4 +1,4 @@
-import HyperStorage from './HyperStorage.mjs'
+import HyperStorage from './HyperStorage.min.mjs'
 
 const presets = {
   all: `sandbox.options = {

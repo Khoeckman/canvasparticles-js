@@ -354,7 +354,7 @@ instance.options = { ... }
 createParticle(posX?: number, posY?: number, dir?: number, speed?: number, size?: number)
 ```
 
-By default `particles.ppm` and `particles.max` are used to auto-generate random particles. Set one or both of these properties to `0` or set `particles.generationType` to `OFF (0)` (slightly more performant).
+By default `particles.ppm` and `particles.max` are used to auto-generate random particles. To turn this off, set at least one of these properties to `0` or set `particles.generationType` to `OFF (0)` (slightly more efficient).
 
 ```js
 const canvas = '#my-canvas'
@@ -391,7 +391,7 @@ instance.newParticles({ keepAuto: true, keepManual: false })
         left: 0;
         width: 100%;
         height: 100%;
-        z-index: -1; /* Place behind other elements to act as background */
+        z-index: -1;
       }
     </style>
   </head>

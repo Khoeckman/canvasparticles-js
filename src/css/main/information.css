@@ -15,6 +15,7 @@
 }
 
 #information article img {
+  border-radius: 50%;
   width: 24rem;
   max-height: 24rem;
   animation: jiggle 7.5s ease-in-out infinite alternate;
@@ -22,7 +23,9 @@
 
 #information article img.shadow {
   filter: blur(2.5rem);
-  animation: jiggle 7.5s ease-in-out infinite alternate, growBlur 3s ease-in-out infinite alternate;
+  animation:
+    jiggle 7.5s ease-in-out infinite alternate,
+    growBlur 3s ease-in-out infinite alternate;
 }
 
 #information article figure:hover img,

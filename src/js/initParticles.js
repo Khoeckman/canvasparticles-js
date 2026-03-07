@@ -6,7 +6,6 @@ const title = new CanvasParticles('#cp-title', {
     distRatio: 1,
   },
   particles: {
-    regenerateOnResize: true,
     color: '#848888',
     ppm: 50,
     max: 999,

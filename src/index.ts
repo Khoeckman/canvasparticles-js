@@ -23,7 +23,7 @@ function Mulberry32(seed: number) {
   }
 }
 
-// Mulberry32 is ±392% faster than Math.random()
+// Mulberry32 is x4 faster than Math.random()
 // Benchmark: https://jsbm.dev/muLCWR9RJCbmy
 // Spectral test: /demo/mulberry32.html
 const prng = Mulberry32(Math.random() * 4294967296).next
@@ -178,11 +178,13 @@ export default class CanvasParticles {
 
   /** Resize the canvas and update particles accordingly */
   #resizeCanvas(dpr = window.devicePixelRatio || 1) {
+    if (dpr < 1) dpr = 1
+
     const width = (this.canvas.width = this.canvas.rect.width * dpr)
     const height = (this.canvas.height = this.canvas.rect.height * dpr)
 
     // Must be set every time width or height changes because scale is removed
-    if (dpr !== 1) this.ctx.scale(dpr, dpr)
+    if (dpr > 1) this.ctx.scale(dpr, dpr)
 
     // Hide the mouse when resizing because it must be outside the viewport to do so
     this.mouseX = Infinity
@@ -500,12 +502,13 @@ export default class CanvasParticles {
   /** Draw the particles on the canvas */
   #renderParticles() {
     const ctx = this.ctx
+    const dpr = window.devicePixelRatio || 1
 
     for (const p of this.particles) {
       if (!p.isVisible) continue
 
       // Draw particles smaller than 1px as a square instead of a circle for performance
-      if (p.size > 1) {
+      if (p.size > 1 / dpr) {
         // Draw circle
         ctx.beginPath()
         ctx.arc(p.x, p.y, p.size, 0, TWO_PI)
@@ -774,7 +777,7 @@ export default class CanvasParticles {
 
   /** Clear the canvas and render the particles and their connections onto the canvas */
   #render() {
-    this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height)
+    this.ctx.clearRect(0, 0, this.canvas.rect.width, this.canvas.rect.height)
 
     this.ctx.globalAlpha = this.color.alpha
     this.ctx.fillStyle = this.color.hex
@@ -816,7 +819,7 @@ export default class CanvasParticles {
   stop({ auto = false, clear = true }: { auto?: boolean; clear?: boolean } = {}): boolean {
     if (!auto) this.enableAnimating = false
     this.isAnimating = false
-    if (clear !== false) this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height)
+    if (clear !== false) this.ctx.clearRect(0, 0, this.canvas.rect.width, this.canvas.rect.height)
     return true
   }
 

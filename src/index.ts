@@ -642,15 +642,19 @@ export default class CanvasParticles {
       let cell
 
       if ((cell = grid.get(key + 1))) renderConnectionsToCell(cell, pa) // (+1, 0)
-      if (!allowWork) continue
-      if ((cell = grid.get(key + stride))) renderConnectionsToCell(cell, pa) // (0, +1)
-      if (!allowWork) continue
-      if ((cell = grid.get(key + stride + 1))) renderConnectionsToCell(cell, pa) // (+1, +1)
-      if (!allowWork) continue
-      if ((cell = grid.get(key + stride - 1))) renderConnectionsToCell(cell, pa) // (-1, +1)
-      if (!allowWork) continue
-      if (cellX >= 0 && cellY >= 0 && cellX < stride - 2 && cellY < rows - 2 && (cell = grid.get(key)))
-        renderConnectionsToOwnCell(cell || [], a, pa)
+      if (allowWork) {
+        if ((cell = grid.get(key + stride))) renderConnectionsToCell(cell, pa) // (0, +1)
+        if (allowWork) {
+          if ((cell = grid.get(key + stride + 1))) renderConnectionsToCell(cell, pa) // (+1, +1)
+          if (allowWork) {
+            if ((cell = grid.get(key + stride - 1))) renderConnectionsToCell(cell, pa) // (-1, +1)
+            if (allowWork) {
+              if (cellX >= 0 && cellY >= 0 && cellX < stride - 2 && cellY < rows - 2 && (cell = grid.get(key)))
+                renderConnectionsToOwnCell(cell || [], a, pa)
+            }
+          }
+        }
+      }
 
       // Next iteration
       if (++a >= len) break
@@ -665,15 +669,19 @@ export default class CanvasParticles {
       key = cellX + Math.imul(cellY, stride)
 
       if ((cell = grid.get(key + stride + 1))) renderConnectionsToCell(cell, pa) // (+1, +1)
-      if (!allowWork) continue
-      if ((cell = grid.get(key + stride - 1))) renderConnectionsToCell(cell, pa) // (-1, +1)
-      if (!allowWork) continue
-      if ((cell = grid.get(key + 1))) renderConnectionsToCell(cell, pa) // (+1, 0)
-      if (!allowWork) continue
-      if ((cell = grid.get(key + stride))) renderConnectionsToCell(cell, pa) // (0, +1)
-      if (!allowWork) continue
-      if (cellX >= 0 && cellY >= 0 && cellX < stride - 2 && cellY < rows - 2 && (cell = grid.get(key)))
-        renderConnectionsToOwnCell(cell || [], a, pa)
+      if (allowWork) {
+        if ((cell = grid.get(key + stride - 1))) renderConnectionsToCell(cell, pa) // (-1, +1)
+        if (allowWork) {
+          if ((cell = grid.get(key + 1))) renderConnectionsToCell(cell, pa) // (+1, 0)
+          if (allowWork) {
+            if ((cell = grid.get(key + stride))) renderConnectionsToCell(cell, pa) // (0, +1)
+            if (allowWork) {
+              if (cellX >= 0 && cellY >= 0 && cellX < stride - 2 && cellY < rows - 2 && (cell = grid.get(key)))
+                renderConnectionsToOwnCell(cell || [], a, pa)
+            }
+          }
+        }
+      }
 
       // Next iteration
       if (++a >= len) break

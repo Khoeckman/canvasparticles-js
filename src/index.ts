@@ -9,24 +9,19 @@ import type { CanvasParticlesOptions, CanvasParticlesOptionsInput } from './type
 const TWO_PI = 2 * Math.PI
 
 /** Extremely fast, simple 32‑bit PRNG */
-function Mulberry32(seed: number) {
-  let state = seed >>> 0
-
-  return {
-    next() {
-      let t = (state + 0x6d2b79f5) | 0
-      state = t
-      t = Math.imul(t ^ (t >>> 15), t | 1)
-      t ^= t + Math.imul(t ^ (t >>> 7), t | 61)
-      return ((t ^ (t >>> 14)) >>> 0) / 4294967296
-    },
+function mulberry32(seed: number) {
+  return function () {
+    let t = (seed += 0x6d2b79f5)
+    t = Math.imul(t ^ (t >>> 15), t | 1)
+    t ^= t + Math.imul(t ^ (t >>> 7), t | 61)
+    return ((t ^ (t >>> 14)) >>> 0) / 4294967296
   }
 }
 
 // Mulberry32 is x4 faster than Math.random()
 // Benchmark: https://jsbm.dev/muLCWR9RJCbmy
 // Spectral test: /demo/mulberry32.html
-const prng = Mulberry32(Math.random() * 4294967296).next
+const prng = mulberry32((Math.random() * 4294967296) | 0)
 
 // Injected by Rollup
 declare const __VERSION__: string
@@ -561,6 +556,7 @@ export default class CanvasParticles {
 
     const invCellSize = 1 / maxDist
     const stride = Math.ceil(this.width * invCellSize)
+    const rows = Math.ceil(this.height * invCellSize)
 
     const drawAll = maxDist >= Math.min(this.canvas.width, this.canvas.height)
     const maxWorkPerParticle = maxDistSq * this.option.particles.maxWork
@@ -653,7 +649,7 @@ export default class CanvasParticles {
       if (!allowWork) continue
       if ((cell = grid.get(key + stride - 1))) renderConnectionsToCell(cell, pa) // (-1, +1)
       if (!allowWork) continue
-      if (cellX >= 0 && cellY >= 0 && cellX < stride - 2 && (cell = grid.get(key)))
+      if (cellX >= 0 && cellY >= 0 && cellX < stride - 2 && cellY < rows - 2 && (cell = grid.get(key)))
         renderConnectionsToOwnCell(cell || [], a, pa)
 
       // Next iteration
@@ -676,7 +672,7 @@ export default class CanvasParticles {
       if (!allowWork) continue
       if ((cell = grid.get(key + stride))) renderConnectionsToCell(cell, pa) // (0, +1)
       if (!allowWork) continue
-      if (cellX >= 0 && cellY >= 0 && cellX < stride - 2 && (cell = grid.get(key)))
+      if (cellX >= 0 && cellY >= 0 && cellX < stride - 2 && cellY < rows - 2 && (cell = grid.get(key)))
         renderConnectionsToOwnCell(cell || [], a, pa)
 
       // Next iteration
@@ -695,7 +691,7 @@ export default class CanvasParticles {
       if (!allowWork) continue
       if ((cell = grid.get(key + 1))) renderConnectionsToCell(cell, pa) // (+1, 0)
       if (!allowWork) continue
-      if (cellX >= 0 && cellY >= 0 && cellX < stride - 2 && (cell = grid.get(key)))
+      if (cellX >= 0 && cellY >= 0 && cellX < stride - 2 && cellY < rows - 2 && (cell = grid.get(key)))
         renderConnectionsToOwnCell(cell || [], a, pa)
       if (!allowWork) continue
       if ((cell = grid.get(key + stride - 1))) renderConnectionsToCell(cell, pa) // (-1, +1)

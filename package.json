@@ -1,6 +1,6 @@
 {
   "name": "canvasparticles-js",
-  "version": "4.5.4",
+  "version": "4.5.5",
   "description": "In an HTML canvas, a bunch of interactive particles connected with lines when they approach each other.",
   "author": "Khoeckman",
   "license": "MIT",
@@ -31,10 +31,10 @@
     "@rollup/plugin-typescript": "^12.3.0",
     "@types/node": "^25.5.0",
     "prettier": "^3.8.1",
-    "rollup": "^4.59.0",
+    "rollup": "^4.60.0",
     "rollup-plugin-delete": "^3.0.2",
     "tslib": "^2.8.1",
-    "typescript": "^5.9.3"
+    "typescript": "^6.0.2"
   },
   "publishConfig": {
     "access": "public"

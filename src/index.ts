@@ -630,7 +630,7 @@ export default class CanvasParticles {
 
       /**
        * 3x3 Grid Hop
-       * Fastest approach: https://jsbm.dev/XIRm7thFFw82v (Unrolled: Positive Only)
+       * Fastest approach: https://jsbm.dev/vPYcQ6cQs8wDb (Unrolled: Positive Only)
        *
        * Cells with negative dx and dy can be skipped since they will at one point be the
        * selected cell and do their own grid hop which will include the current cell

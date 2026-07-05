@@ -1,14 +1,14 @@
 # Canvas Particles JS
 
 <span class="badge-npmversion"><a href="https://npmjs.org/package/canvasparticles-js" title="View this project on NPM"><img src="https://img.shields.io/npm/v/canvasparticles-js.svg" alt="NPM version" /></a></span>
-<span class="badge-npmversion"><a href="https://npmjs.org/package/canvasparticles-js" title="View this project on NPM"><img src="https://img.shields.io/npm/d18m/canvasparticles-js.svg" alt="NPM downloads" /></a></span>
+<span class="badge-npmversion"><a href="https://npmjs.org/package/canvasparticles-js" title="View this project on NPM"><img src="https://img.shields.io/npm/dm/canvasparticles-js.svg" alt="NPM downloads" /></a></span>
 <span><a href="https://www.jsdelivr.com/package/npm/canvasparticles-js" title="View this project on jsDelivr"><img src="https://data.jsdelivr.com/v1/package/npm/canvasparticles-js/badge?style=rounded" alt="jsDelivr hits" /></a></span>
 <span><a href="https://github.com/Khoeckman/canvasparticles-js/actions" title="View GitHub workflows"><img src="https://github.com/Khoeckman/canvasparticles-js/actions/workflows/node.js.yml/badge.svg" alt="GitHub workflows" /></a></span>
 
-## Description
-
 In an HTML canvas, a bunch of floating particles connected with lines when they approach each other.
 Creating a fun and interactive background. Colors, interaction and gravity can be customized!
+
+## TOC
 
 [Showcase](#showcase)<br>
 [Import](#import)<br>
@@ -20,6 +20,8 @@ Creating a fun and interactive background. Colors, interaction and gravity can b
 
 ---
 
+<br>
+
 ## Showcase
 
 If you dont like reading documentation this website is for you:<br>
@@ -29,6 +31,8 @@ If you dont like reading documentation this website is for you:<br>
 [![Banner with particles and title: Canvas Particles](./demo/banner.webp)](https://khoeckman.github.io/canvasparticles-js/)
 
 ---
+
+<br>
 
 ## Import
 
@@ -82,6 +86,8 @@ import CanvasParticles from 'https://cdn.jsdelivr.net/npm/canvasparticles-js/dis
 
 ---
 
+<br>
+
 ## Implementation
 
 ### Start animating
@@ -116,6 +122,8 @@ delete particles // Optional
 ```
 
 ---
+
+<br>
 
 ## Class Instantiation
 
@@ -167,6 +175,10 @@ The following will not return the expected value because `CanvasParticles` only 
 instance = new CanvasParticles(selector).anyOtherMethod()
 canvas = new CanvasParticles(selector).anyOtherMethod().canvas
 ```
+
+---
+
+<br>
 
 ## Options
 
@@ -348,6 +360,8 @@ instance.options = { ... }
 
 ---
 
+<br>
+
 ## Manually creating particles
 
 ```ts
@@ -376,6 +390,8 @@ instance.newParticles({ keepAuto: true, keepManual: false })
 ```
 
 ---
+
+<br>
 
 ## One Pager Example
 

@@ -6,6 +6,6 @@
   "main": "src/index.html",
   "type": "module",
   "devDependencies": {
-    "prettier": "^3.7.4"
+    "prettier": "^3.9.4"
   }
 }

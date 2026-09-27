@@ -10,6 +10,6 @@
     },
   },
   "packages": {
-    "prettier": ["prettier@3.9.4", "", { "bin": "bin/prettier.cjs" }, "sha512-yWG/o/4oJfo036EKAfK6ACAoDOfHeRHx4tuxkfBZiauURiaSmYwlpOr5LQqKtIkRD2z1PLteme2WoxEnj4tHTg=="],
+    "prettier": ["prettier@3.9.9", "", { "bin": { "prettier": "bin/prettier.cjs" } }, "sha512-Z/CJHIkdujO/OtN7nXUii0Rf3VT5SRuhjBA82Xvu2XhBUgX3nhP67T0LHceBdQLex7OOFGTox+Q5Yg8Jk2Qivg=="],
   }
 }
